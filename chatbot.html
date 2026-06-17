@@ -812,6 +812,7 @@ function renderMarkdown(text) {
     const srcs = srcMatch[1].trim().split(/[·•\-,\n]+/).map(s => s.replace(/\*/g,'').trim()).filter(s => s.length > 2);
     sourcesHtml = srcs.map(s => `<span class="source-chip">${s}</span>`).join('');
   }
+  const originalMarkdown = mainText;
   const codeBlocks = [];
   mainText = mainText.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
     const idx = codeBlocks.length;
@@ -855,7 +856,71 @@ function renderMarkdown(text) {
     .replace(/<p>(<(?:h[1-3]|table|hr|ul|ol|pre|blockquote)[\s\S]*?<\/(?:h[1-3]|table|ul|ol|pre|blockquote)>|<hr>)<\/p>/g, '$1')
     .replace(/<p>\s*<\/p>/g, '')
     .replace(/<br>\s*(<(?:h[1-3]|table|hr|ul|ol|pre|blockquote))/g, '$1');
-  return { html, sourcesHtml, rawMarkdown: mainText };
+  return { html, sourcesHtml, rawMarkdown: originalMarkdown };
+}
+
+// ─── MARKDOWN → PLAIN TEXT (for clean TXT export) ──────
+function convertTableToText(tableMd) {
+  const lines = tableMd.trim().split('\n').map(l => l.trim());
+  const rows = lines
+    .filter(l => l.startsWith('|') && l.endsWith('|') && !/^\|[-\s|:]+\|$/.test(l))
+    .map(l => l.split('|').slice(1, -1).map(c =>
+      c.trim()
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '$1')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/\\([<>])/g, '$1')
+    ));
+  if (rows.length < 2) return tableMd;
+  const header = rows[0];
+  const dataRows = rows.slice(1);
+  // 2-column tables: simple key: value list
+  if (header.length === 2) {
+    return '\n' + dataRows.map(r => `  ${r[0]}: ${r[1] || ''}`).join('\n') + '\n';
+  }
+  // 3+ column tables: record format
+  return '\n' + dataRows.map(row => {
+    const title = `${header[0]}: ${row[0] || ''}`;
+    const rest = row.slice(1).map((cell, j) =>
+      `  ${header[j+1] || ''}: ${cell || ''}`
+    ).join('\n');
+    return `${title}\n${rest}`;
+  }).join('\n\n') + '\n';
+}
+
+function markdownToPlainText(md) {
+  let txt = md;
+  // 1. Code fences → preserve content, drop backticks
+  txt = txt.replace(/```(?:\w*)\n?([\s\S]*?)```/g, (_, code) => '\n' + code.trim() + '\n');
+  // 2. Tables → record-style text
+  txt = txt.replace(/((?:^\|.+\|\n?)+)/gm, m => convertTableToText(m));
+  // 3. Headings
+  txt = txt.replace(/^### (.+)$/gm, (_, t) => {
+    const clean = t.replace(/\*\*/g, '').replace(/(?<!\*)\*(?!\*)/g, '');
+    return `\n${clean}\n`;
+  });
+  txt = txt.replace(/^## (.+)$/gm, (_, t) => {
+    const clean = t.replace(/\*\*/g, '').replace(/(?<!\*)\*(?!\*)/g, '');
+    return `\n${clean}\n${'─'.repeat(Math.min(clean.length, 60))}`;
+  });
+  txt = txt.replace(/^# (.+)$/gm, (_, t) => {
+    const clean = t.replace(/\*\*/g, '').replace(/(?<!\*)\*(?!\*)/g, '');
+    return `\n${clean.toUpperCase()}\n${'═'.repeat(Math.min(clean.length, 60))}`;
+  });
+  // 4. Horizontal rules
+  txt = txt.replace(/^---+$/gm, '─'.repeat(60));
+  // 5. Bold + italic
+  txt = txt.replace(/\*\*([^*]+)\*\*/g, '$1');
+  txt = txt.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '$1');
+  // 6. Inline code
+  txt = txt.replace(/`([^`]+)`/g, '$1');
+  // 7. Blockquotes → indented quote line
+  txt = txt.replace(/^> ?(.*)$/gm, '  │ $1');
+  // 8. Escaped angle brackets
+  txt = txt.replace(/\\([<>])/g, '$1');
+  // 9. Cleanup excessive blank lines
+  txt = txt.replace(/\n{3,}/g, '\n\n');
+  return txt.trim();
 }
 
 // ─── EXPORT FUNCTIONS ──────────────────────────────────
@@ -932,7 +997,9 @@ function exportContent(rawMd, format, contentType) {
     return;
   }
   if (format === 'txt') {
-    downloadFile(rawMd, buildFilename(rawMd, contentType, 'txt'), 'text/plain');
+    const cleanText = markdownToPlainText(rawMd);
+    const header = `QA NEXUS — EXPORT\nGenerated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded\n${'═'.repeat(60)}\n\n`;
+    downloadFile(header + cleanText, buildFilename(rawMd, contentType, 'txt'), 'text/plain');
     showToast('Downloaded as TXT'); return;
   }
   if (format === 'html') {

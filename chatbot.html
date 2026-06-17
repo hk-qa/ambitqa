@@ -353,6 +353,46 @@
   .export-btn.jira:hover { background: color-mix(in srgb, var(--violet-500) 20%, transparent); color: var(--text); }
   .export-btn svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
 
+  /* PDF HINT */
+  .pdf-hint {
+    position: relative; display: inline-flex; align-items: center;
+  }
+  .pdf-hint-btn {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-size: 0.74rem; background: transparent;
+    border: 1px dashed var(--border-strong); color: var(--text-dim);
+    padding: 0.3rem 0.65rem; border-radius: var(--r-sm);
+    cursor: help; font-family: var(--font-b); transition: all 0.15s;
+  }
+  .pdf-hint-btn:hover { color: var(--brand-400); border-color: color-mix(in srgb, var(--brand-500) 40%, transparent); }
+  .pdf-hint-popup {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%); width: 320px;
+    background: var(--bg-elev); border: 1px solid var(--border-strong);
+    border-radius: var(--r-md); padding: 0.85rem 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    font-size: 0.82rem; line-height: 1.55; color: var(--text);
+    opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s;
+    z-index: 20;
+  }
+  .pdf-hint-popup::after {
+    content: ''; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); width: 0; height: 0;
+    border-left: 6px solid transparent; border-right: 6px solid transparent;
+    border-top: 6px solid var(--bg-elev);
+  }
+  .pdf-hint:hover .pdf-hint-popup,
+  .pdf-hint.show .pdf-hint-popup { opacity: 1; visibility: visible; }
+  .pdf-hint-popup strong { color: var(--brand-400); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 0.4rem; }
+  .pdf-hint-popup ol { padding-left: 1.1rem; margin: 0.3rem 0; }
+  .pdf-hint-popup li { margin-bottom: 0.2rem; }
+  .pdf-hint-popup kbd {
+    background: var(--bg-elev-2); border: 1px solid var(--border-strong);
+    border-radius: 3px; padding: 0.05rem 0.35rem; font-size: 0.78rem;
+    font-family: 'Menlo', monospace; color: var(--brand-400);
+  }
+  .pdf-hint-popup .divider { border-top: 1px solid var(--border); margin: 0.55rem 0; }
+
   .source-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; padding-top: 0.3rem; }
   .source-chip {
     font-size: 0.74rem; background: var(--bg-elev-2);
@@ -1044,6 +1084,173 @@ async function copyToClipboard(rawMd) {
   }
 }
 
+// ─── RTF GENERATION ────────────────────────────────────
+function rtfEscape(s) {
+  if (!s) return '';
+  let out = '';
+  for (const c of s) {
+    const code = c.charCodeAt(0);
+    if (c === '\\') out += '\\\\';
+    else if (c === '{') out += '\\{';
+    else if (c === '}') out += '\\}';
+    else if (code < 128) out += c;
+    else out += `\\u${code}?`;
+  }
+  return out;
+}
+
+function inlineRtf(text) {
+  let result = '';
+  let i = 0;
+  while (i < text.length) {
+    // Bold **text**
+    if (text.substr(i, 2) === '**') {
+      const end = text.indexOf('**', i + 2);
+      if (end !== -1) {
+        result += `{\\b ${inlineRtf(text.substring(i + 2, end))}}`;
+        i = end + 2; continue;
+      }
+    }
+    // Italic *text* (single star not part of bold)
+    if (text[i] === '*' && text[i+1] !== '*' && (i === 0 || text[i-1] !== '*')) {
+      const end = text.indexOf('*', i + 1);
+      if (end !== -1 && text[end + 1] !== '*') {
+        result += `{\\i ${inlineRtf(text.substring(i + 1, end))}}`;
+        i = end + 1; continue;
+      }
+    }
+    // Inline code `code`
+    if (text[i] === '`') {
+      const end = text.indexOf('`', i + 1);
+      if (end !== -1) {
+        result += `{\\f1\\cf2 ${rtfEscape(text.substring(i + 1, end))}}`;
+        i = end + 1; continue;
+      }
+    }
+    // Escaped < and >
+    if (text[i] === '\\' && (text[i+1] === '<' || text[i+1] === '>')) {
+      result += rtfEscape(text[i + 1]);
+      i += 2; continue;
+    }
+    result += rtfEscape(text[i]);
+    i++;
+  }
+  return result;
+}
+
+function renderTableRtf(tableLines) {
+  const rows = tableLines
+    .filter(l => !/^\|[-\s|:]+\|$/.test(l))
+    .map(l => l.split('|').slice(1, -1).map(c => c.trim()));
+  if (rows.length === 0) return '';
+  const numCols = Math.max(...rows.map(r => r.length));
+  const tableWidth = 9500;
+  const cellWidth = Math.floor(tableWidth / numCols);
+  let rtf = '\\pard\\par\n';
+  rows.forEach((row, ri) => {
+    const isHeader = ri === 0;
+    rtf += '\\trowd\\trgaph80\\trleft0\\trkeep\n';
+    for (let c = 0; c < numCols; c++) {
+      rtf += '\\clbrdrt\\brdrs\\brdrw15\\brdrcf6';
+      rtf += '\\clbrdrl\\brdrs\\brdrw15\\brdrcf6';
+      rtf += '\\clbrdrb\\brdrs\\brdrw15\\brdrcf6';
+      rtf += '\\clbrdrr\\brdrs\\brdrw15\\brdrcf6';
+      if (isHeader) rtf += '\\clcbpat1';
+      else if (ri % 2 === 0) rtf += '\\clcbpat5';
+      rtf += `\\cellx${(c + 1) * cellWidth}\n`;
+    }
+    for (let c = 0; c < numCols; c++) {
+      const cell = row[c] || '';
+      rtf += '\\pard\\intbl ';
+      if (isHeader) rtf += `\\b\\cf7 ${inlineRtf(cell)}\\b0\\cf3`;
+      else rtf += inlineRtf(cell);
+      rtf += '\\cell\n';
+    }
+    rtf += '\\row\n';
+  });
+  rtf += '\\pard\\par\n';
+  return rtf;
+}
+
+function generateRtf(md) {
+  // Strip sources line
+  const srcMatch = md.match(/\*?\*?Sources?(?:\s*used)?:?\*?\*?\s*([\s\S]+?)$/im);
+  let main = md, sources = '';
+  if (srcMatch) {
+    main = md.slice(0, srcMatch.index).trim();
+    sources = srcMatch[1].trim();
+  }
+
+  // RTF header — fonts, colors (1=indigo, 2=deeper indigo, 3=dark text, 4=muted, 5=light bg, 6=border, 7=white)
+  let rtf = '{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033\n';
+  rtf += '{\\fonttbl{\\f0\\fnil\\fcharset0 Helvetica;}{\\f1\\fnil\\fcharset0 Menlo;}}\n';
+  rtf += '{\\colortbl ;\\red99\\green102\\blue241;\\red67\\green56\\blue202;\\red30\\green27\\blue58;\\red91\\green88\\blue118;\\red244\\green244\\blue251;\\red199\\green210\\blue254;\\red255\\green255\\blue255;}\n';
+  rtf += '\\f0\\fs22\\cf3\n';
+
+  // Document header
+  rtf += '\\pard\\b\\fs36\\cf2 QA Nexus \\u8212? Export\\b0\\fs22\\cf3\\par\n';
+  rtf += `\\fs20\\cf4 Generated ${new Date().toLocaleDateString()} \\u183? ISTQB \\u183? IEEE 829 grounded\\par\n`;
+  rtf += '\\pard\\par\n';
+
+  const lines = main.split('\n');
+  let i = 0, inCode = false, codeLines = [];
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    if (line.trim().match(/^```/)) {
+      if (inCode) {
+        rtf += '\\pard\\cbpat5\\sa80 ';
+        codeLines.forEach(cl => { rtf += `{\\f1\\fs18 ${rtfEscape(cl)}}\\line\n`; });
+        rtf += '\\par\\pard\n';
+        codeLines = []; inCode = false;
+      } else inCode = true;
+      i++; continue;
+    }
+    if (inCode) { codeLines.push(line); i++; continue; }
+
+    // Table block
+    if (line.trim().match(/^\|.+\|$/)) {
+      const tLines = [];
+      while (i < lines.length && lines[i].trim().match(/^\|.+\|$/)) {
+        tLines.push(lines[i].trim()); i++;
+      }
+      rtf += renderTableRtf(tLines);
+      continue;
+    }
+
+    let m;
+    if ((m = line.match(/^# (.+)$/))) {
+      rtf += `\\pard\\sb360\\sa120\\b\\fs32\\cf2 ${inlineRtf(m[1])}\\b0\\fs22\\cf3\\par\n`;
+    } else if ((m = line.match(/^## (.+)$/))) {
+      rtf += `\\pard\\sb280\\sa100\\b\\fs28\\cf1 ${inlineRtf(m[1])}\\b0\\fs22\\cf3\\par\n`;
+    } else if ((m = line.match(/^### (.+)$/))) {
+      rtf += `\\pard\\sb200\\sa80\\b\\fs24\\cf1 ${inlineRtf(m[1])}\\b0\\fs22\\cf3\\par\n`;
+    } else if (line.trim() === '---') {
+      rtf += '\\pard\\par\n';
+    } else if (line.trim().match(/^>\s?/)) {
+      const text = line.replace(/^>\s?/, '');
+      rtf += `\\pard\\li360\\cbpat5\\sa80 ${inlineRtf(text)}\\par\\pard\n`;
+    } else if ((m = line.match(/^[-*]\s+(.+)$/))) {
+      rtf += `\\pard\\fi-200\\li600 \\u8226?  ${inlineRtf(m[1])}\\par\\pard\n`;
+    } else if ((m = line.match(/^(\d+)\.\s+(.+)$/))) {
+      rtf += `\\pard\\fi-200\\li600 ${m[1]}.  ${inlineRtf(m[2])}\\par\\pard\n`;
+    } else if (line.trim() === '') {
+      rtf += '\\par\n';
+    } else {
+      rtf += `${inlineRtf(line)}\\par\n`;
+    }
+    i++;
+  }
+
+  if (sources) {
+    rtf += '\\pard\\sb360\\b\\fs20\\cf4 Sources used:\\b0\\par\n';
+    rtf += `\\fs20\\cf4 ${rtfEscape(sources)}\\fs22\\cf3\\par\n`;
+  }
+  rtf += '}';
+  return rtf;
+}
+
 function exportContent(rawMd, format, contentType) {
   if (format === 'copy') {
     copyToClipboard(rawMd);
@@ -1054,6 +1261,12 @@ function exportContent(rawMd, format, contentType) {
     const header = `QA NEXUS — EXPORT\nGenerated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded\n${'═'.repeat(60)}\n\n`;
     downloadFile(header + cleanText, buildFilename(rawMd, contentType, 'txt'), 'text/plain');
     showToast('Downloaded as TXT'); return;
+  }
+  if (format === 'rtf') {
+    const rtf = generateRtf(rawMd);
+    downloadFile(rtf, buildFilename(rawMd, contentType, 'rtf'), 'application/rtf');
+    showToast('Downloaded as RTF — opens in TextEdit, Word, Pages');
+    return;
   }
   if (format === 'html') {
     const { html } = renderMarkdown(rawMd);
@@ -1231,8 +1444,18 @@ function buildExportToolbar(rawMd) {
     ${formFields ? `<button class="export-btn form-fill" onclick="openFormModal(window['_md_${id}'])">${icons.form} Fill form (${formFields.length} fields)</button>` : ''}
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'copy',window['_ct_${id}'])">${icons.copy} Copy</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'txt',window['_ct_${id}'])">${icons.dl} TXT</button>
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'rtf',window['_ct_${id}'])">${icons.dl} RTF</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'html',window['_ct_${id}'])">${icons.dl} HTML</button>
     ${jiraEligible ? `<button class="export-btn jira" onclick="exportContent(window['_md_${id}'],'jira',window['_ct_${id}'])">${icons.jira} Jira CSV</button>` : ''}
+    <span class="pdf-hint" onclick="this.classList.toggle('show')">
+      <span class="pdf-hint-btn">📄 Save as PDF?</span>
+      <span class="pdf-hint-popup">
+        <strong>Two easy ways</strong>
+        <div><b>Quickest:</b> Click <b>HTML</b> → open the file in your browser → press <kbd>Cmd</kbd>+<kbd>P</kbd> (or <kbd>Ctrl</kbd>+<kbd>P</kbd>) → choose <b>Save as PDF</b>.</div>
+        <div class="divider"></div>
+        <div><b>Edit first:</b> Click <b>RTF</b> → opens in TextEdit or Word → make changes → <b>File → Export as PDF</b>.</div>
+      </span>
+    </span>
   </div>`;
 }
 

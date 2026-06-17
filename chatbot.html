@@ -10,207 +10,123 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --teal-100: #9FE1CB; --teal-200: #5DCAA5; --teal-400: #1D9E75;
-      --teal-600: #0F6E56; --teal-800: #085041; --teal-900: #04342C;
-      --slate-400: #8A9BB0; --slate-600: #4A5B6E; --slate-800: #1E2D3D;
-      --bg: #0D1724; --bg2: #111C29; --bg3: #1A2940;
-      --border: rgba(255,255,255,0.08);
-      --font-d: 'Space Grotesk', sans-serif;
-      --font-b: 'Inter', sans-serif;
-      --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+      --teal-100:#9FE1CB; --teal-200:#5DCAA5; --teal-400:#1D9E75;
+      --teal-600:#0F6E56; --teal-800:#085041;
+      --slate-400:#8A9BB0; --slate-600:#4A5B6E; --slate-800:#1E2D3D;
+      --bg:#0D1724; --bg2:#111C29; --bg3:#1A2940;
+      --border:rgba(255,255,255,0.08);
+      --font-d:'Space Grotesk',sans-serif; --font-b:'Inter',sans-serif;
+      --r-sm:6px; --r-md:10px; --r-lg:16px;
     }
-    html, body { height: 100%; }
-    body {
-      font-family: var(--font-b); background: var(--bg);
-      color: #E2EAF2; font-size: 15px; line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      display: flex; flex-direction: column;
-    }
+    html,body{height:100%;}
+    body{font-family:var(--font-b);background:var(--bg);color:#E2EAF2;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
 
     /* NAV */
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 1.5rem; height: 54px; flex-shrink: 0;
-      background: rgba(13,23,36,0.95); border-bottom: 1px solid var(--border);
-    }
-    .logo { font-family: var(--font-d); font-weight: 700; font-size: 1rem; color: #fff; text-decoration: none; }
-    .logo span { color: var(--teal-200); }
-    .nav-right { display: flex; align-items: center; gap: 1rem; }
-    .nav-badge { font-size: 0.72rem; color: var(--teal-200); background: rgba(29,158,117,0.12); border: 1px solid rgba(29,158,117,0.25); padding: 0.2rem 0.65rem; border-radius: 999px; font-weight: 600; }
-    .back-link { font-size: 0.8rem; color: var(--slate-400); text-decoration: none; }
-    .back-link:hover { color: #fff; }
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:54px;flex-shrink:0;background:rgba(13,23,36,0.95);border-bottom:1px solid var(--border);}
+    .logo{font-family:var(--font-d);font-weight:700;font-size:1rem;color:#fff;text-decoration:none;}
+    .logo span{color:var(--teal-200);}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .nav-badge{font-size:0.72rem;color:var(--teal-200);background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.25);padding:0.2rem 0.65rem;border-radius:999px;font-weight:600;}
+    .back-link{font-size:0.8rem;color:var(--slate-400);text-decoration:none;}
+    .back-link:hover{color:#fff;}
 
     /* LAYOUT */
-    .app { display: flex; flex: 1; overflow: hidden; }
+    .app{display:flex;flex:1;overflow:hidden;}
+    .sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+    .sidebar-section{padding:1rem;border-bottom:1px solid var(--border);}
+    .sidebar-label{font-size:0.68rem;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:0.65rem;}
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 240px; flex-shrink: 0; background: var(--bg2);
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; overflow-y: auto;
-    }
-    .sidebar-section { padding: 1rem; border-bottom: 1px solid var(--border); }
-    .sidebar-label { font-size: 0.68rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 0.65rem; }
-    .mode-btn {
-      display: block; width: 100%; text-align: left;
-      padding: 0.5rem 0.75rem; border-radius: var(--r-sm);
-      font-size: 0.82rem; color: #C0D0DF; background: transparent;
-      border: 1px solid transparent; cursor: pointer; font-family: var(--font-b);
-      transition: all 0.15s; margin-bottom: 0.3rem;
-    }
-    .mode-btn:hover { background: var(--bg3); border-color: var(--border); }
-    .mode-btn.active { background: rgba(29,158,117,0.12); border-color: rgba(29,158,117,0.3); color: var(--teal-200); }
-    .mode-btn .mode-phase { font-size: 0.68rem; color: var(--slate-400); display: block; margin-top: 0.1rem; }
-    .mode-btn.active .mode-phase { color: var(--teal-400); }
-    .starter-btn {
-      display: block; width: 100%; text-align: left;
-      padding: 0.45rem 0.65rem; border-radius: var(--r-sm);
-      font-size: 0.78rem; color: var(--slate-400);
-      background: transparent; border: 1px solid var(--border);
-      cursor: pointer; font-family: var(--font-b);
-      transition: all 0.15s; margin-bottom: 0.4rem; line-height: 1.4;
-    }
-    .starter-btn:hover { background: var(--bg3); color: #C0D0DF; border-color: rgba(29,158,117,0.25); }
-    .sources-box { padding: 1rem; flex: 1; }
-    .source-item { font-size: 0.75rem; color: var(--slate-400); padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.4; }
-    .source-item strong { color: var(--teal-200); font-weight: 500; }
+    .mode-btn{display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;border-radius:var(--r-sm);font-size:0.82rem;color:#C0D0DF;background:transparent;border:1px solid transparent;cursor:pointer;font-family:var(--font-b);transition:all 0.15s;margin-bottom:0.3rem;}
+    .mode-btn:hover{background:var(--bg3);border-color:var(--border);}
+    .mode-btn.active{background:rgba(29,158,117,0.12);border-color:rgba(29,158,117,0.3);color:var(--teal-200);}
+    .mode-btn .mode-phase{font-size:0.68rem;color:var(--slate-400);display:block;margin-top:0.1rem;}
+    .mode-btn.active .mode-phase{color:var(--teal-400);}
 
-    /* CHAT AREA */
-    .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-track { background: transparent; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .action-btn{display:block;width:100%;text-align:left;padding:0.5rem 0.7rem;border-radius:var(--r-sm);font-size:0.78rem;color:#C0D0DF;background:rgba(29,158,117,0.05);border:1px solid rgba(29,158,117,0.18);cursor:pointer;font-family:var(--font-b);transition:all 0.15s;margin-bottom:0.4rem;line-height:1.4;display:flex;align-items:flex-start;gap:0.4rem;}
+    .action-btn:hover{background:rgba(29,158,117,0.12);border-color:rgba(29,158,117,0.35);color:#fff;}
+    .action-btn .action-arrow{color:var(--teal-200);font-size:0.85rem;flex-shrink:0;margin-top:0.05rem;}
 
-    /* MESSAGES */
-    .msg-row { display: flex; gap: 0.75rem; max-width: 820px; }
-    .msg-row.user { flex-direction: row-reverse; align-self: flex-end; }
-    .msg-avatar {
-      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 700;
-    }
-    .msg-avatar.agent { background: var(--teal-800); color: var(--teal-100); }
-    .msg-avatar.user { background: var(--slate-800); color: #8A9BB0; }
-    .msg-content { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
-    .msg-bubble {
-      padding: 0.75rem 1rem; border-radius: 12px;
-      font-size: 0.875rem; line-height: 1.65; max-width: 640px;
-    }
-    .msg-row.agent .msg-bubble {
-      background: var(--bg2); border: 1px solid var(--border);
-      color: #D0DCE8; border-radius: 4px 12px 12px 12px;
-    }
-    .msg-row.user .msg-bubble {
-      background: var(--teal-800); color: var(--teal-100);
-      border-radius: 12px 4px 12px 12px;
-    }
-    .msg-bubble p { margin-bottom: 0.5rem; }
-    .msg-bubble p:last-child { margin-bottom: 0; }
-    .msg-bubble strong { font-weight: 600; color: #fff; }
-    .msg-bubble ul { padding-left: 1.2rem; margin: 0.4rem 0; }
-    .msg-bubble li { margin-bottom: 0.25rem; }
-    .msg-bubble table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.5rem 0; }
-    .msg-bubble th { color: var(--slate-400); font-weight: 500; text-align: left; padding: 0.3rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .msg-bubble td { color: #C0D0DF; padding: 0.35rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
-    .msg-bubble code { background: rgba(255,255,255,0.08); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; font-family: monospace; }
+    .sources-box{padding:1rem;flex:1;}
+    .source-item{font-size:0.75rem;color:var(--slate-400);padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.4;}
+    .source-item strong{color:var(--teal-200);font-weight:500;}
 
-    .badge { display: inline-block; padding: 0.12rem 0.45rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
-    .badge-crit { background: rgba(226,75,74,0.15); color: #F09595; }
-    .badge-high { background: rgba(250,199,117,0.15); color: #FAC775; }
-    .badge-med  { background: rgba(29,158,117,0.15); color: var(--teal-200); }
-    .badge-low  { background: rgba(55,138,221,0.15); color: #85B7EB; }
+    /* CHAT */
+    .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+    .mode-bar{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 1.5rem;background:rgba(29,158,117,0.08);border-bottom:1px solid rgba(29,158,117,0.2);font-size:0.78rem;color:var(--teal-200);flex-shrink:0;}
+    .mode-bar-dot{width:6px;height:6px;border-radius:50%;background:var(--teal-400);animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    .mode-bar-label{font-weight:600;}
+    .mode-bar-desc{color:var(--slate-400);}
 
-    .source-chips { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-    .source-chip {
-      font-size: 0.68rem; background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1); color: var(--slate-400);
-      padding: 0.18rem 0.5rem; border-radius: 999px;
-    }
-    .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 0.75rem 1rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; width: fit-content; }
-    .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-400); animation: bounce 1.2s infinite; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+    .chat-messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+    .chat-messages::-webkit-scrollbar{width:4px;}
+    .chat-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
 
-    /* INPUT AREA */
-    .chat-input-area {
-      padding: 1rem 1.5rem; border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-    .input-row { display: flex; gap: 0.75rem; align-items: flex-end; }
-    .input-wrap { flex: 1; position: relative; }
-    textarea {
-      width: 100%; background: var(--bg2); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--r-md); padding: 0.7rem 1rem;
-      font-size: 0.875rem; font-family: var(--font-b); color: #E2EAF2;
-      resize: none; outline: none; line-height: 1.5; min-height: 44px; max-height: 140px;
-      transition: border-color 0.2s;
-    }
-    textarea::placeholder { color: var(--slate-400); }
-    textarea:focus { border-color: rgba(29,158,117,0.5); }
-    .send-btn {
-      width: 40px; height: 40px; border-radius: var(--r-sm);
-      background: var(--teal-400); border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: background 0.2s;
-    }
-    .send-btn:hover { background: var(--teal-600); }
-    .send-btn:disabled { background: var(--slate-600); cursor: not-allowed; }
-    .send-btn svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .input-hint { font-size: 0.72rem; color: var(--slate-400); margin-top: 0.5rem; text-align: center; }
+    .msg-row{display:flex;gap:0.75rem;max-width:840px;}
+    .msg-row.user{flex-direction:row-reverse;align-self:flex-end;}
+    .msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;}
+    .msg-avatar.agent{background:var(--teal-800);color:var(--teal-100);}
+    .msg-avatar.user{background:var(--slate-800);color:#8A9BB0;}
+    .msg-content{display:flex;flex-direction:column;gap:0.5rem;min-width:0;flex:1;}
+    .msg-bubble{padding:0.85rem 1rem;border-radius:12px;font-size:0.875rem;line-height:1.65;}
+    .msg-row.agent .msg-bubble{background:var(--bg2);border:1px solid var(--border);color:#D0DCE8;border-radius:4px 12px 12px 12px;}
+    .msg-row.user .msg-bubble{background:var(--teal-800);color:var(--teal-100);border-radius:12px 4px 12px 12px;max-width:640px;}
+    .msg-bubble p{margin-bottom:0.5rem;}
+    .msg-bubble p:last-child{margin-bottom:0;}
+    .msg-bubble strong{font-weight:600;color:#fff;}
+    .msg-bubble ul,.msg-bubble ol{padding-left:1.2rem;margin:0.4rem 0;}
+    .msg-bubble li{margin-bottom:0.25rem;}
+    .msg-bubble table{width:100%;border-collapse:collapse;font-size:0.82rem;margin:0.6rem 0;background:rgba(255,255,255,0.02);border-radius:6px;overflow:hidden;}
+    .msg-bubble th{color:var(--teal-200);font-weight:600;text-align:left;padding:0.45rem 0.6rem;border-bottom:1px solid rgba(29,158,117,0.2);background:rgba(29,158,117,0.06);}
+    .msg-bubble td{color:#C0D0DF;padding:0.4rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top;}
+    .msg-bubble code{background:rgba(255,255,255,0.08);padding:0.1rem 0.35rem;border-radius:3px;font-size:0.82rem;font-family:monospace;}
 
-    /* API KEY MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-      display: flex; align-items: center; justify-content: center; z-index: 200;
-    }
-    .modal {
-      background: var(--bg2); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--r-lg); padding: 2rem; width: 90%; max-width: 440px;
-    }
-    .modal h2 { font-family: var(--font-d); font-size: 1.1rem; color: #fff; margin-bottom: 0.5rem; }
-    .modal p { font-size: 0.85rem; color: var(--slate-400); margin-bottom: 1.25rem; line-height: 1.6; }
-    .modal input {
-      width: 100%; background: var(--bg); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--r-sm); padding: 0.65rem 1rem; font-size: 0.875rem;
-      color: #E2EAF2; outline: none; font-family: var(--font-b); margin-bottom: 1rem;
-    }
-    .modal input:focus { border-color: rgba(29,158,117,0.5); }
-    .modal-btn {
-      width: 100%; background: var(--teal-400); color: #fff; border: none;
-      padding: 0.7rem; border-radius: var(--r-sm); font-size: 0.9rem;
-      font-weight: 500; cursor: pointer; font-family: var(--font-b); transition: background 0.2s;
-    }
-    .modal-btn:hover { background: var(--teal-600); }
-    .modal-note { font-size: 0.75rem; color: var(--slate-400); margin-top: 0.75rem; text-align: center; }
+    /* EXPORT TOOLBAR */
+    .export-toolbar{display:flex;gap:0.4rem;flex-wrap:wrap;padding-top:0.25rem;}
+    .export-btn{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--slate-400);padding:0.3rem 0.6rem;border-radius:var(--r-sm);cursor:pointer;font-family:var(--font-b);transition:all 0.15s;}
+    .export-btn:hover{background:rgba(29,158,117,0.1);border-color:rgba(29,158,117,0.3);color:var(--teal-200);}
+    .export-btn.jira{background:rgba(55,138,221,0.08);border-color:rgba(55,138,221,0.25);color:#85B7EB;}
+    .export-btn.jira:hover{background:rgba(55,138,221,0.16);color:#fff;}
+    .export-btn svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none;}
 
-    /* MODE INDICATOR BAR */
-    .mode-bar {
-      display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.5rem 1.5rem; background: rgba(29,158,117,0.08);
-      border-bottom: 1px solid rgba(29,158,117,0.2);
-      font-size: 0.78rem; color: var(--teal-200); flex-shrink: 0;
-    }
-    .mode-bar-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-400); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .mode-bar-label { font-weight: 600; }
-    .mode-bar-desc { color: var(--slate-400); }
+    .source-chips{display:flex;gap:0.35rem;flex-wrap:wrap;padding-top:0.25rem;}
+    .source-chip{font-size:0.68rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--slate-400);padding:0.18rem 0.5rem;border-radius:999px;}
+
+    .typing-indicator{display:flex;gap:4px;align-items:center;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px 12px 12px 12px;width:fit-content;}
+    .typing-dot{width:6px;height:6px;border-radius:50%;background:var(--teal-400);animation:bounce 1.2s infinite;}
+    .typing-dot:nth-child(2){animation-delay:0.2s;}
+    .typing-dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+    /* INPUT */
+    .chat-input-area{padding:1rem 1.5rem;border-top:1px solid var(--border);background:var(--bg);}
+    .input-row{display:flex;gap:0.75rem;align-items:flex-end;}
+    .input-wrap{flex:1;position:relative;}
+    textarea{width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-md);padding:0.7rem 1rem;font-size:0.875rem;font-family:var(--font-b);color:#E2EAF2;resize:none;outline:none;line-height:1.5;min-height:44px;max-height:140px;transition:border-color 0.2s;}
+    textarea::placeholder{color:var(--slate-400);}
+    textarea:focus{border-color:rgba(29,158,117,0.5);}
+    .send-btn{width:40px;height:40px;border-radius:var(--r-sm);background:var(--teal-400);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
+    .send-btn:hover{background:var(--teal-600);}
+    .send-btn:disabled{background:var(--slate-600);cursor:not-allowed;}
+    .send-btn svg{width:16px;height:16px;stroke:#fff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+    .input-hint{font-size:0.72rem;color:var(--slate-400);margin-top:0.5rem;text-align:center;}
+
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:200;}
+    .modal{background:var(--bg2);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-lg);padding:2rem;width:90%;max-width:440px;}
+    .modal h2{font-family:var(--font-d);font-size:1.1rem;color:#fff;margin-bottom:0.5rem;}
+    .modal p{font-size:0.85rem;color:var(--slate-400);margin-bottom:1.25rem;line-height:1.6;}
+    .modal input{width:100%;background:var(--bg);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-sm);padding:0.65rem 1rem;font-size:0.875rem;color:#E2EAF2;outline:none;font-family:var(--font-b);margin-bottom:1rem;}
+    .modal input:focus{border-color:rgba(29,158,117,0.5);}
+    .modal-btn{width:100%;background:var(--teal-400);color:#fff;border:none;padding:0.7rem;border-radius:var(--r-sm);font-size:0.9rem;font-weight:500;cursor:pointer;font-family:var(--font-b);transition:background 0.2s;}
+    .modal-btn:hover{background:var(--teal-600);}
+    .modal-note{font-size:0.75rem;color:var(--slate-400);margin-top:0.75rem;text-align:center;}
 
     /* TOAST */
-    .toast {
-      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: var(--teal-800); border: 1px solid rgba(29,158,117,0.4);
-      color: var(--teal-100); font-size: 0.82rem; font-weight: 500;
-      padding: 0.55rem 1.2rem; border-radius: 999px;
-      transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0;
-      z-index: 50; white-space: nowrap;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--teal-800);border:1px solid rgba(29,158,117,0.4);color:var(--teal-100);font-size:0.82rem;font-weight:500;padding:0.55rem 1.2rem;border-radius:999px;transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;z-index:50;white-space:nowrap;}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
-    @media (max-width: 640px) {
-      .sidebar { display: none; }
-    }
+    @media (max-width:640px){.sidebar{display:none;}}
   </style>
 </head>
 <body>
@@ -231,94 +147,59 @@
     <p>Your key is used only in this browser session to call the Anthropic API directly. It is never stored or sent anywhere else.</p>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
     <button class="modal-btn" onclick="saveKey()">Start chatting →</button>
-    <p class="modal-note">Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--teal-200)">console.anthropic.com</a></p>
+    <p class="modal-note">Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--teal-200)">console.anthropic.com</a></p>
   </div>
 </div>
 
-<!-- APP -->
 <div class="app">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-section">
-      <div class="sidebar-label">STLC Mode</div>
-      <button class="mode-btn active" onclick="setMode(this,'general')" data-mode="general">
-        All Phases
-        <span class="mode-phase">Full STLC coverage</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'requirements')" data-mode="requirements">
-        Requirements Review
-        <span class="mode-phase">Testability · RTM</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'planning')" data-mode="planning">
-        Test Planning
-        <span class="mode-phase">Test plan · Strategy</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'design')" data-mode="design">
-        Test Design
-        <span class="mode-phase">Test cases · BDD</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'execution')" data-mode="execution">
-        Test Execution
-        <span class="mode-phase">Run summary · Reports</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'defects')" data-mode="defects">
-        Defect Management
-        <span class="mode-phase">Bug reports · Triage</span>
-      </button>
-      <button class="mode-btn" onclick="setMode(this,'closure')" data-mode="closure">
-        Test Closure
-        <span class="mode-phase">Summary · Lessons</span>
-      </button>
+      <div class="sidebar-label">STLC Phase</div>
+      <button class="mode-btn active" onclick="setMode(this,'general')">All Phases<span class="mode-phase">Full STLC coverage</span></button>
+      <button class="mode-btn" onclick="setMode(this,'requirements')">Requirements Review<span class="mode-phase">Testability · RTM</span></button>
+      <button class="mode-btn" onclick="setMode(this,'planning')">Test Planning<span class="mode-phase">Test plan · Strategy</span></button>
+      <button class="mode-btn" onclick="setMode(this,'design')">Test Design<span class="mode-phase">Test cases · BDD</span></button>
+      <button class="mode-btn" onclick="setMode(this,'execution')">Test Execution<span class="mode-phase">Run summary · Reports</span></button>
+      <button class="mode-btn" onclick="setMode(this,'defects')">Defect Management<span class="mode-phase">Bug reports · Triage</span></button>
+      <button class="mode-btn" onclick="setMode(this,'closure')">Test Closure<span class="mode-phase">Summary · Lessons</span></button>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">Quick prompts</div>
-      <button class="starter-btn" onclick="sendStarter('Generate a test plan outline for a mobile e-commerce checkout feature')">Test plan for e-commerce checkout</button>
-      <button class="starter-btn" onclick="sendStarter('Write 5 test cases for a login page using equivalence partitioning')">Login page test cases</button>
-      <button class="starter-btn" onclick="sendStarter('Create a bug report for a payment gateway timeout error returning HTTP 504')">Payment gateway bug report</button>
-      <button class="starter-btn" onclick="sendStarter('Generate a requirements traceability matrix template for a user registration module')">RTM for user registration</button>
-      <button class="starter-btn" onclick="sendStarter('Write BDD Gherkin scenarios for a password reset flow')">BDD scenarios for password reset</button>
-      <button class="starter-btn" onclick="sendStarter('Create a test closure report and exit criteria checklist')">Test closure report</button>
+    <div class="sidebar-section" id="actionsBox">
+      <div class="sidebar-label" id="actionsLabel">Quick actions</div>
+      <div id="actionsList"></div>
     </div>
 
     <div class="sources-box">
       <div class="sidebar-label">Knowledge base</div>
       <div class="source-item"><strong>ISTQB FL</strong> · Foundation Level syllabus</div>
       <div class="source-item"><strong>IEEE 829</strong> · Test doc standard</div>
-      <div class="source-item"><strong>STLC</strong> · Phase definitions & entry/exit criteria</div>
+      <div class="source-item"><strong>STLC</strong> · Phase definitions</div>
       <div class="source-item"><strong>Test Design</strong> · EP, BVA, decision tables</div>
-      <div class="source-item"><strong>Defect Lifecycle</strong> · Severity & priority guide</div>
-      <div class="source-item"><strong>Agile QA</strong> · Shift-left, sprint testing</div>
-      <div class="source-item"><strong>BDD / Gherkin</strong> · Scenario writing</div>
+      <div class="source-item"><strong>Defect Lifecycle</strong> · Severity & priority</div>
+      <div class="source-item"><strong>BDD / Gherkin</strong> · Scenarios</div>
     </div>
   </aside>
 
   <!-- CHAT -->
   <div class="chat-area">
-    <div class="mode-bar" id="modeBar"><div class="mode-bar-dot"></div><span class="mode-bar-label" id="modeBarLabel">All Phases</span><span class="mode-bar-desc" id="modeBarDesc"> — Full STLC coverage active</span></div>
+    <div class="mode-bar">
+      <div class="mode-bar-dot"></div>
+      <span class="mode-bar-label" id="modeBarLabel">All Phases</span>
+      <span class="mode-bar-desc" id="modeBarDesc"> — Full STLC coverage active</span>
+    </div>
+
     <div class="chat-messages" id="chatMessages">
-      <!-- Welcome message -->
       <div class="msg-row agent">
         <div class="msg-avatar agent">QA</div>
         <div class="msg-content">
           <div class="msg-bubble">
-            <p><strong>Welcome to QA Nexus.</strong> I'm your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and full STLC methodology.</p>
-            <p>I can help you with:</p>
-            <ul>
-              <li>Writing test plans and test strategies</li>
-              <li>Generating test cases (tabular or BDD/Gherkin)</li>
-              <li>Creating IEEE 829-structured bug reports</li>
-              <li>Building Requirements Traceability Matrices</li>
-              <li>Drafting test closure reports and exit criteria</li>
-            </ul>
-            <p>Select a phase from the sidebar or ask me anything about your QA work.</p>
+            <p><strong>Welcome to QA Nexus.</strong> I'm your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
+            <p>👈 <strong>Pick an STLC phase</strong> on the left — the quick actions panel updates to show what I can do for that phase. Or type your own question below.</p>
+            <p>Every deliverable I generate comes with <strong>Copy / Download / Jira CSV</strong> export buttons.</p>
           </div>
-          <div class="source-chips">
-            <span class="source-chip">ISTQB Foundation</span>
-            <span class="source-chip">IEEE 829</span>
-            <span class="source-chip">STLC</span>
-          </div>
+          <div class="source-chips"><span class="source-chip">ISTQB FL</span><span class="source-chip">IEEE 829</span><span class="source-chip">STLC</span></div>
         </div>
       </div>
     </div>
@@ -338,220 +219,423 @@
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────
+// ─── STATE ─────────────────────────────────────────────
 let apiKey = '';
 let currentMode = 'general';
 let conversationHistory = [];
 
-// ─── KNOWLEDGE BASE (RAG chunks) ─────────────────────────
+// ─── KNOWLEDGE BASE ────────────────────────────────────
 const KB = [
-  // STLC phases
-  { id: 'stlc-1', source: 'STLC · Requirements Phase', tags: ['requirements','review','testability','rtm','traceability'], text: 'Requirements Review (STLC Phase 1): QA reviews requirements for testability, clarity, completeness and consistency. Key activities: identify ambiguities, create a Requirements Traceability Matrix (RTM) linking each requirement to test cases, and define entry/exit criteria. Entry criteria: approved requirements document. Exit criteria: RTM complete, all requirements marked testable or flagged.' },
-  { id: 'stlc-2', source: 'STLC · Test Planning Phase', tags: ['planning','test plan','strategy','risk','scope','schedule','effort'], text: 'Test Planning (STLC Phase 2): Define scope, approach, resources, schedule and risks. IEEE 829 Test Plan sections: identifier, introduction, test items, features to test, features not to test, approach, item pass/fail criteria, suspension criteria, test deliverables, testing tasks, environmental needs, responsibilities, staffing, risks and contingencies, approvals.' },
-  { id: 'stlc-3', source: 'STLC · Test Design Phase', tags: ['design','test case','test cases','write','create','generate','bdd','gherkin','scenarios','equivalence','boundary'], text: 'Test Design (STLC Phase 3): Create detailed test cases and test data. IEEE 829 Test Case Specification includes: test case identifier, test items, input specifications, output specifications, environmental needs, special procedural requirements, inter-case dependencies. Apply test design techniques: equivalence partitioning, boundary value analysis, decision tables, state transition testing.' },
-  { id: 'stlc-4', source: 'STLC · Test Execution Phase', tags: ['execution','run','execute','pass','fail','results','summary','report','cycle'], text: 'Test Execution (STLC Phase 4): Execute test cases, log results, raise defects for failures. Produce Test Run Summary: total tests, passed, failed, blocked, skipped counts, pass rate %, defects raised per severity. Entry criteria: test environment ready, test data available, test cases reviewed. Exit criteria: all planned tests executed, no open P1/P2 defects, pass rate meets threshold.' },
-  { id: 'stlc-5', source: 'STLC · Test Closure Phase', tags: ['closure','close','lessons','learned','summary','exit','criteria','sign off','sign-off'], text: 'Test Closure (STLC Phase 5): Produce Test Summary Report covering objectives met, scope tested, metrics, defect summary, lessons learned, and sign-off. Exit criteria checklist: all planned test cases executed, test exit criteria met, all critical/high defects closed or deferred with risk acceptance, test artifacts archived, stakeholder sign-off obtained.' },
-
-  // ISTQB test design techniques
-  { id: 'istqb-ep', source: 'ISTQB FL · Equivalence Partitioning', tags: ['equivalence','partitioning','ep','partition','class','valid','invalid'], text: 'Equivalence Partitioning (ISTQB FL 4.3): Divide input data into valid and invalid partitions where all values in a partition are expected to be processed the same way. Test one value from each partition. Example: age field accepting 18-65 → valid partition: 18-65, invalid partitions: <18 and >65. Reduces number of test cases while maintaining coverage.' },
-  { id: 'istqb-bva', source: 'ISTQB FL · Boundary Value Analysis', tags: ['boundary','bva','boundary value','edge','min','max'], text: 'Boundary Value Analysis (ISTQB FL 4.3): Test at the boundaries of equivalence partitions. For a valid range 1-100: test values 0 (invalid), 1 (min valid), 2 (just above min), 99 (just below max), 100 (max valid), 101 (invalid). BVA detects off-by-one errors and is most effective for ordered values. Two-value BVA: test min and max. Three-value BVA: test boundary-1, boundary, boundary+1.' },
-  { id: 'istqb-dt', source: 'ISTQB FL · Decision Table Testing', tags: ['decision','table','conditions','actions','rules','combinations'], text: 'Decision Table Testing (ISTQB FL 4.4): Used when system behaviour depends on combinations of conditions. Structure: conditions (rows) × rules (columns) = actions. Ensures all condition combinations are tested. Useful for business rules with multiple inputs. Each column is a test case. Full decision tables: 2^n columns for n binary conditions.' },
-  { id: 'istqb-st', source: 'ISTQB FL · State Transition Testing', tags: ['state','transition','states','events','workflow','flow'], text: 'State Transition Testing (ISTQB FL 4.4): Model system as states and transitions triggered by events. Useful for workflow and session-based systems (login, order status, booking). Draw a state transition diagram, then derive test cases covering all states (0-switch coverage), all transitions (0-switch), or all transition pairs (1-switch).' },
-  { id: 'istqb-sev', source: 'ISTQB FL · Defect Severity & Priority', tags: ['severity','priority','defect','bug','critical','high','medium','low','blocker','p1','p2'], text: 'Defect Severity (ISTQB): Impact on system functionality. Critical: system crash, data loss, security breach, core feature completely broken. High: major feature broken with no workaround. Medium: feature partially broken, workaround exists. Low: cosmetic issue, minor inconvenience. Priority: business urgency to fix. P1 Blocker: fix immediately, blocks release. P2 High: fix in current sprint. P3 Medium: fix in next sprint. P4 Low: fix when capacity allows. Severity and priority can differ: a cosmetic bug on the homepage may be Low severity but High priority.' },
-
-  // IEEE 829 templates
-  { id: 'ieee-bug', source: 'IEEE 829 · Bug Report Template', tags: ['bug','defect','report','template','ieee','raise','log','create'], text: 'IEEE 829 Defect Report fields: Defect ID (unique identifier), Title (concise summary), Reported By, Date Reported, Severity (Critical/High/Medium/Low), Priority (P1-P4), Status (New/Open/In Progress/Fixed/Verified/Closed/Deferred), Environment (OS, browser, app version, device), Module/Component, Steps to Reproduce (numbered), Expected Result, Actual Result, Attachments (screenshots/logs), Root Cause (filled by dev), Fix Version, Verified By.' },
-  { id: 'ieee-tc', source: 'IEEE 829 · Test Case Template', tags: ['test case','test cases','template','ieee','write','create','generate','format'], text: 'IEEE 829 Test Case Specification fields: Test Case ID (TC-XXX-NNN format), Test Case Title, Module, Priority (High/Medium/Low), Pre-conditions, Test Steps (numbered actions), Test Data (inputs used), Expected Result, Actual Result (filled during execution), Pass/Fail status, Notes. Group test cases by feature module. Include positive, negative, boundary, and security test scenarios.' },
-  { id: 'ieee-tp', source: 'IEEE 829 · Test Plan Template', tags: ['test plan','plan','planning','template','ieee','document'], text: 'IEEE 829 Test Plan structure: 1) Test Plan Identifier, 2) Introduction & Objectives, 3) Test Items (what is being tested), 4) Features to be Tested, 5) Features Not to be Tested (out of scope), 6) Test Approach (types: functional, regression, smoke, UAT), 7) Item Pass/Fail Criteria, 8) Suspension & Resumption Criteria, 9) Test Deliverables, 10) Testing Tasks & Schedule, 11) Environmental Requirements, 12) Responsibilities (RACI), 13) Risks & Contingencies.' },
-  { id: 'ieee-rtm', source: 'IEEE 829 · Requirements Traceability Matrix', tags: ['rtm','traceability','matrix','requirements','coverage','trace','map'], text: 'Requirements Traceability Matrix (RTM): A document mapping each requirement to its corresponding test cases. Columns: Requirement ID, Requirement Description, Test Case ID(s), Test Status, Defect ID(s) if failed. Purpose: ensures 100% requirements coverage, identifies untested requirements, shows impact of requirement changes. Types: Forward traceability (req → test case), Backward traceability (test case → req), Bidirectional traceability.' },
-
-  // BDD / Gherkin
-  { id: 'bdd-1', source: 'BDD · Gherkin Scenario Writing', tags: ['bdd','gherkin','given','when','then','scenario','feature','cucumber','behave'], text: 'BDD Gherkin syntax: Feature (describes the feature under test), Scenario (a single test case), Given (preconditions / context), When (the action taken), Then (expected outcome), And/But (additional steps). Example: Scenario: Successful login | Given I am on the login page | When I enter valid email "user@test.com" and password "Pass123!" | And I click the Sign In button | Then I should be redirected to the dashboard | And I should see "Welcome back" message. Use Scenario Outline with Examples table for data-driven tests.' },
-
-  // Agile QA
-  { id: 'agile-1', source: 'Agile QA · Shift-Left Testing', tags: ['agile','shift left','sprint','early','continuous','ci','regression','automation'], text: 'Shift-Left Testing in Agile: Involve QA early in the SDLC — during requirement grooming and sprint planning, not just at the end. QA activities per sprint: Day 1-2: review user stories for testability, raise questions, write test cases. Day 3-7: execute tests as features are developed. Day 8-10: regression testing, sprint sign-off. Shift-left reduces defect cost by catching issues early when they are cheapest to fix.' },
-  { id: 'agile-2', source: 'Agile QA · Definition of Done', tags: ['done','definition','acceptance','criteria','dod','sprint','story'], text: 'Definition of Done (DoD) in Agile QA: A shared checklist that a user story must meet before marking it Done. Typical DoD: code complete and peer-reviewed, unit tests written and passing, functional test cases written and executed, no open Critical or High defects, code merged to main branch, regression suite green, product owner acceptance obtained. QA owns ensuring DoD is met before sprint close.' },
+  { id:'stlc-1', source:'STLC · Requirements Phase', tags:['requirements','review','testability','rtm','traceability'], text:'Requirements Review (STLC Phase 1): QA reviews requirements for testability, clarity, completeness and consistency. Key activities: identify ambiguities, create a Requirements Traceability Matrix (RTM) linking each requirement to test cases, define entry/exit criteria. Entry: approved requirements document. Exit: RTM complete, all requirements marked testable or flagged.' },
+  { id:'stlc-2', source:'STLC · Test Planning Phase', tags:['planning','test plan','strategy','risk','scope','schedule'], text:'Test Planning (STLC Phase 2): Define scope, approach, resources, schedule and risks. IEEE 829 Test Plan sections: identifier, introduction, test items, features to test, features not to test, approach, item pass/fail criteria, suspension criteria, test deliverables, testing tasks, environmental needs, responsibilities, staffing, risks and contingencies, approvals.' },
+  { id:'stlc-3', source:'STLC · Test Design Phase', tags:['design','test case','test cases','write','create','generate','bdd','gherkin','scenarios','equivalence','boundary'], text:'Test Design (STLC Phase 3): Create detailed test cases and test data. IEEE 829 Test Case Specification: test case ID, test items, input specifications, output specifications, environmental needs, special procedural requirements, inter-case dependencies. Apply techniques: equivalence partitioning, boundary value analysis, decision tables, state transition testing.' },
+  { id:'stlc-4', source:'STLC · Test Execution Phase', tags:['execution','run','execute','pass','fail','results','summary','report','cycle'], text:'Test Execution (STLC Phase 4): Execute test cases, log results, raise defects for failures. Produce Test Run Summary: total tests, passed, failed, blocked, skipped counts, pass rate %, defects raised per severity. Entry: test environment ready, test data available, test cases reviewed. Exit: all planned tests executed, no open P1/P2 defects, pass rate meets threshold.' },
+  { id:'stlc-5', source:'STLC · Test Closure Phase', tags:['closure','close','lessons','learned','summary','exit','criteria','sign off','sign-off'], text:'Test Closure (STLC Phase 5): Produce Test Summary Report covering objectives met, scope tested, metrics, defect summary, lessons learned, sign-off. Exit criteria checklist: all planned test cases executed, exit criteria met, all critical/high defects closed or deferred with risk acceptance, test artifacts archived, stakeholder sign-off obtained.' },
+  { id:'istqb-ep', source:'ISTQB FL · Equivalence Partitioning', tags:['equivalence','partitioning','ep','partition','class','valid','invalid'], text:'Equivalence Partitioning (ISTQB FL 4.3): Divide input data into valid and invalid partitions where all values in a partition are expected to be processed the same way. Test one value from each partition. Example: age field 18-65 → valid: 18-65, invalid: <18 and >65. Reduces test cases while maintaining coverage.' },
+  { id:'istqb-bva', source:'ISTQB FL · Boundary Value Analysis', tags:['boundary','bva','boundary value','edge','min','max'], text:'Boundary Value Analysis (ISTQB FL 4.3): Test at the boundaries of equivalence partitions. For valid range 1-100: test 0 (invalid), 1 (min valid), 2 (just above min), 99 (just below max), 100 (max valid), 101 (invalid). Detects off-by-one errors. Two-value BVA: min and max. Three-value BVA: boundary-1, boundary, boundary+1.' },
+  { id:'istqb-dt', source:'ISTQB FL · Decision Table Testing', tags:['decision','table','conditions','actions','rules','combinations'], text:'Decision Table Testing (ISTQB FL 4.4): Used when system behaviour depends on combinations of conditions. Structure: conditions (rows) × rules (columns) = actions. Ensures all condition combinations are tested. Useful for business rules with multiple inputs. Each column is a test case.' },
+  { id:'istqb-st', source:'ISTQB FL · State Transition Testing', tags:['state','transition','states','events','workflow','flow'], text:'State Transition Testing (ISTQB FL 4.4): Model system as states and transitions triggered by events. Useful for workflow and session-based systems (login, order status, booking). Draw state transition diagram, derive test cases covering all states (0-switch), all transitions (0-switch), or all transition pairs (1-switch).' },
+  { id:'istqb-sev', source:'ISTQB FL · Defect Severity & Priority', tags:['severity','priority','defect','bug','critical','high','medium','low','blocker','p1','p2'], text:'Defect Severity (ISTQB): Impact on system. Critical: crash, data loss, security breach, core feature broken. High: major feature broken, no workaround. Medium: feature partially broken, workaround exists. Low: cosmetic. Priority (urgency): P1 Blocker (immediate), P2 High (current sprint), P3 Medium (next sprint), P4 Low. Severity and priority can differ.' },
+  { id:'ieee-bug', source:'IEEE 829 · Bug Report Template', tags:['bug','defect','report','template','ieee','raise','log','create'], text:'IEEE 829 Defect Report fields: Defect ID, Title (concise summary), Reported By, Date Reported, Severity (Critical/High/Medium/Low), Priority (P1-P4), Status (New/Open/In Progress/Fixed/Verified/Closed/Deferred), Environment (OS, browser, app version, device), Module/Component, Steps to Reproduce (numbered), Expected Result, Actual Result, Attachments, Root Cause, Fix Version, Verified By.' },
+  { id:'ieee-tc', source:'IEEE 829 · Test Case Template', tags:['test case','test cases','template','ieee','write','create','generate','format'], text:'IEEE 829 Test Case Specification fields: Test Case ID (TC-XXX-NNN), Title, Module, Priority (High/Medium/Low), Pre-conditions, Test Steps (numbered actions), Test Data, Expected Result, Actual Result, Pass/Fail status, Notes. Group test cases by feature module. Include positive, negative, boundary, and security scenarios.' },
+  { id:'ieee-tp', source:'IEEE 829 · Test Plan Template', tags:['test plan','plan','planning','template','ieee','document'], text:'IEEE 829 Test Plan structure: 1) Test Plan Identifier, 2) Introduction & Objectives, 3) Test Items, 4) Features to be Tested, 5) Features Not to be Tested, 6) Test Approach (functional, regression, smoke, UAT), 7) Item Pass/Fail Criteria, 8) Suspension & Resumption Criteria, 9) Test Deliverables, 10) Testing Tasks & Schedule, 11) Environmental Requirements, 12) Responsibilities (RACI), 13) Risks & Contingencies.' },
+  { id:'ieee-rtm', source:'IEEE 829 · Requirements Traceability Matrix', tags:['rtm','traceability','matrix','requirements','coverage','trace','map'], text:'Requirements Traceability Matrix (RTM): document mapping each requirement to its test cases. Columns: Requirement ID, Description, Test Case ID(s), Test Status, Defect ID(s) if failed. Purpose: ensures 100% requirements coverage, identifies untested requirements, shows impact of requirement changes. Types: Forward (req → test case), Backward (test case → req), Bidirectional.' },
+  { id:'bdd-1', source:'BDD · Gherkin Scenario Writing', tags:['bdd','gherkin','given','when','then','scenario','feature','cucumber','behave'], text:'BDD Gherkin syntax: Feature (describes feature), Scenario (single test case), Given (preconditions), When (action), Then (expected outcome), And/But (additional). Example: Scenario: Successful login | Given I am on the login page | When I enter valid credentials | And I click Sign In | Then I should be redirected to the dashboard. Use Scenario Outline with Examples for data-driven tests.' },
+  { id:'agile-1', source:'Agile QA · Shift-Left Testing', tags:['agile','shift left','sprint','early','continuous','ci','regression','automation'], text:'Shift-Left Testing: involve QA early in SDLC — requirement grooming and sprint planning, not just at end. Per sprint: Day 1-2: review user stories for testability, write test cases. Day 3-7: execute tests as features are developed. Day 8-10: regression, sprint sign-off. Reduces defect cost by catching issues early.' },
+  { id:'agile-2', source:'Agile QA · Definition of Done', tags:['done','definition','acceptance','criteria','dod','sprint','story'], text:'Definition of Done (DoD): shared checklist a story must meet before being Done. Typical DoD: code complete and peer-reviewed, unit tests passing, functional test cases written and executed, no open Critical or High defects, code merged, regression suite green, product owner acceptance. QA owns DoD enforcement.' },
 ];
 
-// ─── RAG RETRIEVAL ────────────────────────────────────────
+// ─── MODE CONFIG (label, description, quick actions) ───
+const modeInfo = {
+  general: {
+    label: 'All Phases', desc: '— Full STLC coverage active',
+    actionsLabel: 'Quick actions',
+    actions: [
+      'Generate a test plan outline for a mobile e-commerce checkout feature',
+      'Write 5 test cases for a login page using equivalence partitioning',
+      'Create a bug report for a payment gateway timeout error returning HTTP 504',
+      'Generate a requirements traceability matrix template for user registration',
+      'Write BDD Gherkin scenarios for a password reset flow',
+      'Create a test closure report and exit criteria checklist',
+    ]
+  },
+  requirements: {
+    label: 'Requirements Review', desc: '— Testability & RTM mode',
+    actionsLabel: 'Requirements actions',
+    actions: [
+      'Review this requirement for testability and ambiguity: "The system shall respond quickly to user input"',
+      'Generate a Requirements Traceability Matrix template for a user registration module',
+      'Create a testability checklist I can apply to any user story',
+      'List 10 red flags that make a requirement untestable, with examples',
+      'Convert this vague requirement into a clear, testable acceptance criteria: "Users should be able to log in easily"',
+    ]
+  },
+  planning: {
+    label: 'Test Planning', desc: '— Test plan & strategy mode',
+    actionsLabel: 'Planning actions',
+    actions: [
+      'Generate a full IEEE 829 test plan for a mobile banking app',
+      'Create a risk-based test strategy for a new payment feature release',
+      'Define entry and exit criteria for a regression test cycle',
+      'Build a 2-week sprint test schedule with daily QA tasks',
+      'List the features-to-test vs features-not-to-test for an MVP launch',
+    ]
+  },
+  design: {
+    label: 'Test Design', desc: '— Test cases & BDD mode',
+    actionsLabel: 'Design actions',
+    actions: [
+      'Write 8 test cases for a login page using equivalence partitioning and BVA',
+      'Generate BDD Gherkin scenarios for a password reset flow',
+      'Create a decision table for an insurance premium calculator',
+      'Design state transition test cases for an order status workflow',
+      'Write boundary value test cases for an age field that accepts 18-65',
+      'Generate negative test cases for a credit card payment form',
+    ]
+  },
+  execution: {
+    label: 'Test Execution', desc: '— Run summary & reports mode',
+    actionsLabel: 'Execution actions',
+    actions: [
+      'Generate a test run summary report for Sprint 24 — 120 tests, 108 passed, 8 failed, 4 blocked',
+      'Create a daily test execution status email template',
+      'Write a pass/fail report with defect breakdown by severity',
+      'List the standard fields to log when executing a manual test case',
+      'Generate a regression test execution checklist',
+    ]
+  },
+  defects: {
+    label: 'Defect Management', desc: '— Bug report & triage mode',
+    actionsLabel: 'Defect actions',
+    actions: [
+      'Create an IEEE 829 bug report for a payment gateway returning HTTP 504',
+      'Triage this defect: app crashes on Android 14 when tapping the cart icon. Recommend severity, priority, and assignment',
+      'Generate a critical defect template for production issues',
+      'Write a defect report for a UI alignment issue on the dashboard',
+      'Create a defect lifecycle summary I can share with new QA team members',
+      'Suggest a severity and priority for a memory leak that causes the app to slow after 30 mins of use',
+    ]
+  },
+  closure: {
+    label: 'Test Closure', desc: '— Summary & exit criteria mode',
+    actionsLabel: 'Closure actions',
+    actions: [
+      'Generate a Test Summary Report for a completed sprint',
+      'Create an exit criteria checklist for release sign-off',
+      'Write a lessons learned document covering 5 typical sprint findings',
+      'Generate test metrics summary: defect density, pass rate, defect leakage',
+      'Create a release readiness assessment template',
+    ]
+  }
+};
+
+// ─── RAG RETRIEVAL ─────────────────────────────────────
 function retrieve(query, mode, topK = 4) {
   const q = query.toLowerCase();
   const words = q.split(/\s+/).filter(w => w.length > 2);
-
-  // Mode-based pre-filter boost
   const modeBoost = {
-    requirements: ['requirements','review','testability','rtm','traceability'],
-    planning: ['planning','test plan','strategy','risk','scope'],
-    design: ['design','test case','test cases','bdd','gherkin','equivalence','boundary'],
-    execution: ['execution','run','execute','pass','fail','results'],
-    defects: ['defect','bug','severity','priority','report'],
-    closure: ['closure','close','lessons','exit','criteria','sign'],
-    general: []
+    requirements:['requirements','review','testability','rtm','traceability'],
+    planning:['planning','test plan','strategy','risk','scope'],
+    design:['design','test case','test cases','bdd','gherkin','equivalence','boundary'],
+    execution:['execution','run','execute','pass','fail','results'],
+    defects:['defect','bug','severity','priority','report'],
+    closure:['closure','close','lessons','exit','criteria','sign'],
+    general:[]
   };
-
   const scored = KB.map(chunk => {
     let score = 0;
-    // Tag matching
     chunk.tags.forEach(tag => {
       if (q.includes(tag)) score += 3;
       words.forEach(w => { if (tag.includes(w) || w.includes(tag)) score += 1; });
     });
-    // Text matching
-    const textLow = chunk.text.toLowerCase();
-    words.forEach(w => { if (textLow.includes(w)) score += 0.5; });
-    // Mode boost
+    const tl = chunk.text.toLowerCase();
+    words.forEach(w => { if (tl.includes(w)) score += 0.5; });
     if (mode !== 'general') {
-      const modeTerms = modeBoost[mode] || [];
-      modeTerms.forEach(t => { if (chunk.tags.includes(t)) score += 2; });
+      (modeBoost[mode] || []).forEach(t => { if (chunk.tags.includes(t)) score += 2; });
     }
     return { chunk, score };
   });
-
-  return scored
-    .filter(s => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, topK)
-    .map(s => s.chunk);
+  return scored.filter(s => s.score > 0).sort((a,b) => b.score - a.score).slice(0, topK).map(s => s.chunk);
 }
 
-// ─── SYSTEM PROMPT ────────────────────────────────────────
+// ─── SYSTEM PROMPT ─────────────────────────────────────
 function buildSystemPrompt(chunks, mode) {
-  const modeInstructions = {
+  const focus = {
     general: 'You cover the full Software Testing Life Cycle (STLC).',
-    requirements: 'You are focused on Requirements Review phase: testability analysis and RTM creation.',
-    planning: 'You are focused on Test Planning phase: test plans, strategies, scope, risk assessment.',
-    design: 'You are focused on Test Design phase: test cases, BDD scenarios, test data, design techniques.',
-    execution: 'You are focused on Test Execution phase: running tests, logging results, test run summaries.',
-    defects: 'You are focused on Defect Management: IEEE 829 bug reports, severity/priority triage, defect lifecycle.',
-    closure: 'You are focused on Test Closure: test summary reports, exit criteria, lessons learned, sign-off.'
+    requirements: 'You are focused on Requirements Review: testability analysis and RTM creation.',
+    planning: 'You are focused on Test Planning: test plans, strategies, scope, risk assessment.',
+    design: 'You are focused on Test Design: test cases, BDD scenarios, design techniques.',
+    execution: 'You are focused on Test Execution: running tests, logging results, run summaries.',
+    defects: 'You are focused on Defect Management: IEEE 829 bug reports, severity/priority triage.',
+    closure: 'You are focused on Test Closure: summary reports, exit criteria, lessons learned.'
   };
-
   const context = chunks.map(c => `[${c.source}]\n${c.text}`).join('\n\n---\n\n');
-
-  return `You are QA Nexus, a senior QA lead assistant grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology. ${modeInstructions[mode] || modeInstructions.general}
+  return `You are QA Nexus, a senior QA lead assistant grounded in ISTQB FL, IEEE 829, and STLC methodology. ${focus[mode] || focus.general}
 
 RETRIEVED KNOWLEDGE BASE CONTEXT:
 ${context}
 
 INSTRUCTIONS:
-- Ground every answer in the retrieved context above. Cite the source labels (e.g. "Per IEEE 829..." or "Per ISTQB FL...") naturally in your responses.
-- Produce structured, professional QA deliverables when asked: test cases in table format, bug reports with all IEEE 829 fields, test plans with numbered sections.
-- For test cases, always include: TC-ID, Title, Priority, Pre-conditions, Steps, Expected Result.
-- For bug reports, always include: Defect ID, Title, Severity, Priority, Environment, Steps to Reproduce, Expected, Actual.
-- Use severity labels: Critical, High, Medium, Low. Use priority labels: P1 Blocker, P2 High, P3 Medium, P4 Low.
-- Be concise but thorough. Ask for missing details (feature name, environment, expected behaviour) if the user's request is too vague.
-- Format responses clearly using markdown: **bold** for labels, tables for test cases/bug reports, numbered lists for steps.
-- Always end your response with a "Sources used:" line listing the chunk source labels you referenced.`;
+- Ground every answer in the retrieved context above. Cite source labels naturally (e.g. "Per IEEE 829..." or "Per ISTQB FL...").
+- For test cases: ALWAYS render as a markdown table with these exact columns: TC ID | Title | Priority | Pre-conditions | Steps | Expected Result. Use one row per test case.
+- For bug reports: ALWAYS render as a markdown table with two columns: Field | Value. Include all IEEE 829 fields: Defect ID, Title, Severity, Priority, Status, Environment, Module, Steps to Reproduce, Expected Result, Actual Result, Reporter, Date.
+- For test plans, RTMs, closure reports: use clear numbered sections and markdown tables where appropriate.
+- Use severity labels: Critical, High, Medium, Low. Priority: P1 Blocker, P2 High, P3 Medium, P4 Low.
+- For "Steps to Reproduce" in bug reports, use numbered text within the cell: "1. ... 2. ... 3. ..."
+- Be concise but complete. Ask for missing details only if truly necessary.
+- End with: "Sources used: " followed by the chunk source labels you referenced.`;
 }
 
-// ─── API CALL ─────────────────────────────────────────────
+// ─── API CALL ──────────────────────────────────────────
 async function callClaude(userMessage) {
   const chunks = retrieve(userMessage, currentMode);
   const systemPrompt = buildSystemPrompt(chunks, currentMode);
-
   conversationHistory.push({ role: 'user', content: userMessage });
-
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1500,
-      system: systemPrompt,
-      messages: conversationHistory
-    })
+    headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:2000, system:systemPrompt, messages:conversationHistory })
   });
-
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
     throw new Error(err.error?.message || `API error ${response.status}`);
   }
-
   const data = await response.json();
   const text = data.content?.[0]?.text || '';
   conversationHistory.push({ role: 'assistant', content: text });
-
   return { text, chunks };
 }
 
-// ─── RENDER MARKDOWN ──────────────────────────────────────
+// ─── MARKDOWN RENDERER ─────────────────────────────────
 function renderMarkdown(text) {
-  // Extract sources line before rendering
-  const sourceMatch = text.match(/\*?\*?Sources?(?: used)?:?\*?\*?\s*([\s\S]+?)$/im);
-  let sourcesHtml = '';
-  let mainText = text;
-
-  if (sourceMatch) {
-    mainText = text.slice(0, sourceMatch.index).trim();
-    const srcLine = sourceMatch[1].trim();
-    const srcs = srcLine.split(/[·•\-,\n]+/).map(s => s.replace(/\*/g,'').trim()).filter(s => s.length > 2);
+  const srcMatch = text.match(/\*?\*?Sources?(?:\s*used)?:?\*?\*?\s*([\s\S]+?)$/im);
+  let sourcesHtml = '', mainText = text;
+  if (srcMatch) {
+    mainText = text.slice(0, srcMatch.index).trim();
+    const srcs = srcMatch[1].trim().split(/[·•\-,\n]+/).map(s => s.replace(/\*/g,'').trim()).filter(s => s.length > 2);
     sourcesHtml = srcs.map(s => `<span class="source-chip">${s}</span>`).join('');
   }
-
-  // Simple markdown → HTML
   let html = mainText
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/`([^`]+)`/g,'<code>$1</code>')
-    // Tables
     .replace(/(\|.+\|\n)+/g, m => {
       const rows = m.trim().split('\n');
-      let tableHtml = '<table>';
+      let t = '<table>';
       rows.forEach((row, i) => {
-        if (row.match(/^\|[-\s|]+\|$/)) return;
-        const cells = row.split('|').filter((_,j,a)=>j>0&&j<a.length-1);
+        if (row.match(/^\|[-\s|:]+\|$/)) return;
+        const cells = row.split('|').filter((_,j,a) => j>0 && j<a.length-1);
         const tag = i === 0 ? 'th' : 'td';
-        tableHtml += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+        t += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
       });
-      return tableHtml + '</table>';
+      return t + '</table>';
     })
-    // Numbered lists
     .replace(/^(\d+\.\s.+)(\n\d+\.\s.+)*/gm, m => {
       const items = m.split('\n').filter(Boolean);
       return '<ol>' + items.map(li => `<li>${li.replace(/^\d+\.\s/,'')}</li>`).join('') + '</ol>';
     })
-    // Bullet lists
     .replace(/^[-*]\s(.+)/gm, '<li>$1</li>')
     .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-    // Paragraphs
     .replace(/\n{2,}/g,'</p><p>')
     .replace(/\n/g,'<br>');
-
-  html = `<p>${html}</p>`;
-
-  return { html, sourcesHtml };
+  return { html: `<p>${html}</p>`, sourcesHtml, rawMarkdown: mainText };
 }
 
-// ─── DOM HELPERS ──────────────────────────────────────────
-function appendMessage(role, html, sourcesHtml = '') {
+// ─── EXPORT FUNCTIONS ──────────────────────────────────
+function detectContentType(md) {
+  const m = md.toLowerCase();
+  if (m.includes('tc id') || m.includes('tc-id') || m.includes('test case id')) return 'testcases';
+  if (m.includes('defect id') || m.includes('bug id') || (m.includes('severity') && m.includes('steps to reproduce'))) return 'bugreport';
+  return 'document';
+}
+
+function parseMarkdownTables(md) {
+  // Extract all markdown tables from text
+  const tables = [];
+  const lines = md.split('\n');
+  let current = null;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('|') && line.endsWith('|')) {
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+      if (!current) current = { rows: [] };
+      // Skip separator row
+      if (!cells.every(c => /^[-:\s]*$/.test(c))) {
+        current.rows.push(cells);
+      }
+    } else if (current && current.rows.length > 0) {
+      tables.push(current);
+      current = null;
+    }
+  }
+  if (current && current.rows.length > 0) tables.push(current);
+  return tables;
+}
+
+function toCSV(rows) {
+  return rows.map(row => row.map(cell => {
+    const c = String(cell).replace(/"/g, '""');
+    return /[",\n]/.test(c) ? `"${c}"` : c;
+  }).join(',')).join('\n');
+}
+
+function downloadFile(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+function exportContent(rawMd, format, contentType) {
+  const ts = new Date().toISOString().slice(0,10);
+
+  if (format === 'copy') {
+    navigator.clipboard.writeText(rawMd).then(() => showToast('Copied to clipboard'));
+    return;
+  }
+
+  if (format === 'txt') {
+    downloadFile(rawMd, `qa-nexus-${contentType}-${ts}.txt`, 'text/plain');
+    showToast('Downloaded as TXT');
+    return;
+  }
+
+  if (format === 'md') {
+    downloadFile(rawMd, `qa-nexus-${contentType}-${ts}.md`, 'text/markdown');
+    showToast('Downloaded as Markdown');
+    return;
+  }
+
+  if (format === 'html') {
+    const { html } = renderMarkdown(rawMd);
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Nexus Export</title><style>body{font-family:Inter,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#1E2D3D;line-height:1.6;}h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:#0D1724;}table{width:100%;border-collapse:collapse;margin:1rem 0;}th,td{border:1px solid #D6DDE5;padding:0.5rem 0.75rem;text-align:left;font-size:0.875rem;vertical-align:top;}th{background:#F1F5F9;font-weight:600;}code{background:#F1F5F9;padding:0.1rem 0.35rem;border-radius:3px;font-size:0.85em;}.header{border-bottom:2px solid #1D9E75;padding-bottom:1rem;margin-bottom:2rem;}</style></head><body><div class="header"><h1>QA Nexus — Export</h1><p style="color:#4A5B6E;">Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded</p></div>${html}</body></html>`;
+    downloadFile(fullHtml, `qa-nexus-${contentType}-${ts}.html`, 'text/html');
+    showToast('Downloaded as HTML');
+    return;
+  }
+
+  if (format === 'jira') {
+    const tables = parseMarkdownTables(rawMd);
+    if (tables.length === 0) { showToast('No table found to export'); return; }
+
+    let csvRows;
+    if (contentType === 'testcases') {
+      // Jira CSV for Xray / Zephyr / generic test case import
+      // Headers Jira commonly accepts: Summary, Description, Priority, Labels, Issue Type
+      csvRows = [['Issue Type','Summary','Description','Priority','Labels']];
+      const table = tables[0];
+      const header = table.rows[0].map(h => h.toLowerCase());
+      const idIdx = header.findIndex(h => h.includes('id'));
+      const titleIdx = header.findIndex(h => h.includes('title') || h.includes('scenario') || h.includes('description'));
+      const prioIdx = header.findIndex(h => h.includes('priority'));
+      const precondIdx = header.findIndex(h => h.includes('pre') || h.includes('condition'));
+      const stepsIdx = header.findIndex(h => h.includes('step'));
+      const expectedIdx = header.findIndex(h => h.includes('expected'));
+
+      for (let i = 1; i < table.rows.length; i++) {
+        const row = table.rows[i];
+        const id = idIdx >= 0 ? row[idIdx] : `TC-${i}`;
+        const title = titleIdx >= 0 ? row[titleIdx] : 'Untitled test case';
+        const priority = prioIdx >= 0 ? mapJiraPriority(row[prioIdx]) : 'Medium';
+        let desc = '';
+        if (precondIdx >= 0) desc += `*Pre-conditions:*\n${row[precondIdx]}\n\n`;
+        if (stepsIdx >= 0) desc += `*Steps:*\n${row[stepsIdx]}\n\n`;
+        if (expectedIdx >= 0) desc += `*Expected Result:*\n${row[expectedIdx]}`;
+        csvRows.push(['Test', `${id}: ${title}`, desc.trim(), priority, 'QA-Nexus,Test-Case']);
+      }
+    } else if (contentType === 'bugreport') {
+      // Jira CSV for bug import
+      csvRows = [['Issue Type','Summary','Description','Priority','Labels','Environment']];
+      const table = tables[0];
+      // Bug reports are usually field|value pairs
+      const fields = {};
+      for (const row of table.rows.slice(1)) {
+        if (row.length >= 2) fields[row[0].toLowerCase()] = row[1];
+      }
+      const title = fields['title'] || fields['summary'] || 'Untitled defect';
+      const severity = fields['severity'] || 'Medium';
+      const priority = mapJiraPriority(fields['priority'] || severity);
+      const env = fields['environment'] || '';
+      let desc = '';
+      if (fields['steps to reproduce']) desc += `*Steps to Reproduce:*\n${fields['steps to reproduce']}\n\n`;
+      if (fields['expected result'] || fields['expected']) desc += `*Expected Result:*\n${fields['expected result'] || fields['expected']}\n\n`;
+      if (fields['actual result'] || fields['actual']) desc += `*Actual Result:*\n${fields['actual result'] || fields['actual']}\n\n`;
+      if (fields['module'] || fields['component']) desc += `*Module:* ${fields['module'] || fields['component']}\n`;
+      if (fields['severity']) desc += `*Severity:* ${fields['severity']}\n`;
+      csvRows.push(['Bug', title, desc.trim(), priority, 'QA-Nexus,Defect', env]);
+    } else {
+      showToast('Jira export works best for test cases or bug reports'); return;
+    }
+
+    const csv = toCSV(csvRows);
+    downloadFile(csv, `qa-nexus-jira-${contentType}-${ts}.csv`, 'text/csv');
+    showToast('Downloaded Jira CSV');
+  }
+}
+
+function mapJiraPriority(p) {
+  if (!p) return 'Medium';
+  const x = p.toLowerCase();
+  if (x.includes('p1') || x.includes('blocker') || x.includes('critical')) return 'Highest';
+  if (x.includes('p2') || x.includes('high')) return 'High';
+  if (x.includes('p3') || x.includes('medium')) return 'Medium';
+  if (x.includes('p4') || x.includes('low')) return 'Low';
+  return 'Medium';
+}
+
+// ─── DOM HELPERS ───────────────────────────────────────
+function buildExportToolbar(rawMd) {
+  const contentType = detectContentType(rawMd);
+  const hasTable = parseMarkdownTables(rawMd).length > 0;
+  const jiraEligible = hasTable && (contentType === 'testcases' || contentType === 'bugreport');
+  const id = 'ex_' + Math.random().toString(36).slice(2,8);
+  window['_md_'+id] = rawMd;
+  window['_ct_'+id] = contentType;
+
+  const icons = {
+    copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    dl: '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    jira: '<svg viewBox="0 0 24 24"><path d="M11.5 4a3 3 0 0 0 3 3H17a3 3 0 0 1-3-3V4z" transform="translate(-1,-1)"/><polygon points="3 12 12 3 21 12 12 21 3 12"/></svg>'
+  };
+
+  return `<div class="export-toolbar">
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'copy',window['_ct_${id}'])">${icons.copy} Copy</button>
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'txt',window['_ct_${id}'])">${icons.dl} TXT</button>
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'md',window['_ct_${id}'])">${icons.dl} MD</button>
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'html',window['_ct_${id}'])">${icons.dl} HTML</button>
+    ${jiraEligible ? `<button class="export-btn jira" onclick="exportContent(window['_md_${id}'],'jira',window['_ct_${id}'])">${icons.jira} Jira CSV</button>` : ''}
+  </div>`;
+}
+
+function appendMessage(role, html, sourcesHtml = '', rawMarkdown = '') {
   const msgs = document.getElementById('chatMessages');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
-
   const avatar = document.createElement('div');
   avatar.className = `msg-avatar ${role}`;
   avatar.textContent = role === 'agent' ? 'QA' : 'U';
-
   const content = document.createElement('div');
   content.className = 'msg-content';
-
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.innerHTML = html;
   content.appendChild(bubble);
-
+  if (role === 'agent' && rawMarkdown) {
+    const toolbar = document.createElement('div');
+    toolbar.innerHTML = buildExportToolbar(rawMarkdown);
+    content.appendChild(toolbar.firstChild);
+  }
   if (sourcesHtml) {
     const chips = document.createElement('div');
     chips.className = 'source-chips';
     chips.innerHTML = sourcesHtml;
     content.appendChild(chips);
   }
-
   row.appendChild(avatar);
   row.appendChild(content);
   msgs.appendChild(row);
   msgs.scrollTop = msgs.scrollHeight;
-  return row;
 }
 
 function showTyping() {
@@ -564,47 +648,44 @@ function showTyping() {
 }
 function hideTyping() { document.getElementById('typingRow')?.remove(); }
 
-// ─── SEND MESSAGE ─────────────────────────────────────────
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const btn = document.getElementById('sendBtn');
   const text = input.value.trim();
   if (!text || !apiKey) return;
-
   input.value = ''; input.style.height = 'auto';
   appendMessage('user', text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
   btn.disabled = true;
   showTyping();
-
   try {
     const { text: reply, chunks } = await callClaude(text);
     hideTyping();
-    const { html, sourcesHtml } = renderMarkdown(reply);
-    // Build source chips from retrieved chunks if not in response
-    const fallbackSources = chunks.map(c => `<span class="source-chip">${c.source}</span>`).join('');
-    appendMessage('agent', html, sourcesHtml || fallbackSources);
+    const { html, sourcesHtml, rawMarkdown } = renderMarkdown(reply);
+    const fallback = chunks.map(c => `<span class="source-chip">${c.source}</span>`).join('');
+    appendMessage('agent', html, sourcesHtml || fallback, rawMarkdown);
   } catch (err) {
     hideTyping();
     appendMessage('agent', `<p style="color:#F09595">Error: ${err.message}. Please check your API key and try again.</p>`);
   }
-
   btn.disabled = false;
   input.focus();
 }
 
-// ─── UI HELPERS ───────────────────────────────────────────
+// ─── UI ────────────────────────────────────────────────
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function sendStarter(msg) { document.getElementById('userInput').value = msg; sendMessage(); }
-const modeInfo = {
-  general:      { label: 'All Phases',          desc: '— Full STLC coverage active' },
-  requirements: { label: 'Requirements Review',  desc: '— Testability & RTM mode' },
-  planning:     { label: 'Test Planning',         desc: '— Test plan & strategy mode' },
-  design:       { label: 'Test Design',           desc: '— Test cases & BDD mode' },
-  execution:    { label: 'Test Execution',        desc: '— Run summary & reports mode' },
-  defects:      { label: 'Defect Management',     desc: '— Bug report & triage mode' },
-  closure:      { label: 'Test Closure',          desc: '— Summary & exit criteria mode' },
-};
+
+function renderActions(mode) {
+  const info = modeInfo[mode] || modeInfo.general;
+  document.getElementById('actionsLabel').textContent = info.actionsLabel;
+  const list = document.getElementById('actionsList');
+  list.innerHTML = info.actions.map(a => {
+    const safe = a.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return `<button class="action-btn" onclick="sendStarter('${safe}')"><span class="action-arrow">→</span><span>${a}</span></button>`;
+  }).join('');
+}
+
 function setMode(btn, mode) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -612,8 +693,10 @@ function setMode(btn, mode) {
   const info = modeInfo[mode] || modeInfo.general;
   document.getElementById('modeBarLabel').textContent = info.label;
   document.getElementById('modeBarDesc').textContent = ' ' + info.desc;
+  renderActions(mode);
   showToast('Mode: ' + info.label);
 }
+
 let toastTimer;
 function showToast(msg) {
   let toast = document.getElementById('qaToast');
@@ -623,6 +706,7 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
+
 function saveKey() {
   const val = document.getElementById('apiKeyInput').value.trim();
   if (!val.startsWith('sk-')) { alert('Please enter a valid Anthropic API key (starts with sk-)'); return; }
@@ -631,6 +715,9 @@ function saveKey() {
   document.getElementById('userInput').focus();
 }
 document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+
+// Initial actions render
+renderActions('general');
 </script>
 </body>
 </html>

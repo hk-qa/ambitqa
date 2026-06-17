@@ -991,9 +991,62 @@ function buildFilename(rawMd, contentType, ext) {
   return parts.join('-') + '.' + ext;
 }
 
+function buildRichHtmlForClipboard(rawMd) {
+  const { html } = renderMarkdown(rawMd);
+  // Inline-styled HTML that pastes nicely into TextEdit, Word, Pages, Notion, Google Docs, etc.
+  return `<meta charset="utf-8"><div style="font-family:-apple-system,Helvetica,Arial,sans-serif;line-height:1.55;color:#1E1B3A;font-size:14px;">
+<style>
+.qa-doc h1{font-family:Helvetica,Arial,sans-serif;font-size:22px;color:#4338CA;margin:18px 0 10px;border-bottom:2px solid #6366F1;padding-bottom:6px;font-weight:700;}
+.qa-doc h2{font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#4338CA;margin:20px 0 8px;border-bottom:1px solid #C7D2FE;padding-bottom:4px;font-weight:700;}
+.qa-doc h3{font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#4338CA;margin:14px 0 6px;font-weight:700;}
+.qa-doc p{margin:8px 0;}
+.qa-doc strong{font-weight:700;color:#1E1B3A;}
+.qa-doc hr{border:0;border-top:1px solid #C7D2FE;margin:14px 0;}
+.qa-doc blockquote{margin:10px 0;padding:10px 14px;background:#F4F4FB;border-left:4px solid #6366F1;color:#1E1B3A;}
+.qa-doc blockquote p{margin:0;}
+.qa-doc table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #C7D2FE;}
+.qa-doc th{background:#6366F1;color:#FFFFFF;font-weight:600;padding:8px 12px;border:1px solid #4338CA;text-align:left;font-size:13px;}
+.qa-doc td{padding:6px 12px;border:1px solid #C7D2FE;vertical-align:top;font-size:13px;color:#1E1B3A;}
+.qa-doc tr:nth-child(even) td{background:#FAFAFD;}
+.qa-doc code{background:#F4F4FB;padding:1px 5px;border-radius:3px;font-family:Menlo,'Courier New',monospace;font-size:0.9em;color:#4338CA;}
+.qa-doc pre.code-block{background:#F4F4FB;border:1px solid #C7D2FE;border-left:4px solid #6366F1;border-radius:4px;padding:10px 14px;margin:10px 0;font-family:Menlo,'Courier New',monospace;font-size:12px;line-height:1.5;color:#1E1B3A;white-space:pre-wrap;}
+.qa-doc pre.code-block code{background:none;padding:0;color:inherit;}
+.qa-doc ul,.qa-doc ol{padding-left:22px;margin:6px 0;}
+.qa-doc li{margin-bottom:3px;}
+</style>
+<div class="qa-doc">${html}</div>
+</div>`;
+}
+
+async function copyToClipboard(rawMd) {
+  const cleanText = markdownToPlainText(rawMd);
+  // Try modern clipboard API with rich HTML + plain text
+  if (navigator.clipboard && window.ClipboardItem) {
+    try {
+      const richHtml = buildRichHtmlForClipboard(rawMd);
+      const item = new ClipboardItem({
+        'text/html': new Blob([richHtml], { type: 'text/html' }),
+        'text/plain': new Blob([cleanText], { type: 'text/plain' })
+      });
+      await navigator.clipboard.write([item]);
+      showToast('Copied with formatting — paste into Word, TextEdit, Notion…');
+      return;
+    } catch (err) {
+      console.warn('Rich copy failed, falling back to plain text:', err);
+    }
+  }
+  // Fallback: plain clean text
+  try {
+    await navigator.clipboard.writeText(cleanText);
+    showToast('Copied as plain text');
+  } catch (e) {
+    showToast('Copy failed — try the HTML download instead');
+  }
+}
+
 function exportContent(rawMd, format, contentType) {
   if (format === 'copy') {
-    navigator.clipboard.writeText(rawMd).then(() => showToast('Copied to clipboard'));
+    copyToClipboard(rawMd);
     return;
   }
   if (format === 'txt') {

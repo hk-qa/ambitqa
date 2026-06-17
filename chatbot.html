@@ -126,6 +126,29 @@
     .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--teal-800);border:1px solid rgba(29,158,117,0.4);color:var(--teal-100);font-size:0.82rem;font-weight:500;padding:0.55rem 1.2rem;border-radius:999px;transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;z-index:50;white-space:nowrap;}
     .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
+    /* TARGET APP PANEL */
+    .target-panel{padding:1rem;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(29,158,117,0.05) 0%,transparent 100%);}
+    .target-panel input[type=text],.target-panel textarea{width:100%;background:var(--bg);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-sm);padding:0.45rem 0.65rem;font-size:0.78rem;color:#E2EAF2;font-family:var(--font-b);outline:none;transition:border-color 0.15s;margin-bottom:0.5rem;}
+    .target-panel input[type=text]:focus,.target-panel textarea:focus{border-color:rgba(29,158,117,0.5);}
+    .target-panel textarea{resize:vertical;min-height:54px;line-height:1.4;}
+    .target-actions{display:flex;gap:0.4rem;}
+    .target-fetch-btn{flex:1;background:var(--teal-400);color:#fff;border:none;padding:0.45rem 0.6rem;border-radius:var(--r-sm);font-size:0.75rem;font-weight:500;cursor:pointer;font-family:var(--font-b);transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
+    .target-fetch-btn:hover{background:var(--teal-600);}
+    .target-fetch-btn:disabled{background:var(--slate-600);cursor:not-allowed;}
+    .target-clear-btn{background:transparent;color:var(--slate-400);border:1px solid var(--border);padding:0.45rem 0.6rem;border-radius:var(--r-sm);font-size:0.75rem;cursor:pointer;font-family:var(--font-b);transition:all 0.15s;}
+    .target-clear-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
+    .target-status{font-size:0.72rem;line-height:1.5;margin-top:0.5rem;padding:0.45rem 0.6rem;border-radius:var(--r-sm);display:none;}
+    .target-status.show{display:block;}
+    .target-status.success{background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.3);color:var(--teal-200);}
+    .target-status.partial{background:rgba(250,199,117,0.08);border:1px solid rgba(250,199,117,0.3);color:#FAC775;}
+    .target-status.error{background:rgba(226,75,74,0.08);border:1px solid rgba(226,75,74,0.3);color:#F09595;}
+    .target-status.loading{background:rgba(55,138,221,0.08);border:1px solid rgba(55,138,221,0.3);color:#85B7EB;}
+    .target-banner{display:none;align-items:center;gap:0.5rem;padding:0.4rem 1.5rem;background:rgba(29,158,117,0.12);border-bottom:1px solid rgba(29,158,117,0.25);font-size:0.75rem;color:var(--teal-200);flex-shrink:0;}
+    .target-banner.show{display:flex;}
+    .target-banner-url{color:#fff;font-weight:500;text-decoration:none;}
+    .target-banner-url:hover{text-decoration:underline;}
+    .target-banner-mode{margin-left:auto;font-size:0.7rem;color:var(--slate-400);}
+
     @media (max-width:640px){.sidebar{display:none;}}
   </style>
 </head>
@@ -155,6 +178,19 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
+    <div class="target-panel">
+      <div class="sidebar-label">🎯 Target Application</div>
+      <input type="text" id="targetUrl" placeholder="https://example.com" autocomplete="off" />
+      <textarea id="targetDesc" placeholder="Optional: describe the page or feature (e.g. 'login page', 'checkout flow')"></textarea>
+      <div class="target-actions">
+        <button class="target-fetch-btn" id="fetchBtn" onclick="fetchTarget()">
+          <span id="fetchBtnText">Set Target</span>
+        </button>
+        <button class="target-clear-btn" onclick="clearTarget()" title="Clear target">✕</button>
+      </div>
+      <div class="target-status" id="targetStatus"></div>
+    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-label">STLC Phase</div>
       <button class="mode-btn active" onclick="setMode(this,'general')">All Phases<span class="mode-phase">Full STLC coverage</span></button>
@@ -184,6 +220,11 @@
 
   <!-- CHAT -->
   <div class="chat-area">
+    <div class="target-banner" id="targetBanner">
+      <span>🎯 Testing:</span>
+      <a href="#" target="_blank" rel="noopener" class="target-banner-url" id="targetBannerUrl"></a>
+      <span class="target-banner-mode" id="targetBannerMode"></span>
+    </div>
     <div class="mode-bar">
       <div class="mode-bar-dot"></div>
       <span class="mode-bar-label" id="modeBarLabel">All Phases</span>
@@ -196,8 +237,8 @@
         <div class="msg-content">
           <div class="msg-bubble">
             <p><strong>Welcome to QA Nexus.</strong> I'm your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
-            <p>👈 <strong>Pick an STLC phase</strong> on the left — the quick actions panel updates to show what I can do for that phase. Or type your own question below.</p>
-            <p>Every deliverable I generate comes with <strong>Copy / Download / Jira CSV</strong> export buttons.</p>
+            <p>🎯 <strong>New: Target a real application</strong> — paste a URL at the top of the sidebar and I'll generate test cases tailored to that actual page (forms, buttons, fields).</p>
+            <p>👈 Or pick an STLC phase to see relevant quick actions. Every deliverable comes with <strong>Copy / Download / Jira CSV</strong> export.</p>
           </div>
           <div class="source-chips"><span class="source-chip">ISTQB FL</span><span class="source-chip">IEEE 829</span><span class="source-chip">STLC</span></div>
         </div>
@@ -223,6 +264,7 @@
 let apiKey = '';
 let currentMode = 'general';
 let conversationHistory = [];
+let targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
 
 // ─── KNOWLEDGE BASE ────────────────────────────────────
 const KB = [
@@ -251,46 +293,46 @@ const modeInfo = {
     label: 'All Phases', desc: '— Full STLC coverage active',
     actionsLabel: 'Quick actions',
     actions: [
-      'Generate a test plan outline for a mobile e-commerce checkout feature',
-      'Write 5 test cases for a login page using equivalence partitioning',
-      'Create a bug report for a payment gateway timeout error returning HTTP 504',
-      'Generate a requirements traceability matrix template for user registration',
-      'Write BDD Gherkin scenarios for a password reset flow',
-      'Create a test closure report and exit criteria checklist',
+      'Generate test cases for the target application',
+      'Create a test plan for the target application',
+      'Identify the top risks for testing the target application',
+      'Write a bug report for an issue I found on the target page',
+      'Generate a Requirements Traceability Matrix for the target app',
+      'Create exploratory test charters for the target application',
     ]
   },
   requirements: {
     label: 'Requirements Review', desc: '— Testability & RTM mode',
     actionsLabel: 'Requirements actions',
     actions: [
-      'Review this requirement for testability and ambiguity: "The system shall respond quickly to user input"',
-      'Generate a Requirements Traceability Matrix template for a user registration module',
-      'Create a testability checklist I can apply to any user story',
-      'List 10 red flags that make a requirement untestable, with examples',
-      'Convert this vague requirement into a clear, testable acceptance criteria: "Users should be able to log in easily"',
+      'Analyze the target application page and infer the underlying functional requirements',
+      'Create a testability checklist applied to the target application',
+      'Generate a Requirements Traceability Matrix template for the target app features',
+      'Identify any visible UI ambiguities or unclear flows on the target page',
+      'List acceptance criteria for the main feature of the target application',
     ]
   },
   planning: {
     label: 'Test Planning', desc: '— Test plan & strategy mode',
     actionsLabel: 'Planning actions',
     actions: [
-      'Generate a full IEEE 829 test plan for a mobile banking app',
-      'Create a risk-based test strategy for a new payment feature release',
-      'Define entry and exit criteria for a regression test cycle',
-      'Build a 2-week sprint test schedule with daily QA tasks',
-      'List the features-to-test vs features-not-to-test for an MVP launch',
+      'Generate a full IEEE 829 test plan for the target application',
+      'Create a risk-based test strategy for the target app',
+      'Define test scope: which areas of the target site need most testing coverage',
+      'Define entry and exit criteria for a regression cycle on the target app',
+      'List features-to-test vs features-not-to-test for the target application',
     ]
   },
   design: {
     label: 'Test Design', desc: '— Test cases & BDD mode',
     actionsLabel: 'Design actions',
     actions: [
-      'Write 8 test cases for a login page using equivalence partitioning and BVA',
-      'Generate BDD Gherkin scenarios for a password reset flow',
-      'Create a decision table for an insurance premium calculator',
-      'Design state transition test cases for an order status workflow',
-      'Write boundary value test cases for an age field that accepts 18-65',
-      'Generate negative test cases for a credit card payment form',
+      'Generate comprehensive test cases for the target application (cover positive, negative, boundary, and security scenarios)',
+      'Write BDD Gherkin scenarios for the main user flow of the target app',
+      'Create test cases for every form field on the target page using equivalence partitioning and BVA',
+      'Generate accessibility test cases for the target page (WCAG 2.1 AA)',
+      'Write cross-browser compatibility test cases for the target application',
+      'Create a decision table for any business rules visible on the target page',
     ]
   },
   execution: {
@@ -370,10 +412,24 @@ function buildSystemPrompt(chunks, mode) {
     closure: 'You are focused on Test Closure: summary reports, exit criteria, lessons learned.'
   };
   const context = chunks.map(c => `[${c.source}]\n${c.text}`).join('\n\n---\n\n');
+
+  // Build target app context if set
+  let targetContext = '';
+  if (targetApp.url) {
+    targetContext = `\n\nTARGET APPLICATION UNDER TEST:\nURL: ${targetApp.url}`;
+    if (targetApp.description) targetContext += `\nDescription: ${targetApp.description}`;
+    if (targetApp.pageContent) {
+      targetContext += `\n\nFETCHED PAGE CONTENT (truncated extract of HTML, forms, buttons, and text):\n${targetApp.pageContent}`;
+    } else {
+      targetContext += `\n\nNote: Page HTML could not be fetched (CORS restriction). Use the URL and description above to infer likely page elements and generate realistic, web-appropriate test cases.`;
+    }
+    targetContext += `\n\nWhen generating test cases, bug reports, or test plans, GROUND THEM IN THIS TARGET APPLICATION. Reference the actual URL, real form fields, real button labels, and real page elements where visible. Tailor test data to match this site's domain (e.g. if it's an e-commerce site, use realistic product/checkout scenarios).`;
+  }
+
   return `You are QA Nexus, a senior QA lead assistant grounded in ISTQB FL, IEEE 829, and STLC methodology. ${focus[mode] || focus.general}
 
 RETRIEVED KNOWLEDGE BASE CONTEXT:
-${context}
+${context}${targetContext}
 
 INSTRUCTIONS:
 - Ground every answer in the retrieved context above. Cite source labels naturally (e.g. "Per IEEE 829..." or "Per ISTQB FL...").
@@ -675,6 +731,180 @@ async function sendMessage() {
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function sendStarter(msg) { document.getElementById('userInput').value = msg; sendMessage(); }
+
+// ─── TARGET APP LOGIC ──────────────────────────────────
+function setTargetStatus(type, message) {
+  const el = document.getElementById('targetStatus');
+  el.className = 'target-status show ' + type;
+  el.innerHTML = message;
+}
+
+function updateTargetBanner() {
+  const banner = document.getElementById('targetBanner');
+  const urlEl = document.getElementById('targetBannerUrl');
+  const modeEl = document.getElementById('targetBannerMode');
+  if (targetApp.url) {
+    banner.classList.add('show');
+    urlEl.textContent = targetApp.url;
+    urlEl.href = targetApp.url;
+    if (targetApp.fetchStatus === 'fetched') modeEl.textContent = '✓ Page HTML loaded';
+    else if (targetApp.fetchStatus === 'failed') modeEl.textContent = '⚠ URL only (CORS blocked)';
+    else modeEl.textContent = 'URL + description mode';
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function clearTarget() {
+  targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
+  document.getElementById('targetUrl').value = '';
+  document.getElementById('targetDesc').value = '';
+  document.getElementById('targetStatus').className = 'target-status';
+  document.getElementById('targetStatus').innerHTML = '';
+  document.getElementById('fetchBtnText').textContent = 'Set Target';
+  updateTargetBanner();
+  showToast('Target cleared');
+}
+
+function extractReadableContent(html) {
+  // Strip scripts and styles
+  html = html.replace(/<script[\s\S]*?<\/script>/gi, '')
+             .replace(/<style[\s\S]*?<\/style>/gi, '')
+             .replace(/<!--[\s\S]*?-->/g, '');
+
+  // Use DOMParser to extract structure
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  let summary = '';
+
+  // Title
+  const title = doc.querySelector('title')?.textContent?.trim();
+  if (title) summary += `PAGE TITLE: ${title}\n\n`;
+
+  // Meta description
+  const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+  if (metaDesc) summary += `META DESCRIPTION: ${metaDesc}\n\n`;
+
+  // Headings
+  const headings = [...doc.querySelectorAll('h1, h2, h3')].map(h => `${h.tagName}: ${h.textContent.trim()}`).filter(t => t.length < 200);
+  if (headings.length) summary += `HEADINGS:\n${headings.slice(0, 20).join('\n')}\n\n`;
+
+  // Forms with fields
+  const forms = [...doc.querySelectorAll('form')];
+  if (forms.length) {
+    summary += `FORMS FOUND (${forms.length}):\n`;
+    forms.slice(0, 5).forEach((form, i) => {
+      summary += `Form ${i+1}:\n`;
+      if (form.action) summary += `  Action: ${form.action}\n`;
+      if (form.method) summary += `  Method: ${form.method}\n`;
+      const fields = [...form.querySelectorAll('input, textarea, select')];
+      fields.forEach(f => {
+        const type = f.type || f.tagName.toLowerCase();
+        const name = f.name || f.id || '(unnamed)';
+        const placeholder = f.placeholder ? ` placeholder="${f.placeholder}"` : '';
+        const required = f.required ? ' [required]' : '';
+        summary += `  - ${type}: ${name}${placeholder}${required}\n`;
+      });
+    });
+    summary += '\n';
+  }
+
+  // Buttons
+  const buttons = [...doc.querySelectorAll('button, input[type="submit"], input[type="button"], a.btn, a.button')];
+  if (buttons.length) {
+    const labels = buttons.map(b => (b.textContent || b.value || '').trim()).filter(l => l && l.length < 60);
+    const unique = [...new Set(labels)].slice(0, 25);
+    if (unique.length) summary += `BUTTONS / CTAs:\n${unique.map(l => `- "${l}"`).join('\n')}\n\n`;
+  }
+
+  // Links (nav)
+  const navLinks = [...doc.querySelectorAll('nav a, header a')].map(a => a.textContent.trim()).filter(l => l && l.length < 50);
+  if (navLinks.length) {
+    const unique = [...new Set(navLinks)].slice(0, 20);
+    summary += `NAVIGATION LINKS:\n${unique.map(l => `- ${l}`).join('\n')}\n\n`;
+  }
+
+  // Body text snippet
+  const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
+  if (bodyText) {
+    summary += `PAGE TEXT EXCERPT:\n${bodyText.slice(0, 1200)}${bodyText.length > 1200 ? '...' : ''}\n`;
+  }
+
+  return summary.slice(0, 6000); // hard cap
+}
+
+async function fetchTarget() {
+  const url = document.getElementById('targetUrl').value.trim();
+  const desc = document.getElementById('targetDesc').value.trim();
+
+  if (!url) {
+    setTargetStatus('error', 'Please enter a URL.');
+    return;
+  }
+
+  // Validate URL
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url.startsWith('http') ? url : 'https://' + url);
+  } catch (e) {
+    setTargetStatus('error', 'Invalid URL. Use format: https://example.com');
+    return;
+  }
+  const finalUrl = parsedUrl.toString();
+
+  targetApp.url = finalUrl;
+  targetApp.description = desc;
+  document.getElementById('targetUrl').value = finalUrl;
+
+  const fetchBtn = document.getElementById('fetchBtn');
+  const fetchBtnText = document.getElementById('fetchBtnText');
+  fetchBtn.disabled = true;
+  fetchBtnText.textContent = 'Fetching…';
+  setTargetStatus('loading', '⏳ Attempting to fetch page content via CORS proxy…');
+
+  // Try CORS proxy fetch
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(finalUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(finalUrl)}`,
+  ];
+
+  let html = null;
+  let lastErr = '';
+  for (const proxyUrl of proxies) {
+    try {
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(15000) });
+      if (resp.ok) {
+        const text = await resp.text();
+        if (text && text.length > 200 && text.toLowerCase().includes('<')) {
+          html = text;
+          break;
+        }
+        lastErr = 'Empty or invalid response';
+      } else {
+        lastErr = `HTTP ${resp.status}`;
+      }
+    } catch (e) {
+      lastErr = e.message || 'Network error';
+    }
+  }
+
+  if (html) {
+    targetApp.pageContent = extractReadableContent(html);
+    targetApp.fetchStatus = 'fetched';
+    const contentSize = targetApp.pageContent.length;
+    setTargetStatus('success', `✓ <strong>Page loaded successfully</strong><br>Extracted ${contentSize.toLocaleString()} chars of page structure (forms, buttons, headings). Test cases will reference real page elements.`);
+    fetchBtnText.textContent = '✓ Target Set';
+  } else {
+    targetApp.pageContent = '';
+    targetApp.fetchStatus = 'failed';
+    setTargetStatus('partial', `⚠ <strong>Page HTML could not be fetched</strong> (${lastErr}). This is common — many sites block CORS proxies.<br><br>Falling back to <strong>URL + description mode</strong>: the agent will generate realistic test cases based on the URL and your description.`);
+    fetchBtnText.textContent = '✓ Target Set (URL only)';
+  }
+
+  fetchBtn.disabled = false;
+  updateTargetBanner();
+  showToast(html ? 'Target loaded with page HTML' : 'Target set (URL only)');
+}
 
 function renderActions(mode) {
   const info = modeInfo[mode] || modeInfo.general;

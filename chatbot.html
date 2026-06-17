@@ -185,6 +185,29 @@
     .modal-btn:hover { background: var(--teal-600); }
     .modal-note { font-size: 0.75rem; color: var(--slate-400); margin-top: 0.75rem; text-align: center; }
 
+    /* MODE INDICATOR BAR */
+    .mode-bar {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.5rem 1.5rem; background: rgba(29,158,117,0.08);
+      border-bottom: 1px solid rgba(29,158,117,0.2);
+      font-size: 0.78rem; color: var(--teal-200); flex-shrink: 0;
+    }
+    .mode-bar-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-400); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .mode-bar-label { font-weight: 600; }
+    .mode-bar-desc { color: var(--slate-400); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--teal-800); border: 1px solid rgba(29,158,117,0.4);
+      color: var(--teal-100); font-size: 0.82rem; font-weight: 500;
+      padding: 0.55rem 1.2rem; border-radius: 999px;
+      transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0;
+      z-index: 50; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
     @media (max-width: 640px) {
       .sidebar { display: none; }
     }
@@ -273,6 +296,7 @@
 
   <!-- CHAT -->
   <div class="chat-area">
+    <div class="mode-bar" id="modeBar"><div class="mode-bar-dot"></div><span class="mode-bar-label" id="modeBarLabel">All Phases</span><span class="mode-bar-desc" id="modeBarDesc"> — Full STLC coverage active</span></div>
     <div class="chat-messages" id="chatMessages">
       <!-- Welcome message -->
       <div class="msg-row agent">
@@ -572,9 +596,32 @@ async function sendMessage() {
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
 function sendStarter(msg) { document.getElementById('userInput').value = msg; sendMessage(); }
+const modeInfo = {
+  general:      { label: 'All Phases',          desc: '— Full STLC coverage active' },
+  requirements: { label: 'Requirements Review',  desc: '— Testability & RTM mode' },
+  planning:     { label: 'Test Planning',         desc: '— Test plan & strategy mode' },
+  design:       { label: 'Test Design',           desc: '— Test cases & BDD mode' },
+  execution:    { label: 'Test Execution',        desc: '— Run summary & reports mode' },
+  defects:      { label: 'Defect Management',     desc: '— Bug report & triage mode' },
+  closure:      { label: 'Test Closure',          desc: '— Summary & exit criteria mode' },
+};
 function setMode(btn, mode) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); currentMode = mode;
+  btn.classList.add('active');
+  currentMode = mode;
+  const info = modeInfo[mode] || modeInfo.general;
+  document.getElementById('modeBarLabel').textContent = info.label;
+  document.getElementById('modeBarDesc').textContent = ' ' + info.desc;
+  showToast('Mode: ' + info.label);
+}
+let toastTimer;
+function showToast(msg) {
+  let toast = document.getElementById('qaToast');
+  if (!toast) { toast = document.createElement('div'); toast.id = 'qaToast'; toast.className = 'toast'; document.body.appendChild(toast); }
+  toast.textContent = '✓ ' + msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
 function saveKey() {
   const val = document.getElementById('apiKeyInput').value.trim();

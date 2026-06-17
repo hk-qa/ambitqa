@@ -6,7 +6,7 @@
 <title>QA Nexus — RAG-Powered QA Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script>
 (function() {
   const stored = localStorage.getItem('qa-nexus-theme');
@@ -101,16 +101,18 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   h1 {
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 5.5vw, 4rem);
-    font-weight: 700; line-height: 1.1;
-    letter-spacing: -0.03em; color: var(--text); margin-bottom: 1.4rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.035em; color: var(--text); margin-bottom: 1.4rem;
   }
-  h1 em {
-    font-style: normal;
+  h1 .accent {
+    display: inline-block;
     background: linear-gradient(135deg, var(--brand-500), var(--violet-500));
     -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-weight: 900;
   }
+  h1 .period { color: var(--brand-500); }
 
   .hero-sub { font-size: 1.15rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2.4rem; line-height: 1.65; }
   .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem; }
@@ -246,8 +248,8 @@
     <span class="dot"></span>
     Codecademy Agentic AI Bootcamp · RAG-Powered
   </div>
-  <h1>Your <em>Senior QA Lead</em><br>available 24/7</h1>
-  <p class="hero-sub">A retrieval-augmented QA assistant grounded in ISTQB and IEEE 829 — producing test plans, bug reports, and traceability matrices in seconds, not hours.</p>
+  <h1>Every QA deliverable.<br><span class="accent">Generated in seconds</span><span class="period">.</span></h1>
+  <p class="hero-sub">Test cases, bug reports, traceability matrices, test plans — grounded in ISTQB and IEEE 829, exported to Jira, ready to ship.</p>
   <div class="hero-actions">
     <a class="btn-primary" href="chatbot.html">See it in action</a>
     <a class="btn-ghost" href="#how">How it works</a>

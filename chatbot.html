@@ -436,6 +436,38 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+  /* FORM MODAL */
+  .form-modal { max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; padding: 1.5rem; }
+  .form-modal-header { padding-bottom: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+  .form-modal-fields { flex: 1; overflow-y: auto; padding-right: 0.5rem; }
+  .form-modal-fields::-webkit-scrollbar { width: 4px; }
+  .form-modal-fields::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+  .form-field { margin-bottom: 1.1rem; }
+  .form-field label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+  .form-field .form-hint { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; font-style: italic; }
+  .form-field textarea, .form-field input {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); padding: 0.55rem 0.8rem;
+    font-size: 0.9rem; color: var(--text); font-family: var(--font-b);
+    outline: none; transition: border-color 0.15s; line-height: 1.5;
+  }
+  .form-field textarea { resize: vertical; min-height: 50px; }
+  .form-field textarea:focus, .form-field input:focus { border-color: var(--brand-500); }
+  .form-modal-actions { display: flex; gap: 0.6rem; padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 0.5rem; }
+  .form-modal-actions .modal-btn { flex: 1; }
+  .form-modal-cancel {
+    background: transparent; color: var(--text-muted); border: 1px solid var(--border-strong);
+    padding: 0.75rem 1.2rem; border-radius: var(--r-sm); font-size: 0.9rem; cursor: pointer;
+    font-family: var(--font-b); transition: all 0.15s;
+  }
+  .form-modal-cancel:hover { color: var(--text); border-color: var(--text-muted); }
+  .export-btn.form-fill {
+    background: color-mix(in srgb, var(--brand-500) 15%, transparent);
+    border-color: color-mix(in srgb, var(--brand-500) 45%, transparent);
+    color: var(--brand-400); font-weight: 600;
+  }
+  .export-btn.form-fill:hover { background: color-mix(in srgb, var(--brand-500) 25%, transparent); color: var(--text); }
+
   @media (max-width: 1000px) {
     .sidebar.right, .resize-handle.right { display: none; }
   }
@@ -468,6 +500,21 @@
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
     <button class="modal-btn" onclick="saveKey()">Start chatting →</button>
     <p class="modal-note">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+  </div>
+</div>
+
+<!-- FORM-FILL MODAL -->
+<div class="modal-overlay" id="formModal" style="display:none;">
+  <div class="modal form-modal">
+    <div class="form-modal-header">
+      <h2 id="formModalTitle">Fill in the details</h2>
+      <p>The agent will use your answers to generate a structured deliverable.</p>
+    </div>
+    <div class="form-modal-fields" id="formFieldsContainer"></div>
+    <div class="form-modal-actions">
+      <button class="form-modal-cancel" onclick="closeFormModal()">Cancel</button>
+      <button class="modal-btn" onclick="submitFormModal()">Submit answers →</button>
+    </div>
   </div>
 </div>
 
@@ -955,20 +1002,113 @@ function mapJiraPriority(p) {
   return 'Medium';
 }
 
+// ─── FORM-FILL DETECTION ───────────────────────────────
+function detectFormRequest(rawMd) {
+  const tables = parseMarkdownTables(rawMd);
+  if (tables.length === 0) return null;
+
+  // Check first table
+  const table = tables[0];
+  if (table.rows.length < 2) return null;
+  const header = table.rows[0].map(h => h.toLowerCase());
+
+  // Find label column (what the user needs to provide)
+  const labelKeywords = /what i need|field|question|item|name|detail|info/;
+  let labelIdx = header.findIndex(h => labelKeywords.test(h));
+
+  // If no label-like column but first column is "#"/number, use second column
+  if (labelIdx === -1 && /^[#\s]*$/.test(header[0]) && header.length > 1) {
+    labelIdx = 1;
+  }
+
+  // Check if text before the table is asking for input
+  const beforeTable = rawMd.split(/\n\|/)[0].toLowerCase();
+  const askingPattern = /please provide|details needed|i(?:'ll)? need|i need.*following|tell me about|let me know|fill in|need the following/;
+  const isAsking = askingPattern.test(beforeTable);
+
+  if (labelIdx === -1 || !isAsking) return null;
+
+  // Find example/hint column
+  const exampleIdx = header.findIndex(h => /example|hint|placeholder|description|format/.test(h));
+
+  // Extract fields from data rows
+  const fields = [];
+  for (let i = 1; i < table.rows.length; i++) {
+    const row = table.rows[i];
+    const label = row[labelIdx]?.trim();
+    if (!label || label.length < 2) continue;
+    const hint = exampleIdx >= 0 ? (row[exampleIdx]?.trim() || '') : '';
+    // Clean up label (remove markdown formatting)
+    const cleanLabel = label.replace(/\*\*/g, '').replace(/\*/g, '');
+    fields.push({ label: cleanLabel, hint: hint.replace(/\*\*/g, '').replace(/\*/g, '') });
+  }
+
+  return fields.length >= 2 ? fields : null;
+}
+
+let currentFormFields = null;
+
+function openFormModal(rawMd) {
+  const fields = detectFormRequest(rawMd);
+  if (!fields) { showToast('No form fields detected'); return; }
+  currentFormFields = fields;
+
+  const container = document.getElementById('formFieldsContainer');
+  container.innerHTML = fields.map((f, i) => {
+    const isShort = f.label.length < 30 && !/describe|explain|steps/i.test(f.label);
+    const inputType = isShort ? 'input' : 'textarea';
+    const hintHtml = f.hint ? `<span class="form-hint">e.g., ${f.hint.replace(/"/g, '&quot;')}</span>` : '';
+    return `<div class="form-field">
+      <label for="ff_${i}">${i+1}. ${f.label}</label>
+      ${hintHtml}
+      ${inputType === 'textarea'
+        ? `<textarea id="ff_${i}" rows="2" placeholder="${f.hint ? f.hint.replace(/"/g,'&quot;').slice(0,80) : ''}"></textarea>`
+        : `<input type="text" id="ff_${i}" placeholder="${f.hint ? f.hint.replace(/"/g,'&quot;').slice(0,80) : ''}" />`}
+    </div>`;
+  }).join('');
+
+  document.getElementById('formModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('ff_0')?.focus(), 100);
+}
+
+function closeFormModal() {
+  document.getElementById('formModal').style.display = 'none';
+  currentFormFields = null;
+}
+
+function submitFormModal() {
+  if (!currentFormFields) return;
+  const answers = currentFormFields.map((f, i) => {
+    const el = document.getElementById('ff_' + i);
+    const val = el?.value.trim() || '_____';
+    return `${i+1}. ${f.label}: ${val}`;
+  }).join('\n');
+
+  const message = `Here are the details you requested:\n\n${answers}`;
+  closeFormModal();
+
+  // Send as user message
+  document.getElementById('userInput').value = message;
+  sendMessage();
+}
+
 // ─── DOM HELPERS ───────────────────────────────────────
 function buildExportToolbar(rawMd) {
   const contentType = detectContentType(rawMd);
   const hasTable = parseMarkdownTables(rawMd).length > 0;
   const jiraEligible = hasTable && (contentType === 'testcases' || contentType === 'bugreport');
+  const formFields = detectFormRequest(rawMd);
   const id = 'ex_' + Math.random().toString(36).slice(2,8);
   window['_md_'+id] = rawMd;
   window['_ct_'+id] = contentType;
   const icons = {
     copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
     dl: '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-    jira: '<svg viewBox="0 0 24 24"><polygon points="3 12 12 3 21 12 12 21 3 12"/></svg>'
+    jira: '<svg viewBox="0 0 24 24"><polygon points="3 12 12 3 21 12 12 21 3 12"/></svg>',
+    form: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
   };
   return `<div class="export-toolbar">
+    ${formFields ? `<button class="export-btn form-fill" onclick="openFormModal(window['_md_${id}'])">${icons.form} Fill form (${formFields.length} fields)</button>` : ''}
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'copy',window['_ct_${id}'])">${icons.copy} Copy</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'txt',window['_ct_${id}'])">${icons.dl} TXT</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'html',window['_ct_${id}'])">${icons.dl} HTML</button>

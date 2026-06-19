@@ -1977,20 +1977,57 @@ function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
 
-// Curated common QA prompts that work across modes
+// Curated common QA prompts that work across modes — broad coverage for autosuggest
 const COMMON_PROMPTS = [
-  'Generate test cases for the target application',
-  'Create a bug report for an issue I found',
+  // Requirements & planning
+  'Generate user stories with acceptance criteria',
+  'Create a requirements document for the target application',
+  'Identify ambiguous or untestable requirements',
+  'Write a risk-based test strategy',
   'Write a test plan for the target application',
-  'Generate a Requirements Traceability Matrix',
-  'Create exploratory test charters',
-  'Identify the top risks for testing',
+  'Generate entry and exit criteria for testing',
+  // Test design
+  'Generate test cases for the target application',
+  'Generate boundary value analysis test cases',
+  'Create equivalence partitioning test cases',
+  'Write decision table test cases',
+  'Generate state transition test cases',
+  'Generate negative and edge case scenarios',
+  // BDD / Gherkin
   'Write BDD Gherkin scenarios for the main user flow',
-  'Generate accessibility test cases (WCAG 2.1 AA)',
-  'Create a test execution summary report',
-  'Generate a Playwright Page Object Model',
-  'Convert these manual test cases to automation scripts',
+  'Convert manual test cases to Gherkin format',
+  'Generate Cucumber feature files for the target application',
+  // Bug reporting
+  'Create a bug report for an issue I found',
+  'Write a defect report following IEEE 829',
   'Suggest severity and priority for this defect',
+  'Create a regression test case for a bug fix',
+  // Test execution
+  'Create a test execution summary report',
+  'Generate a daily test execution status template',
+  'Create a smoke test suite for the target application',
+  'Create a sanity test checklist',
+  // Automation
+  'Generate a Playwright Page Object Model',
+  'Create a Cypress test framework',
+  'Write Selenium WebDriver tests with pytest',
+  'Generate Cucumber step definitions',
+  'Convert manual test cases to automation scripts',
+  'Create a CI/CD GitHub Actions workflow for tests',
+  'Generate test fixtures and mock data',
+  // Specialty test types
+  'Generate accessibility test cases (WCAG 2.1 AA)',
+  'Create performance test scenarios',
+  'Write API contract tests',
+  'Generate security test cases for the login flow',
+  'Create exploratory test charters',
+  'Write cross-browser compatibility test cases',
+  'Generate mobile responsive test cases',
+  // Coverage & closure
+  'Generate a Requirements Traceability Matrix',
+  'Identify the top risks for testing',
+  'Create a test coverage analysis report',
+  'Write a lessons learned document',
 ];
 
 let suppressSuggest = false;

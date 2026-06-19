@@ -191,7 +191,25 @@ Demonstrates:
 
 ## 📄 License
 
-MIT License — free to use, modify, and learn from.
+**Copyright © 2026 Hitesh Kapur. All rights reserved.**
+
+This code is published for **portfolio demonstration and educational reference**.
+
+**You may:**
+- ✅ View, read, and study the source code
+- ✅ Reference patterns or approaches in your own original work
+- ✅ Use the live demo with your own Anthropic API key
+- ✅ Share links to this repository and the live site
+
+**You may NOT:**
+- ❌ Copy, redistribute, or republish this code or any substantial portion
+- ❌ Deploy this code (in whole or in part) to any public or commercial service
+- ❌ Use this code in any commercial product or paid offering
+- ❌ Remove attribution or claim authorship
+
+For commercial licensing inquiries or to request permission for other uses, please contact via LinkedIn (linked below).
+
+> The methodology knowledge base references (ISTQB Foundation Level concepts, IEEE 829 templates, STLC definitions) are based on publicly available industry standards and are not claimed as original works.
 
 ---
 
@@ -205,4 +223,4 @@ MIT License — free to use, modify, and learn from.
 
 ## 📱 Connect
 
-Built by **HK** — find me on [LinkedIn](https://www.linkedin.com/in/hkapur) · #CodecademyAgenticAIBootcamp
+Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/) · #CodecademyAgenticAIBootcamp

@@ -1,0 +1,86 @@
+QA Nexus — Proprietary Portfolio License
+=========================================
+
+Copyright © 2026 Hitesh Kapur. All Rights Reserved.
+
+This software and associated documentation files (the "Software"),
+including the QA Nexus chatbot application, landing page, README,
+knowledge base content, and all other materials in this repository,
+are the intellectual property of the copyright holder.
+
+This Software is published publicly for the purposes of:
+  - Portfolio demonstration
+  - Educational reference
+  - Capstone project submission for the Codecademy Agentic AI
+    Applications Bootcamp
+
+PERMITTED USES
+--------------
+You are permitted to:
+  1. View and read the source code.
+  2. Study the implementation for personal educational purposes.
+  3. Reference architectural patterns or general approaches in
+     your own independently authored work, with proper attribution.
+  4. Use the publicly hosted live demo at the canonical URL using
+     your own Anthropic API key.
+  5. Share links to this repository and the live demo.
+
+PROHIBITED USES
+---------------
+Without prior written permission from the copyright holder, you
+may NOT:
+  1. Copy, fork, mirror, or redistribute this Software or any
+     substantial portion of it.
+  2. Modify this Software and redistribute the modified version.
+  3. Deploy this Software, in whole or in substantial part, to any
+     public, private, or commercial service.
+  4. Incorporate this Software into any commercial product,
+     paid offering, or service for which any fee is charged.
+  5. Remove or alter copyright notices, attribution, or this
+     license file.
+  6. Claim authorship or origination of this Software or its
+     constituent components.
+  7. Use the QA Nexus name, branding, or visual identity in any
+     derivative or related work.
+
+KNOWLEDGE BASE CONTENT
+----------------------
+The methodology references contained within the knowledge base
+(including but not limited to ISTQB Foundation Level concepts,
+IEEE 829 templates, STLC phase definitions, BDD/Gherkin syntax,
+and automation framework patterns) are based on publicly available
+industry standards. These references are not claimed as original
+works of the copyright holder, and their underlying methodologies
+remain in the public domain or under their respective owners'
+licensing terms.
+
+NO WARRANTY
+-----------
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
+LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT
+OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+USER-SUPPLIED API KEYS
+----------------------
+The QA Nexus application requires users to supply their own
+Anthropic API key. The copyright holder has no access to,
+responsibility for, or liability regarding any API keys entered
+by users into their own browser sessions. Users are solely
+responsible for the security, usage, and billing of their
+own API keys.
+
+LICENSING INQUIRIES
+-------------------
+For commercial licensing, reuse, modification, or redistribution
+permissions, please contact the copyright holder via LinkedIn.
+
+---
+
+This license is intended to protect portfolio work while allowing
+the project to remain publicly visible for review by recruiters,
+educators, and the technical community.

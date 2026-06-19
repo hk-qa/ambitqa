@@ -2007,21 +2007,16 @@ function updateSuggestions(query) {
   if (suppressSuggest) { suppressSuggest = false; return; }
   const box = document.getElementById('suggestBox');
   const q = query.trim().toLowerCase();
+  // Only show suggestions when the user is actively typing — never on empty/focus
+  if (q.length < 2) return hideSuggestions();
   const all = getAllSuggestions();
-  let matches;
-  if (!q) {
-    matches = all.slice(0, 5);  // Show top 5 from current mode when empty
-  } else if (q.length < 2) {
-    return hideSuggestions();
-  } else {
-    matches = all.filter(s => {
-      const sl = s.toLowerCase();
-      // Match if any word in query is contained in suggestion
-      return q.split(/\s+/).every(word => sl.includes(word));
-    }).slice(0, 6);
-    // If the query exactly matches a suggestion, the user already picked it — don't show
-    if (matches.length === 1 && matches[0].toLowerCase() === q) return hideSuggestions();
-  }
+  const matches = all.filter(s => {
+    const sl = s.toLowerCase();
+    // Match if all words in query are contained in the suggestion
+    return q.split(/\s+/).every(word => sl.includes(word));
+  }).slice(0, 6);
+  // If the query exactly matches a suggestion, the user already picked it — don't show
+  if (matches.length === 1 && matches[0].toLowerCase() === q) return hideSuggestions();
   if (matches.length === 0) return hideSuggestions();
   const items = matches.map((s, i) => {
     const safe = s.replace(/'/g, '&apos;').replace(/"/g, '&quot;');

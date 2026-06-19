@@ -26,6 +26,7 @@
     --brand-900:#312E81;
     --violet-400:#A78BFA; --violet-500:#8B5CF6; --violet-600:#7C3AED;
     --amber-300:#FCD34D; --rose-400:#FB7185;
+    --orange-400:#FB923C; --orange-500:#F97316;
 
     --font-d: 'Space Grotesk', sans-serif;
     --font-b: 'Inter', sans-serif;
@@ -38,8 +39,8 @@
     --bg-elev-2: #1E1E3F;
     --bg-input: #0F0F22;
     --text: #E8E9F3;
-    --text-muted: #9B9DC1;
-    --text-dim: #6B6E94;
+    --text-muted: #DCDFEE;
+    --text-dim: #B5B8D2;
     --border: rgba(255,255,255,0.07);
     --border-strong: rgba(255,255,255,0.15);
     --bubble-agent-bg: #14142B;
@@ -61,8 +62,8 @@
     --bg-elev-2: #F4F4FB;
     --bg-input: #FFFFFF;
     --text: #1E1B3A;
-    --text-muted: #5B5876;
-    --text-dim: #8B89A8;
+    --text-muted: #2A2542;
+    --text-dim: #3D3958;
     --border: rgba(30,27,58,0.08);
     --border-strong: rgba(30,27,58,0.15);
     --bubble-agent-bg: #FFFFFF;
@@ -89,17 +90,19 @@
 
   /* NAV */
   nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; height: 58px; flex-shrink: 0;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 0 1.25rem; height: 64px; flex-shrink: 0;
     background: var(--nav-bg); backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
   }
+  .nav-left { display: flex; align-items: center; justify-self: start; }
   .logo {
-    font-family: var(--font-d); font-weight: 700; font-size: 1.15rem;
-    color: var(--text); text-decoration: none; letter-spacing: -0.01em;
+    font-family: var(--font-d); font-weight: 700; font-size: 1.5rem;
+    color: var(--text); text-decoration: none; letter-spacing: -0.02em;
+    justify-self: center; padding: 0 1rem;
   }
   .logo span { background: linear-gradient(135deg, var(--brand-500), var(--violet-500)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .nav-right { display: flex; align-items: center; gap: 0.85rem; }
+  .nav-right { display: flex; align-items: center; gap: 0.6rem; justify-self: end; }
   .nav-badge {
     font-size: 0.78rem; color: var(--brand-400);
     background: color-mix(in srgb, var(--brand-500) 12%, transparent);
@@ -114,6 +117,23 @@
   }
   .theme-toggle:hover { background: var(--bg-elev-2); color: var(--text); border-color: var(--border-strong); }
   .theme-toggle svg { width: 18px; height: 18px; }
+
+  /* PANEL TOGGLES */
+  .panel-toggle {
+    width: 36px; height: 36px; border-radius: var(--r-sm);
+    background: transparent; border: 1px solid var(--border);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); transition: all 0.15s;
+  }
+  .panel-toggle:hover { background: var(--bg-elev-2); color: var(--text); border-color: var(--border-strong); }
+  .panel-toggle.active {
+    background: color-mix(in srgb, var(--brand-500) 15%, transparent);
+    color: var(--brand-400);
+    border-color: color-mix(in srgb, var(--brand-500) 50%, transparent);
+  }
+  .panel-toggle svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+  .sidebar.collapsed, .resize-handle.collapsed { display: none !important; }
   .back-link { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; }
   .back-link:hover { color: var(--text); }
 
@@ -228,7 +248,7 @@
   }
   .target-status.show { display: block; }
   .target-status.success { background: color-mix(in srgb, var(--brand-500) 10%, transparent); border: 1px solid color-mix(in srgb, var(--brand-500) 30%, transparent); color: var(--brand-400); }
-  .target-status.partial { background: color-mix(in srgb, var(--amber-300) 10%, transparent); border: 1px solid color-mix(in srgb, var(--amber-300) 30%, transparent); color: var(--amber-300); }
+  .target-status.partial { background: color-mix(in srgb, var(--rose-400) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rose-400) 50%, transparent); color: var(--rose-400); font-weight: 500; }
   .target-status.error { background: color-mix(in srgb, var(--rose-400) 10%, transparent); border: 1px solid color-mix(in srgb, var(--rose-400) 30%, transparent); color: var(--rose-400); }
   .target-status.loading { background: color-mix(in srgb, var(--violet-500) 10%, transparent); border: 1px solid color-mix(in srgb, var(--violet-500) 30%, transparent); color: var(--violet-400); }
 
@@ -262,27 +282,27 @@
   .mode-bar-desc { color: var(--text-muted); }
 
   .chat-messages {
-    flex: 1; overflow-y: auto; padding: 2rem 2.5rem;
-    display: flex; flex-direction: column; gap: 1.5rem;
+    flex: 1; overflow-y: auto; overflow-x: hidden; padding: 2rem 2.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem; min-width: 0;
   }
   .chat-messages::-webkit-scrollbar { width: 6px; }
   .chat-messages::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 
-  .msg-row { display: flex; gap: 0.85rem; max-width: 100%; }
-  .msg-row.user { flex-direction: row-reverse; align-self: flex-end; max-width: 75%; }
-  .msg-avatar {
-    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  .msg-row { display: flex; gap: 0.85rem; max-width: 100%; min-width: 0; width: 100%; }
+  .msg-row.user { flex-direction: row-reverse; align-self: flex-end; max-width: 75%; width: auto; }
+  .msg-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.78rem; font-weight: 700;
-  }
+    font-size: 0.78rem; font-weight: 700; }
   .msg-avatar.agent { background: linear-gradient(135deg, var(--brand-700), var(--violet-600)); color: #fff; }
   .msg-avatar.user { background: var(--bg-elev-2); color: var(--text-muted); }
-  .msg-content { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; flex: 1; }
+  .msg-content { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; flex: 1; max-width: 100%; }
 
   .msg-bubble {
     padding: 1rem 1.25rem; border-radius: 12px;
     font-size: 0.95rem; line-height: 1.7;
+    max-width: 100%; min-width: 0;
   }
+  .msg-row.agent .msg-bubble { width: 100%; }
   .msg-row.agent .msg-bubble {
     background: var(--bubble-agent-bg); border: 1px solid var(--border);
     color: var(--bubble-agent-text); border-radius: 4px 12px 12px 12px;
@@ -306,6 +326,7 @@
     border-radius: 6px; padding: 0.85rem 1.1rem; margin: 0.7rem 0;
     overflow-x: auto; font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
     font-size: 0.85rem; line-height: 1.6; color: var(--code-text); white-space: pre;
+    max-width: 100%; min-width: 0;
   }
   .msg-bubble pre.code-block code { background: none; padding: 0; font-size: inherit; color: inherit; }
   .msg-bubble blockquote {
@@ -319,13 +340,19 @@
   .msg-bubble table {
     width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.7rem 0;
     background: var(--bg-elev-2); border-radius: 6px; overflow: hidden;
+    table-layout: auto;
   }
   .msg-bubble th {
     color: var(--table-head-text); font-weight: 600; text-align: left;
     padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border-strong);
     background: var(--table-head-bg); font-size: 0.85rem;
+    word-break: break-word; overflow-wrap: anywhere;
   }
-  .msg-bubble td { color: var(--text); padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .msg-bubble td {
+    color: var(--text); padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+    word-break: break-word; overflow-wrap: anywhere;
+  }
   .msg-bubble tr:nth-child(even) td { background: var(--table-row-alt); }
   .msg-bubble code {
     background: var(--code-bg); padding: 0.12rem 0.4rem; border-radius: 3px;
@@ -412,20 +439,21 @@
 
   /* INPUT */
   .chat-input-area { padding: 1.2rem 2.5rem 1.5rem; border-top: 1px solid var(--border); background: var(--bg); }
-  .input-row { display: flex; gap: 0.75rem; align-items: flex-end; }
-  .input-wrap { flex: 1; position: relative; }
+  .input-row { display: flex; gap: 0.75rem; align-items: center; }
+  .input-wrap { flex: 1; position: relative; display: flex; }
   textarea {
     width: 100%; background: var(--bg-input);
     border: 1px solid var(--border-strong); border-radius: var(--r-md);
-    padding: 0.85rem 1.1rem; font-size: 0.95rem;
+    padding: 0.75rem 1.1rem; font-size: 0.95rem;
     font-family: var(--font-b); color: var(--text);
     resize: none; outline: none; line-height: 1.5;
-    min-height: 48px; max-height: 160px; transition: border-color 0.2s;
+    min-height: 50px; max-height: 160px; transition: border-color 0.2s;
+    display: block;
   }
   textarea::placeholder { color: var(--text-dim); }
   textarea:focus { border-color: color-mix(in srgb, var(--brand-500) 60%, transparent); }
   .send-btn {
-    width: 48px; height: 48px; border-radius: var(--r-sm);
+    width: 50px; height: 50px; border-radius: var(--r-md);
     background: linear-gradient(135deg, var(--brand-500), var(--violet-500));
     border: none; cursor: pointer; display: flex; align-items: center;
     justify-content: center; flex-shrink: 0; transition: opacity 0.2s;
@@ -434,6 +462,101 @@
   .send-btn:disabled { background: var(--text-dim); cursor: not-allowed; }
   .send-btn svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .input-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center; }
+
+  /* AUTOSUGGEST */
+  .suggest-box {
+    position: absolute; bottom: calc(100% + 6px); left: 0; right: 0;
+    background: var(--bg-elev); border: 1px solid var(--border-strong);
+    border-radius: var(--r-md); box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
+    max-height: 240px; overflow-y: auto; z-index: 30;
+    display: none;
+  }
+  .suggest-box.show { display: block; }
+  .suggest-item {
+    padding: 0.55rem 0.85rem; font-size: 0.88rem;
+    color: var(--text); cursor: pointer; line-height: 1.4;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .suggest-item:last-child { border-bottom: none; }
+  .suggest-item:hover, .suggest-item.active {
+    background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+    color: var(--brand-400);
+  }
+  .suggest-item .suggest-arrow { color: var(--brand-400); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .suggest-item .suggest-kbd {
+    margin-left: auto; font-size: 0.72rem; color: var(--text-dim);
+    background: var(--bg-elev-2); padding: 0.05rem 0.35rem; border-radius: 3px;
+    font-family: 'Menlo', monospace; flex-shrink: 0; display: none;
+  }
+  .suggest-item.active .suggest-kbd { display: inline; }
+
+  /* ATTACHMENTS */
+  .attach-btn {
+    width: 50px; height: 50px; border-radius: var(--r-md);
+    background: var(--bg-elev-2); border: 1px solid var(--border-strong);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s; color: var(--text-muted);
+  }
+  .attach-btn:hover {
+    background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+    border-color: var(--brand-500); color: var(--brand-400);
+  }
+  .attach-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .attachment-preview {
+    display: flex; gap: 0.55rem; flex-wrap: wrap;
+    padding: 0.6rem 0.5rem 0; align-items: flex-start;
+  }
+  .attachment-preview:empty { display: none; }
+  .attachment-thumb {
+    position: relative; width: 72px; height: 72px; border-radius: var(--r-sm);
+    overflow: hidden; border: 1px solid var(--border-strong);
+    background: var(--bg-elev-2); flex-shrink: 0;
+  }
+  .attachment-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .attachment-thumb.pdf {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--brand-400); padding: 0.3rem;
+  }
+  .attachment-thumb.pdf svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; margin-bottom: 2px; }
+  .attachment-thumb.pdf .pdf-label { font-size: 0.62rem; font-weight: 700; color: var(--brand-400); }
+  .attachment-thumb.html {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--violet-400); padding: 0.3rem;
+  }
+  .attachment-thumb.html svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; margin-bottom: 2px; }
+  .attachment-thumb.html .pdf-label { font-size: 0.62rem; font-weight: 700; color: var(--violet-400); }
+  .attachment-remove {
+    position: absolute; top: 3px; right: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,0,0,0.75); color: #fff; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; cursor: pointer; line-height: 1;
+    font-family: -apple-system, Helvetica, sans-serif;
+  }
+  .attachment-remove:hover { background: var(--rose-400); }
+  .attachment-name {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.75); color: #fff;
+    font-size: 0.62rem; padding: 1px 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* IMAGES IN CHAT MESSAGES */
+  .msg-images { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .msg-image {
+    max-width: 280px; max-height: 200px; border-radius: 8px;
+    border: 1px solid var(--border-strong); cursor: zoom-in;
+    display: block; transition: transform 0.15s;
+  }
+  .msg-image:hover { transform: scale(1.02); }
+  .msg-pdf-tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.7rem; background: var(--bg-elev-2);
+    border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+    font-size: 0.82rem; color: var(--brand-400); margin-right: 0.4rem; margin-bottom: 0.4rem;
+  }
+  .msg-pdf-tag svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
 
   /* MODAL */
   .modal-overlay {
@@ -521,12 +644,20 @@
 
 <!-- NAV -->
 <nav>
+  <div class="nav-left">
+    <button class="panel-toggle active" id="leftToggle" onclick="togglePanel('left')" title="Toggle left panel" aria-label="Toggle left panel">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </button>
+  </div>
   <a class="logo" href="index.html">QA<span>Nexus</span></a>
   <div class="nav-right">
     <span class="nav-badge">ISTQB · IEEE 829 grounded</span>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
       <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <button class="panel-toggle active" id="rightToggle" onclick="togglePanel('right')" title="Toggle right panel" aria-label="Toggle right panel">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
     </button>
     <a class="back-link" href="index.html">← Back to home</a>
   </div>
@@ -571,6 +702,7 @@
       <button class="mode-btn" onclick="setMode(this,'execution')">Test Execution<span class="mode-phase">Run summary · Reports</span></button>
       <button class="mode-btn" onclick="setMode(this,'defects')">Defect Management<span class="mode-phase">Bug reports · Triage</span></button>
       <button class="mode-btn" onclick="setMode(this,'closure')">Test Closure<span class="mode-phase">Summary · Lessons</span></button>
+      <button class="mode-btn" onclick="setMode(this,'automation')">Test Automation<span class="mode-phase">Playwright · Cypress · BDD</span></button>
     </div>
 
     <div class="sidebar-section">
@@ -600,9 +732,10 @@
         <div class="msg-content">
           <div class="msg-bubble">
             <p><strong>Welcome to QA Nexus.</strong> Your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
-            <p>👈 <strong>Left panel:</strong> pick an STLC phase and use quick actions to generate deliverables.</p>
-            <p>👉 <strong>Right panel:</strong> target a real application URL so I can produce site-specific test cases.</p>
-            <p>Every output comes with <strong>Copy · TXT · HTML · Jira CSV</strong> export. Drag the dividers to resize each panel.</p>
+            <p>👈 <strong>Left panel:</strong> pick an STLC phase, including <strong>Test Automation</strong> for Playwright / Cypress / Selenium / BDD code generation.</p>
+            <p>👉 <strong>Right panel:</strong> target a real application URL so I can produce site-specific deliverables.</p>
+            <p>📎 <strong>Attach:</strong> screenshots, PDFs, or <strong>HTML files</strong> (drag/paste them in). Screenshots help me see the UI; HTML files give me real selectors for working automation code.</p>
+            <p>Every output comes with <strong>TXT · MD · HTML · Jira CSV</strong> export. Drag the dividers to resize each panel — or use the panel toggles in the navbar to hide them.</p>
           </div>
           <div class="source-chips"><span class="source-chip">ISTQB FL</span><span class="source-chip">IEEE 829</span><span class="source-chip">STLC</span></div>
         </div>
@@ -610,15 +743,21 @@
     </div>
 
     <div class="chat-input-area">
+      <div class="attachment-preview" id="attachmentPreview"></div>
       <div class="input-row">
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,application/pdf,text/html,text/xml,application/xml,.html,.htm,.xml" multiple style="display:none;" onchange="handleFileSelect(this.files)" />
+        <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach screenshots or PDFs">
+          <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
         <div class="input-wrap">
-          <textarea id="userInput" placeholder="Ask about test cases, bug reports, RTM, test plans…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <div class="suggest-box" id="suggestBox"></div>
+          <textarea id="userInput" placeholder="Ask about test cases, bug reports, RTM, test plans…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this); updateSuggestions(this.value)" onfocus="updateSuggestions(this.value)" onblur="setTimeout(() => hideSuggestions(), 200)"></textarea>
         </div>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div class="input-hint">Shift+Enter for new line · Enter to send</div>
+      <div class="input-hint">Shift+Enter for new line · Enter to send · ↑↓ to pick suggestion · 📎 attach screenshots, PDFs, or HTML files</div>
     </div>
   </div>
 
@@ -628,7 +767,7 @@
   <aside class="sidebar right" id="rightSidebar">
     <div class="target-panel">
       <div class="sidebar-label">🎯 Target Application</div>
-      <input type="text" id="targetUrl" placeholder="https://example.com" autocomplete="off" />
+      <input type="text" id="targetUrl" placeholder="example.com or www.example.com" autocomplete="off" />
       <textarea id="targetDesc" placeholder="Optional: describe the page or feature (e.g. 'login page', 'checkout flow')"></textarea>
       <div class="target-actions">
         <button class="target-fetch-btn" id="fetchBtn" onclick="fetchTarget()">
@@ -637,6 +776,9 @@
         <button class="target-clear-btn" onclick="clearTarget()" title="Clear target">✕</button>
       </div>
       <div class="target-status" id="targetStatus"></div>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.7rem;line-height:1.5;padding-top:0.6rem;border-top:1px dashed var(--border);">
+        💡 <strong style="color:var(--brand-400);">For automation code:</strong> if CORS blocks the fetch, open DevTools (F12) → right-click the form → <em>Copy outerHTML</em> → save as <code>.html</code> and attach via 📎 (or paste in chat). This gives me real selectors instead of guessing from screenshots.
+      </div>
     </div>
 
     <div class="sidebar-section">
@@ -648,6 +790,7 @@
       <div class="source-item"><strong>Defect Lifecycle</strong> · Severity & priority</div>
       <div class="source-item"><strong>BDD / Gherkin</strong> · Scenarios</div>
       <div class="source-item"><strong>Agile QA</strong> · Shift-left, sprint testing</div>
+      <div class="source-item"><strong>Automation</strong> · Playwright, Cypress, Selenium, POM</div>
     </div>
 
     <div class="sidebar-section">
@@ -679,6 +822,135 @@ let apiKey = '';
 let currentMode = 'general';
 let conversationHistory = [];
 let targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
+let pendingAttachments = [];
+
+// ─── ATTACHMENT HANDLING ───────────────────────────────
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function fileToText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
+}
+
+function isHtmlFile(file) {
+  const name = file.name.toLowerCase();
+  return file.type === 'text/html' || file.type === 'text/xml' || file.type === 'application/xml'
+      || name.endsWith('.html') || name.endsWith('.htm') || name.endsWith('.xml');
+}
+
+async function handleFileSelect(files) {
+  for (const file of files) {
+    const isImage = file.type.startsWith('image/');
+    const isPdf = file.type === 'application/pdf';
+    const isHtml = isHtmlFile(file);
+    if (!isImage && !isPdf && !isHtml) {
+      showToast('Supported: images, PDFs, and HTML files');
+      continue;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      showToast('File too large (max 8 MB): ' + file.name);
+      continue;
+    }
+    if (pendingAttachments.length >= 8) {
+      showToast('Max 8 attachments per message');
+      break;
+    }
+    try {
+      if (isHtml) {
+        const rawHtml = await fileToText(file);
+        const extracted = extractReadableContent(rawHtml);
+        pendingAttachments.push({
+          name: file.name,
+          type: 'text/html',
+          kind: 'html',
+          textContent: extracted,
+          rawSize: rawHtml.length
+        });
+      } else {
+        const base64 = await fileToBase64(file);
+        pendingAttachments.push({
+          name: file.name,
+          type: file.type,
+          kind: isImage ? 'image' : 'pdf',
+          base64: base64,
+          dataUrl: isImage ? `data:${file.type};base64,${base64}` : null
+        });
+      }
+    } catch (e) {
+      showToast('Could not read ' + file.name);
+    }
+  }
+  renderAttachmentPreview();
+  document.getElementById('fileInput').value = '';
+}
+
+function removeAttachment(index) {
+  pendingAttachments.splice(index, 1);
+  renderAttachmentPreview();
+}
+
+function renderAttachmentPreview() {
+  const container = document.getElementById('attachmentPreview');
+  if (!container) return;
+  container.innerHTML = pendingAttachments.map((att, i) => {
+    if (att.kind === 'image') {
+      return `<div class="attachment-thumb">
+        <img src="${att.dataUrl}" alt="${att.name}" />
+        <button class="attachment-remove" onclick="removeAttachment(${i})" title="Remove">×</button>
+        <div class="attachment-name">${att.name}</div>
+      </div>`;
+    } else if (att.kind === 'pdf') {
+      return `<div class="attachment-thumb pdf">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <div class="pdf-label">PDF</div>
+        <button class="attachment-remove" onclick="removeAttachment(${i})" title="Remove">×</button>
+        <div class="attachment-name">${att.name}</div>
+      </div>`;
+    } else if (att.kind === 'html') {
+      return `<div class="attachment-thumb html">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <div class="pdf-label">HTML</div>
+        <button class="attachment-remove" onclick="removeAttachment(${i})" title="Remove">×</button>
+        <div class="attachment-name">${att.name}</div>
+      </div>`;
+    }
+  }).join('');
+}
+
+// Drag-and-drop support on the chat area
+window.addEventListener('DOMContentLoaded', () => {
+  const dropZone = document.querySelector('.chat-area');
+  if (!dropZone) return;
+  ['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.dataTransfer?.files?.length) handleFileSelect(e.dataTransfer.files);
+  });
+  // Paste images from clipboard
+  document.addEventListener('paste', e => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    const files = [];
+    for (const item of items) {
+      if (item.kind === 'file') {
+        const f = item.getAsFile();
+        if (f) files.push(f);
+      }
+    }
+    if (files.length) { e.preventDefault(); handleFileSelect(files); }
+  });
+});
 
 // ─── KNOWLEDGE BASE ────────────────────────────────────
 const KB = [
@@ -699,6 +971,12 @@ const KB = [
   { id:'bdd-1', source:'BDD · Gherkin Scenario Writing', tags:['bdd','gherkin','given','when','then','scenario','feature','cucumber','behave'], text:'BDD Gherkin syntax: Feature, Scenario, Given (preconditions), When (action), Then (outcome), And/But. Example: Scenario: Successful login | Given I am on the login page | When I enter valid credentials | And I click Sign In | Then I should be redirected to the dashboard. Use Scenario Outline with Examples for data-driven tests.' },
   { id:'agile-1', source:'Agile QA · Shift-Left Testing', tags:['agile','shift left','sprint','early','continuous','ci','regression','automation'], text:'Shift-Left Testing: involve QA early in SDLC — requirement grooming and sprint planning. Per sprint: Day 1-2: review stories for testability, write test cases. Day 3-7: execute tests as features develop. Day 8-10: regression, sprint sign-off.' },
   { id:'agile-2', source:'Agile QA · Definition of Done', tags:['done','definition','acceptance','criteria','dod','sprint','story'], text:'Definition of Done (DoD): shared checklist a story must meet before Done. Typical: code complete and peer-reviewed, unit tests passing, functional test cases written and executed, no open Critical or High defects, code merged, regression green, product owner acceptance.' },
+  { id:'auto-playwright', source:'Automation · Playwright', tags:['playwright','automation','typescript','test','script','code','locator','fixture','page object','pom'], text:'Playwright (TypeScript/JavaScript): modern cross-browser E2E framework. Recommended locators: page.getByRole(), getByText(), getByLabel(), getByPlaceholder(), getByTestId() — preferred over CSS/XPath for resilience. Auto-waits built in (no manual sleeps). Config: playwright.config.ts defines projects per browser, retries, reporters, baseURL. Fixtures via test.extend(). Folder structure: tests/, pages/ (POM classes), fixtures/, utils/, playwright.config.ts. Run: npx playwright test.' },
+  { id:'auto-cypress', source:'Automation · Cypress', tags:['cypress','automation','javascript','test','script','code','intercept','custom command'], text:'Cypress (JavaScript): browser-based E2E framework with retry-ability built into commands. Commands chain via cy.: cy.visit(), cy.get(), cy.contains(), cy.click(), cy.type(). Use data-cy="..." attributes for stable selectors. Custom commands via Cypress.Commands.add(). Network mocking via cy.intercept(). Folder: cypress/e2e/, cypress/fixtures/, cypress/support/commands.js, cypress.config.js. Run: npx cypress run.' },
+  { id:'auto-selenium', source:'Automation · Selenium WebDriver (Python + pytest)', tags:['selenium','webdriver','python','pytest','automation','test','script','code'], text:'Selenium WebDriver with Python + pytest: cross-browser browser automation. Use webdriver-manager for driver setup. Locators: By.ID, By.NAME, By.CSS_SELECTOR, By.XPATH. Waits: WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, ...))). pytest fixtures share driver setup via conftest.py with @pytest.fixture(scope="function"). Folder: tests/, pages/, conftest.py, requirements.txt (selenium, pytest, webdriver-manager), pytest.ini.' },
+  { id:'auto-bdd', source:'Automation · BDD/Cucumber + Gherkin', tags:['cucumber','bdd','gherkin','step definitions','feature','scenario','automation','playwright cucumber'], text:'BDD with Cucumber + Gherkin: .feature files describe scenarios in business-readable Given/When/Then. Step definitions implement each step. Playwright + Cucumber.js: @cucumber/cucumber package + custom World class wrapping page. Folder: features/*.feature, features/step_definitions/*.steps.ts, support/world.ts, cucumber.js config. Tag scenarios for selective runs (@smoke, @regression). Use Background block to reduce repetition. Each step keyword (Given/When/Then) maps to a function.' },
+  { id:'auto-pom', source:'Automation · Page Object Model', tags:['pom','page object','design pattern','automation','locators','encapsulation','maintainability'], text:'Page Object Model (POM): design pattern that encapsulates each page UI in a class, exposing methods for user actions and properties for locators. Benefits: maintainability (UI change → one class change), readability (tests describe intent not implementation), reusability. Pattern: class LoginPage { constructor(page) { this.page = page; this.emailInput = page.getByLabel("Email"); ... } async login(email, pwd) { ... } }. Tests stay business-readable; UI details hidden in page classes.' },
+  { id:'auto-folder', source:'Automation · Project Structure & Setup', tags:['folder structure','setup','readme','config','package json','dependencies'], text:'Standard automation project structure: /tests (test specs), /pages (POM classes), /fixtures (test data), /utils (helpers), /reports (output), config file at root (playwright.config.ts / cypress.config.js / pytest.ini), package.json or requirements.txt for dependencies, README.md with install + run commands, .gitignore for node_modules/reports. CI integration via GitHub Actions / GitLab CI / Jenkins. Reports: HTML reporter, JUnit XML for CI.' },
 ];
 
 // ─── MODE CONFIG ────────────────────────────────────────
@@ -754,6 +1032,16 @@ const modeInfo = {
     'Write a lessons learned document covering 5 typical sprint findings',
     'Generate test metrics summary: defect density, pass rate, defect leakage',
     'Create a release readiness assessment template',
+  ]},
+  automation: { label: 'Test Automation', desc: '— Framework code & scripts', actionsLabel: 'Automation actions', actions: [
+    'Generate a Playwright (TypeScript) Page Object Model and tests for the target application',
+    'Generate Cypress (JavaScript) tests with POM for the target application',
+    'Generate Selenium WebDriver (Python + pytest) framework for the target application',
+    'Create BDD Gherkin feature files with Cucumber + Playwright step definitions',
+    'Generate the full Playwright project structure including playwright.config.ts, fixtures, and README',
+    'Convert these manual test cases into Playwright automation scripts',
+    'Generate a sample GitHub Actions CI workflow for running the automation tests',
+    'I will paste page HTML next — generate Playwright POM with exact selectors from that HTML',
   ]}
 };
 
@@ -768,6 +1056,7 @@ function retrieve(query, mode, topK = 4) {
     execution:['execution','run','execute','pass','fail','results'],
     defects:['defect','bug','severity','priority','report'],
     closure:['closure','close','lessons','exit','criteria','sign'],
+    automation:['playwright','cypress','selenium','automation','pom','page object','bdd','gherkin','cucumber','script','code'],
     general:[]
   };
   const scored = KB.map(chunk => {
@@ -787,7 +1076,7 @@ function retrieve(query, mode, topK = 4) {
 }
 
 // ─── SYSTEM PROMPT ─────────────────────────────────────
-function buildSystemPrompt(chunks, mode) {
+function buildSystemPrompt(chunks, mode, htmlAttachments = []) {
   const focus = {
     general: 'You cover the full Software Testing Life Cycle (STLC).',
     requirements: 'You are focused on Requirements Review: testability analysis and RTM creation.',
@@ -795,7 +1084,8 @@ function buildSystemPrompt(chunks, mode) {
     design: 'You are focused on Test Design: test cases, BDD scenarios, design techniques.',
     execution: 'You are focused on Test Execution: running tests, logging results, run summaries.',
     defects: 'You are focused on Defect Management: IEEE 829 bug reports, severity/priority triage.',
-    closure: 'You are focused on Test Closure: summary reports, exit criteria, lessons learned.'
+    closure: 'You are focused on Test Closure: summary reports, exit criteria, lessons learned.',
+    automation: 'You are focused on Test Automation: generating production-ready Page Object Model code, test scripts, and project structures in Playwright (TypeScript preferred), Cypress (JavaScript), Selenium WebDriver (Python + pytest), and BDD/Cucumber+Gherkin. Always produce complete, runnable code with proper imports, modern locator strategies (getByRole, getByLabel, data-testid), POM separation, and a brief setup README. Use fenced code blocks with the correct language tag (```typescript, ```javascript, ```python, ```gherkin, ```yaml). IMPORTANT: when generating selectors, be honest about your source. If you only have a SCREENSHOT (no HTML), use role/label/text-based locators inferred from visible UI elements, and explicitly note at the top: "// NOTE: selectors inferred from visual UI. Verify against actual DOM (right-click → Inspect) before running." If you have ACTUAL HTML (from CORS fetch or user-pasted), use exact attribute selectors (id, name, data-testid) from the HTML and note: "// Selectors extracted from page HTML — should run as-is." If you have NEITHER, use generic placeholders like <TODO: locate via inspector> and flag this clearly. Never fabricate specific selectors that have no basis in either screenshot or HTML.'
   };
   const context = chunks.map(c => `[${c.source}]\n${c.text}`).join('\n\n---\n\n');
   let targetContext = '';
@@ -806,14 +1096,25 @@ function buildSystemPrompt(chunks, mode) {
     else targetContext += `\n\nNote: Page HTML could not be fetched (CORS). Use URL and description to infer realistic page elements.`;
     targetContext += `\n\nWhen generating deliverables, GROUND THEM IN THIS TARGET APPLICATION. Reference the actual URL, real form fields, real button labels.`;
   }
+
+  // Inject HTML files attached to this message
+  let htmlContext = '';
+  if (htmlAttachments.length > 0) {
+    htmlContext = '\n\nUSER-ATTACHED HTML FILES (extracted DOM structure):';
+    htmlAttachments.forEach(att => {
+      htmlContext += `\n\n=== ${att.name} (${att.rawSize.toLocaleString()} chars raw) ===\n${att.textContent}`;
+    });
+    htmlContext += `\n\nIMPORTANT: The HTML above is from REAL files the user attached. When generating automation code (Playwright/Cypress/Selenium), use the EXACT selectors visible in this HTML (id, name, data-testid, class attributes, button text). Note in comments that "Selectors extracted from user-attached HTML file — should run as-is".`;
+  }
   return `You are QA Nexus, a senior QA lead assistant grounded in ISTQB FL, IEEE 829, and STLC methodology. ${focus[mode] || focus.general}
 
 RETRIEVED KNOWLEDGE BASE CONTEXT:
-${context}${targetContext}
+${context}${targetContext}${htmlContext}
 
 INSTRUCTIONS:
 - Ground every answer in the retrieved context. Cite source labels naturally.
-- For test cases: render as markdown table with columns: TC ID | Title | Priority | Pre-conditions | Steps | Expected Result.
+- If screenshots or PDFs are attached, examine them carefully and reference SPECIFIC visible UI elements (button labels, field names, navigation items, content) when generating deliverables.
+- For test cases: ALWAYS render a comprehensive markdown table with these EXACT columns in this order: TC ID | Title | Priority | Pre-conditions | Steps | Expected Result. Every row must have all six columns filled in — the Steps column should contain numbered steps as "1. ... 2. ... 3. ..." within the cell. Do NOT produce a summary-only table without these detail columns; the full table is the primary deliverable. When also generating automation code, place this comprehensive table BEFORE the code blocks.
 - For bug reports: markdown table with Field | Value rows for all IEEE 829 fields.
 - For test plans, RTMs, closure reports: numbered sections and markdown tables.
 - Severity: Critical, High, Medium, Low. Priority: P1 Blocker, P2 High, P3 Medium, P4 Low.
@@ -824,14 +1125,49 @@ INSTRUCTIONS:
 }
 
 // ─── API CALL ──────────────────────────────────────────
-async function callClaude(userMessage) {
-  const chunks = retrieve(userMessage, currentMode);
-  const systemPrompt = buildSystemPrompt(chunks, currentMode);
-  conversationHistory.push({ role: 'user', content: userMessage });
+async function callClaude(userMessage, attachments = []) {
+  const queryForRetrieval = userMessage || 'analyze the attached content';
+  const chunks = retrieve(queryForRetrieval, currentMode);
+
+  // Separate HTML files (go into prompt as text) from images/PDFs (go into message content)
+  const htmlAttachments = attachments.filter(a => a.kind === 'html');
+  const mediaAttachments = attachments.filter(a => a.kind === 'image' || a.kind === 'pdf');
+
+  const systemPrompt = buildSystemPrompt(chunks, currentMode, htmlAttachments);
+
+  // Build user message content
+  let content;
+  if (mediaAttachments.length > 0) {
+    content = [];
+    for (const att of mediaAttachments) {
+      if (att.kind === 'image') {
+        content.push({
+          type: 'image',
+          source: { type: 'base64', media_type: att.type, data: att.base64 }
+        });
+      } else if (att.kind === 'pdf') {
+        content.push({
+          type: 'document',
+          source: { type: 'base64', media_type: 'application/pdf', data: att.base64 }
+        });
+      }
+    }
+    let textPart = userMessage || 'Please analyze the attached content and generate appropriate QA deliverables.';
+    if (htmlAttachments.length > 0) {
+      textPart += `\n\n(${htmlAttachments.length} HTML file(s) also attached — see system context for extracted structure.)`;
+    }
+    content.push({ type: 'text', text: textPart });
+  } else if (htmlAttachments.length > 0) {
+    content = (userMessage || 'Please analyze the attached HTML file(s) and generate appropriate QA deliverables. Use the actual DOM elements visible in the HTML for selectors when generating automation code.');
+  } else {
+    content = userMessage;
+  }
+
+  conversationHistory.push({ role: 'user', content });
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:8000, system:systemPrompt, messages:conversationHistory })
+    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:16000, system:systemPrompt, messages:conversationHistory })
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -839,8 +1175,9 @@ async function callClaude(userMessage) {
   }
   const data = await response.json();
   const text = data.content?.[0]?.text || '';
+  const wasTruncated = data.stop_reason === 'max_tokens';
   conversationHistory.push({ role: 'assistant', content: text });
-  return { text, chunks };
+  return { text, chunks, wasTruncated };
 }
 
 // ─── MARKDOWN RENDERER ─────────────────────────────────
@@ -965,9 +1302,28 @@ function markdownToPlainText(md) {
 
 // ─── EXPORT FUNCTIONS ──────────────────────────────────
 function detectContentType(md) {
-  const m = md.toLowerCase();
-  if (m.includes('tc id') || m.includes('tc-id') || m.includes('test case id')) return 'testcases';
-  if (m.includes('defect id') || m.includes('bug id') || (m.includes('severity') && m.includes('steps to reproduce'))) return 'bugreport';
+  const tables = parseMarkdownTables(md);
+  if (tables.length === 0) return 'document';
+
+  for (const table of tables) {
+    if (table.rows.length < 2) continue;
+    const header = table.rows[0].map(h => h.toLowerCase().replace(/\*/g, '').trim());
+
+    // Test case table: must have TC-ID-like column + Priority + (Title OR Steps)
+    const hasTcIdCol = header.some(h => /^(tc[\s-]?id|test\s*case\s*id|tc#?)$/.test(h));
+    const hasPriorityCol = header.includes('priority');
+    const hasTitleOrSteps = header.some(h => /^(title|scenario|description|steps?|expected.*)$/.test(h));
+    if (hasTcIdCol && hasPriorityCol && hasTitleOrSteps) return 'testcases';
+
+    // Bug report: 2-column Field/Value table with IEEE 829 markers
+    if (table.rows[0].length === 2 && table.rows.length >= 5) {
+      const fieldNames = table.rows.slice(1).map(r => (r[0] || '').toLowerCase().replace(/\*/g, '').trim());
+      const hasIdField = fieldNames.some(f => /^(defect|bug)\s*id$/.test(f));
+      const hasSeverityField = fieldNames.includes('severity');
+      const hasStepsField = fieldNames.some(f => /steps to reproduce/.test(f));
+      if (hasIdField && hasSeverityField && hasStepsField) return 'bugreport';
+    }
+  }
   return 'document';
 }
 
@@ -1034,23 +1390,22 @@ function buildFilename(rawMd, contentType, ext) {
 function buildRichHtmlForClipboard(rawMd) {
   const { html } = renderMarkdown(rawMd);
   // Inline-styled HTML that pastes nicely into TextEdit, Word, Pages, Notion, Google Docs, etc.
-  return `<meta charset="utf-8"><div style="font-family:-apple-system,Helvetica,Arial,sans-serif;line-height:1.55;color:#0F0E1F;font-size:14px;">
+  return `<meta charset="utf-8"><div style="font-family:-apple-system,Helvetica,Arial,sans-serif;line-height:1.6;color:#0F0E1F;font-size:14px;background:#FFFFFF;">
 <style>
-.qa-doc h1{font-family:Helvetica,Arial,sans-serif;font-size:22px;color:#312E81;margin:18px 0 10px;border-bottom:2px solid #4338CA;padding-bottom:6px;font-weight:700;}
+.qa-doc h1{font-family:Helvetica,Arial,sans-serif;font-size:22px;color:#312E81;margin:18px 0 10px;border-bottom:2px solid #312E81;padding-bottom:6px;font-weight:700;}
 .qa-doc h2{font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#312E81;margin:20px 0 8px;border-bottom:1px solid #C7D2FE;padding-bottom:4px;font-weight:700;}
 .qa-doc h3{font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#312E81;margin:14px 0 6px;font-weight:700;}
 .qa-doc p{margin:8px 0;color:#0F0E1F;}
 .qa-doc strong{font-weight:700;color:#0F0E1F;}
 .qa-doc hr{border:0;border-top:1px solid #C7D2FE;margin:14px 0;}
-.qa-doc blockquote{margin:10px 0;padding:10px 14px;background:#F4F4FB;border-left:4px solid #4338CA;color:#1E1B3A;}
-.qa-doc blockquote p{margin:0;color:#1E1B3A;}
-.qa-doc table{width:100%;border-collapse:collapse;margin:10px 0;border:1px solid #4338CA;}
-.qa-doc th{background:#312E81;color:#FFFFFF;font-weight:600;padding:8px 12px;border:1px solid #312E81;text-align:left;font-size:13px;}
-.qa-doc td{padding:6px 12px;border:1px solid #C7D2FE;vertical-align:top;font-size:13px;color:#0F0E1F;}
-.qa-doc tr:nth-child(even) td{background:#FAFAFD;}
-.qa-doc code{background:#F4F4FB;padding:1px 5px;border-radius:3px;font-family:Menlo,'Courier New',monospace;font-size:0.9em;color:#312E81;}
-.qa-doc pre.code-block{background:#F4F4FB;border:1px solid #C7D2FE;border-left:4px solid #4338CA;border-radius:4px;padding:10px 14px;margin:10px 0;font-family:Menlo,'Courier New',monospace;font-size:12px;line-height:1.5;color:#1E1B3A;white-space:pre-wrap;}
-.qa-doc pre.code-block code{background:none;padding:0;color:inherit;}
+.qa-doc blockquote{margin:10px 0;padding:4px 14px;border-left:3px solid #312E81;color:#4A4566;font-style:italic;}
+.qa-doc blockquote p{margin:0;color:#4A4566;}
+.qa-doc table{width:100%;border-collapse:collapse;margin:10px 0;background:#FFFFFF;}
+.qa-doc th{font-weight:700;color:#312E81;padding:8px 12px;border:1px solid #C7D2FE;border-bottom:2px solid #312E81;text-align:left;font-size:13px;background:#FFFFFF;}
+.qa-doc td{padding:6px 12px;border:1px solid #C7D2FE;vertical-align:top;font-size:13px;color:#0F0E1F;background:#FFFFFF;}
+.qa-doc code{font-family:Menlo,'Courier New',monospace;font-size:0.9em;color:#312E81;}
+.qa-doc pre.code-block{background:#FFFFFF;border:1px solid #C7D2FE;border-left:3px solid #312E81;border-radius:3px;padding:10px 14px;margin:10px 0;font-family:Menlo,'Courier New',monospace;font-size:12px;line-height:1.5;color:#0F0E1F;white-space:pre-wrap;}
+.qa-doc pre.code-block code{color:#0F0E1F;}
 .qa-doc ul,.qa-doc ol{padding-left:22px;margin:6px 0;color:#0F0E1F;}
 .qa-doc li{margin-bottom:3px;color:#0F0E1F;}
 </style>
@@ -1060,27 +1415,11 @@ function buildRichHtmlForClipboard(rawMd) {
 
 async function copyToClipboard(rawMd) {
   const cleanText = markdownToPlainText(rawMd);
-  // Try modern clipboard API with rich HTML + plain text
-  if (navigator.clipboard && window.ClipboardItem) {
-    try {
-      const richHtml = buildRichHtmlForClipboard(rawMd);
-      const item = new ClipboardItem({
-        'text/html': new Blob([richHtml], { type: 'text/html' }),
-        'text/plain': new Blob([cleanText], { type: 'text/plain' })
-      });
-      await navigator.clipboard.write([item]);
-      showToast('Copied with formatting — paste into Word, TextEdit, Notion…');
-      return;
-    } catch (err) {
-      console.warn('Rich copy failed, falling back to plain text:', err);
-    }
-  }
-  // Fallback: plain clean text
   try {
     await navigator.clipboard.writeText(cleanText);
-    showToast('Copied as plain text');
+    showToast('Copied as plain text — for formatted output use RTF or HTML download');
   } catch (e) {
-    showToast('Copy failed — try the HTML download instead');
+    showToast('Copy failed — try a download option instead');
   }
 }
 
@@ -1151,18 +1490,18 @@ function renderTableRtf(tableLines) {
     const isHeader = ri === 0;
     rtf += '\\trowd\\trgaph80\\trleft0\\trkeep\n';
     for (let c = 0; c < numCols; c++) {
-      rtf += '\\clbrdrt\\brdrs\\brdrw15\\brdrcf6';
-      rtf += '\\clbrdrl\\brdrs\\brdrw15\\brdrcf6';
-      rtf += '\\clbrdrb\\brdrs\\brdrw15\\brdrcf6';
-      rtf += '\\clbrdrr\\brdrs\\brdrw15\\brdrcf6';
-      if (isHeader) rtf += '\\clcbpat1';
-      else if (ri % 2 === 0) rtf += '\\clcbpat5';
+      rtf += '\\clbrdrt\\brdrs\\brdrw10\\brdrcf6';
+      rtf += '\\clbrdrl\\brdrs\\brdrw10\\brdrcf6';
+      // Header row: thicker bottom border for emphasis
+      if (isHeader) rtf += '\\clbrdrb\\brdrs\\brdrw20\\brdrcf1';
+      else rtf += '\\clbrdrb\\brdrs\\brdrw10\\brdrcf6';
+      rtf += '\\clbrdrr\\brdrs\\brdrw10\\brdrcf6';
       rtf += `\\cellx${(c + 1) * cellWidth}\n`;
     }
     for (let c = 0; c < numCols; c++) {
       const cell = row[c] || '';
       rtf += '\\pard\\intbl ';
-      if (isHeader) rtf += `\\b\\cf7 ${inlineRtf(cell)}\\b0`;
+      if (isHeader) rtf += `\\b\\cf1 ${inlineRtf(cell)}\\b0\\cf3`;
       else rtf += `\\cf3 ${inlineRtf(cell)}`;
       rtf += '\\cell\n';
     }
@@ -1185,6 +1524,8 @@ function generateRtf(md) {
   let rtf = '{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033\n';
   rtf += '{\\fonttbl{\\f0\\fnil\\fcharset0 Helvetica;}{\\f1\\fnil\\fcharset0 Menlo;}}\n';
   rtf += '{\\colortbl ;\\red49\\green46\\blue129;\\red67\\green56\\blue202;\\red15\\green14\\blue31;\\red74\\green69\\blue102;\\red244\\green244\\blue251;\\red199\\green210\\blue254;\\red255\\green255\\blue255;}\n';
+  // Explicit white page background — overrides macOS Dark Mode tinting
+  rtf += '{\\*\\background{\\shp{\\*\\shpinst\\shpleft0\\shptop0\\shpright0\\shpbottom0\\shpbxpage\\shpbypage\\shpwr0\\shpwrk0\\shpfblwtxt1\\shpz0\\shplockanchor{\\sp{\\sn shapeType}{\\sv 1}}{\\sp{\\sn fillColor}{\\sv 16777215}}{\\sp{\\sn fFilled}{\\sv 1}}{\\sp{\\sn fLine}{\\sv 0}}}}}\n';
   rtf += '\\f0\\fs22\\cf3\n';
 
   // Document header
@@ -1200,8 +1541,8 @@ function generateRtf(md) {
 
     if (line.trim().match(/^```/)) {
       if (inCode) {
-        rtf += '\\pard\\cbpat5\\sa80 ';
-        codeLines.forEach(cl => { rtf += `{\\f1\\fs18 ${rtfEscape(cl)}}\\line\n`; });
+        rtf += '\\pard\\li360\\sa80 ';
+        codeLines.forEach(cl => { rtf += `{\\f1\\fs18\\cf2 ${rtfEscape(cl)}}\\line\n`; });
         rtf += '\\par\\pard\n';
         codeLines = []; inCode = false;
       } else inCode = true;
@@ -1230,7 +1571,7 @@ function generateRtf(md) {
       rtf += '\\pard\\par\n';
     } else if (line.trim().match(/^>\s?/)) {
       const text = line.replace(/^>\s?/, '');
-      rtf += `\\pard\\li360\\cbpat5\\sa80 ${inlineRtf(text)}\\par\\pard\n`;
+      rtf += `\\pard\\li360\\sa80 {\\cf4 ${inlineRtf(text)}}\\par\\pard\n`;
     } else if ((m = line.match(/^[-*]\s+(.+)$/))) {
       rtf += `\\pard\\fi-200\\li600 \\u8226?  ${inlineRtf(m[1])}\\par\\pard\n`;
     } else if ((m = line.match(/^(\d+)\.\s+(.+)$/))) {
@@ -1262,6 +1603,11 @@ function exportContent(rawMd, format, contentType) {
     downloadFile(header + cleanText, buildFilename(rawMd, contentType, 'txt'), 'text/plain');
     showToast('Downloaded as TXT'); return;
   }
+  if (format === 'md') {
+    const header = `<!-- QA Nexus Export · Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded -->\n\n`;
+    downloadFile(header + rawMd, buildFilename(rawMd, contentType, 'md'), 'text/markdown');
+    showToast('Downloaded as Markdown'); return;
+  }
   if (format === 'rtf') {
     const rtf = generateRtf(rawMd);
     downloadFile(rtf, buildFilename(rawMd, contentType, 'rtf'), 'application/rtf');
@@ -1270,7 +1616,7 @@ function exportContent(rawMd, format, contentType) {
   }
   if (format === 'html') {
     const { html } = renderMarkdown(rawMd);
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Nexus Export</title><style>body{font-family:Inter,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#0F0E1F;line-height:1.6;}h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:#312E81;line-height:1.3;}h1{font-size:1.8rem;margin:1.5rem 0 1rem;border-bottom:2px solid #4338CA;padding-bottom:0.5rem;}h2{font-size:1.35rem;margin:1.8rem 0 0.75rem;border-bottom:1px solid #C7D2FE;padding-bottom:0.3rem;}h3{font-size:1.1rem;margin:1.2rem 0 0.5rem;}hr{border:0;border-top:1px solid #D6DDE5;margin:1.5rem 0;}p{margin:0.6rem 0;color:#0F0E1F;}strong{color:#0F0E1F;}blockquote{margin:0.8rem 0;padding:0.7rem 1rem;background:#F4F4FB;border-left:4px solid #4338CA;border-radius:0 6px 6px 0;color:#1E1B3A;}blockquote p{margin:0;color:#1E1B3A;}table{width:100%;border-collapse:collapse;margin:1rem 0;border:1px solid #4338CA;}th,td{border:1px solid #C7D2FE;padding:0.5rem 0.75rem;text-align:left;font-size:0.875rem;vertical-align:top;}th{background:#312E81;font-weight:600;color:#FFFFFF;}td{color:#0F0E1F;}tr:nth-child(even) td{background:#FAFAFD;}code{background:#F4F4FB;padding:0.1rem 0.35rem;border-radius:3px;font-size:0.85em;font-family:Menlo,monospace;color:#312E81;}pre.code-block{background:#F4F4FB;border:1px solid #C7D2FE;border-left:4px solid #4338CA;border-radius:4px;padding:0.75rem 1rem;margin:0.75rem 0;font-family:Menlo,monospace;font-size:0.82rem;line-height:1.55;color:#1E1B3A;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}pre.code-block code{background:none;padding:0;color:inherit;}ul,ol{padding-left:1.5rem;color:#0F0E1F;}.header{border-bottom:2px solid #4338CA;padding-bottom:1rem;margin-bottom:2rem;}.header h1{border:none;padding:0;margin:0;}</style></head><body><div class="header"><h1>QA Nexus — Export</h1><p style="color:#4A4566;margin:0.3rem 0 0;">Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded</p></div>${html}</body></html>`;
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Nexus Export</title><style>body{font-family:Inter,Helvetica,Arial,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#0F0E1F;line-height:1.65;background:#FFFFFF;}h1,h2,h3{font-family:'Space Grotesk',Helvetica,sans-serif;color:#312E81;line-height:1.3;}h1{font-size:1.8rem;margin:1.5rem 0 1rem;border-bottom:2px solid #312E81;padding-bottom:0.5rem;}h2{font-size:1.35rem;margin:1.8rem 0 0.75rem;border-bottom:1px solid #C7D2FE;padding-bottom:0.3rem;}h3{font-size:1.1rem;margin:1.2rem 0 0.5rem;}hr{border:0;border-top:1px solid #C7D2FE;margin:1.5rem 0;}p{margin:0.6rem 0;color:#0F0E1F;}strong{color:#0F0E1F;font-weight:700;}blockquote{margin:0.8rem 0;padding:0.4rem 1rem;border-left:3px solid #312E81;color:#4A4566;font-style:italic;}blockquote p{margin:0;color:#4A4566;}table{width:100%;border-collapse:collapse;margin:1rem 0;background:#FFFFFF;}th,td{border:1px solid #C7D2FE;padding:0.55rem 0.75rem;text-align:left;font-size:0.9rem;vertical-align:top;background:#FFFFFF;}th{font-weight:700;color:#312E81;border-bottom:2px solid #312E81;}td{color:#0F0E1F;}code{font-family:Menlo,monospace;font-size:0.88em;color:#312E81;}pre.code-block{background:#FFFFFF;border:1px solid #C7D2FE;border-left:3px solid #312E81;border-radius:3px;padding:0.75rem 1rem;margin:0.75rem 0;font-family:Menlo,monospace;font-size:0.85rem;line-height:1.55;color:#0F0E1F;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}pre.code-block code{color:#0F0E1F;}ul,ol{padding-left:1.5rem;color:#0F0E1F;}li{margin-bottom:0.3rem;}.header{border-bottom:2px solid #312E81;padding-bottom:1rem;margin-bottom:2rem;}.header h1{border:none;padding:0;margin:0;}</style></head><body><div class="header"><h1>QA Nexus — Export</h1><p style="color:#4A4566;margin:0.3rem 0 0;">Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded</p></div>${html}</body></html>`;
     downloadFile(fullHtml, buildFilename(rawMd, contentType, 'html'), 'text/html');
     showToast('Downloaded as HTML'); return;
   }
@@ -1283,20 +1629,38 @@ function exportContent(rawMd, format, contentType) {
       const table = tables[0];
       const header = table.rows[0].map(h => h.toLowerCase());
       const idIdx = header.findIndex(h => h.includes('id'));
-      const titleIdx = header.findIndex(h => h.includes('title') || h.includes('scenario') || h.includes('description'));
+      const titleIdx = header.findIndex(h => h.includes('title') || h.includes('scenario') || (h.includes('description') && header.length > 3));
       const prioIdx = header.findIndex(h => h.includes('priority'));
       const precondIdx = header.findIndex(h => h.includes('pre') || h.includes('condition'));
       const stepsIdx = header.findIndex(h => h.includes('step'));
       const expectedIdx = header.findIndex(h => h.includes('expected'));
+      const hasDetailCols = precondIdx >= 0 || stepsIdx >= 0 || expectedIdx >= 0;
+
       for (let i = 1; i < table.rows.length; i++) {
         const row = table.rows[i];
         const id = idIdx >= 0 ? row[idIdx] : `TC-${i}`;
         const title = titleIdx >= 0 ? row[titleIdx] : 'Untitled test case';
         const priority = prioIdx >= 0 ? mapJiraPriority(row[prioIdx]) : 'Medium';
         let desc = '';
-        if (precondIdx >= 0) desc += `*Pre-conditions:*\n${row[precondIdx]}\n\n`;
-        if (stepsIdx >= 0) desc += `*Steps:*\n${row[stepsIdx]}\n\n`;
-        if (expectedIdx >= 0) desc += `*Expected Result:*\n${row[expectedIdx]}`;
+        if (hasDetailCols) {
+          if (precondIdx >= 0) desc += `*Pre-conditions:*\n${row[precondIdx]}\n\n`;
+          if (stepsIdx >= 0) desc += `*Steps:*\n${row[stepsIdx]}\n\n`;
+          if (expectedIdx >= 0) desc += `*Expected Result:*\n${row[expectedIdx]}`;
+        } else {
+          // Fallback: scan the raw markdown for a section matching this TC ID
+          const tcId = (id || '').replace(/[^\w-]/g, '').trim();
+          if (tcId) {
+            const sectionRe = new RegExp(`(?:^|\\n)#{1,4}\\s*${tcId}[\\s\\S]*?(?=\\n#{1,4}\\s|\\n---|$)`, 'i');
+            const match = rawMd.match(sectionRe);
+            if (match) {
+              desc = match[0].replace(/^#{1,4}\s*/, '').replace(/\*\*/g, '*').trim();
+            }
+          }
+          // If no section found, use the title with priority as minimal description
+          if (!desc) {
+            desc = `*Test:* ${title}\n*Priority:* ${priority}\n\n_Note: detailed steps were not provided in tabular form. See the full QA Nexus response for context._`;
+          }
+        }
         csvRows.push(['Test', `${id}: ${title}`, desc.trim(), priority, 'QA-Nexus,Test-Case']);
       }
     } else if (contentType === 'bugreport') {
@@ -1442,18 +1806,21 @@ function buildExportToolbar(rawMd) {
   };
   return `<div class="export-toolbar">
     ${formFields ? `<button class="export-btn form-fill" onclick="openFormModal(window['_md_${id}'])">${icons.form} Fill form (${formFields.length} fields)</button>` : ''}
-    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'copy',window['_ct_${id}'])">${icons.copy} Copy</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'txt',window['_ct_${id}'])">${icons.dl} TXT</button>
-    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'rtf',window['_ct_${id}'])">${icons.dl} RTF</button>
+    <button class="export-btn" onclick="exportContent(window['_md_${id}'],'md',window['_ct_${id}'])">${icons.dl} MD</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'html',window['_ct_${id}'])">${icons.dl} HTML</button>
     ${jiraEligible ? `<button class="export-btn jira" onclick="exportContent(window['_md_${id}'],'jira',window['_ct_${id}'])">${icons.jira} Jira CSV</button>` : ''}
     <span class="pdf-hint" onclick="this.classList.toggle('show')">
-      <span class="pdf-hint-btn">📄 Save as PDF?</span>
+      <span class="pdf-hint-btn">ℹ︎ Format help</span>
       <span class="pdf-hint-popup">
-        <strong>Two easy ways</strong>
-        <div><b>Quickest:</b> Click <b>HTML</b> → open the file in your browser → press <kbd>Cmd</kbd>+<kbd>P</kbd> (or <kbd>Ctrl</kbd>+<kbd>P</kbd>) → choose <b>Save as PDF</b>.</div>
+        <strong>Export formats</strong>
+        <div><b>TXT</b> — clean plain text, formatting stripped</div>
+        <div><b>MD</b> — raw markdown (great for GitHub, Notion, Obsidian, devs)</div>
+        <div><b>HTML</b> — formatted document, opens in browser</div>
+        <div><b>Jira CSV</b> — for direct Jira import (when test cases/bugs detected)</div>
         <div class="divider"></div>
-        <div><b>Edit first:</b> Click <b>RTF</b> → opens in TextEdit or Word → make changes → <b>File → Export as PDF</b>.</div>
+        <strong>Save as PDF</strong>
+        <div>Click <b>HTML</b> → open file in browser → <kbd>Cmd</kbd>+<kbd>P</kbd> (or <kbd>Ctrl</kbd>+<kbd>P</kbd>) → <b>Save as PDF</b></div>
       </span>
     </span>
   </div>`;
@@ -1503,17 +1870,44 @@ async function sendMessage() {
   const input = document.getElementById('userInput');
   const btn = document.getElementById('sendBtn');
   const text = input.value.trim();
-  if (!text || !apiKey) return;
+  if ((!text && pendingAttachments.length === 0) || !apiKey) return;
+
+  // Snapshot attachments and clear pending
+  const attachments = [...pendingAttachments];
+  pendingAttachments = [];
+  renderAttachmentPreview();
+
   input.value = ''; input.style.height = 'auto';
-  appendMessage('user', text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+
+  // Build user message HTML with image thumbnails / PDF tags
+  const escapedText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let attachmentsHtml = '';
+  if (attachments.length > 0) {
+    const images = attachments.filter(a => a.kind === 'image').map(a =>
+      `<img class="msg-image" src="${a.dataUrl}" alt="${a.name}" onclick="window.open(this.src,'_blank')" />`
+    ).join('');
+    const pdfs = attachments.filter(a => a.kind === 'pdf').map(a =>
+      `<span class="msg-pdf-tag"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${a.name}</span>`
+    ).join('');
+    const htmls = attachments.filter(a => a.kind === 'html').map(a =>
+      `<span class="msg-pdf-tag" style="color:var(--violet-400);"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>${a.name}</span>`
+    ).join('');
+    attachmentsHtml = (images ? `<div class="msg-images">${images}</div>` : '') + pdfs + htmls;
+  }
+  const userHtml = attachmentsHtml + (escapedText || (attachments.length ? '<em style="opacity:0.7">[analyzing attached content]</em>' : ''));
+  appendMessage('user', userHtml);
+
   btn.disabled = true;
   showTyping();
   try {
-    const { text: reply, chunks } = await callClaude(text);
+    const { text: reply, chunks, wasTruncated } = await callClaude(text, attachments);
     hideTyping();
     const { html, sourcesHtml, rawMarkdown } = renderMarkdown(reply);
     const fallback = chunks.map(c => `<span class="source-chip">${c.source}</span>`).join('');
-    appendMessage('agent', html, sourcesHtml || fallback, rawMarkdown);
+    const truncatedNotice = wasTruncated
+      ? `<div style="margin-top:0.5rem;padding:0.6rem 0.85rem;background:color-mix(in srgb,var(--orange-400) 12%,transparent);border:1px solid color-mix(in srgb,var(--orange-400) 40%,transparent);border-radius:var(--r-sm);font-size:0.85rem;color:var(--orange-400);">⚠ Response was cut off (hit length limit). <button onclick="sendStarter('Please continue from where you left off.')" style="background:var(--orange-400);color:#fff;border:none;padding:0.25rem 0.7rem;border-radius:var(--r-sm);font-size:0.8rem;font-weight:600;cursor:pointer;margin-left:0.4rem;">Continue →</button></div>`
+      : '';
+    appendMessage('agent', html + truncatedNotice, sourcesHtml || fallback, rawMarkdown);
   } catch (err) {
     hideTyping();
     appendMessage('agent', `<p style="color:var(--rose-400)">Error: ${err.message}. Please check your API key and try again.</p>`);
@@ -1523,7 +1917,106 @@ async function sendMessage() {
 }
 
 // ─── UI ────────────────────────────────────────────────
-function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function handleKey(e) {
+  const box = document.getElementById('suggestBox');
+  const showing = box?.classList.contains('show');
+  if (showing) {
+    const items = [...box.querySelectorAll('.suggest-item')];
+    const activeIdx = items.findIndex(it => it.classList.contains('active'));
+    if (e.key === 'ArrowDown') { e.preventDefault();
+      const next = (activeIdx + 1) % items.length;
+      items.forEach((it, i) => it.classList.toggle('active', i === next));
+      items[next].scrollIntoView({ block: 'nearest' });
+      return;
+    }
+    if (e.key === 'ArrowUp') { e.preventDefault();
+      const prev = (activeIdx - 1 + items.length) % items.length;
+      items.forEach((it, i) => it.classList.toggle('active', i === prev));
+      items[prev].scrollIntoView({ block: 'nearest' });
+      return;
+    }
+    if (e.key === 'Enter' && !e.shiftKey && activeIdx >= 0) {
+      e.preventDefault();
+      const text = items[activeIdx].dataset.value;
+      document.getElementById('userInput').value = text;
+      hideSuggestions();
+      autoResize(document.getElementById('userInput'));
+      return;
+    }
+    if (e.key === 'Escape') { hideSuggestions(); return; }
+    if (e.key === 'Tab' && activeIdx >= 0) {
+      e.preventDefault();
+      document.getElementById('userInput').value = items[activeIdx].dataset.value;
+      hideSuggestions();
+      autoResize(document.getElementById('userInput'));
+      return;
+    }
+  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+// Curated common QA prompts that work across modes
+const COMMON_PROMPTS = [
+  'Generate test cases for the target application',
+  'Create a bug report for an issue I found',
+  'Write a test plan for the target application',
+  'Generate a Requirements Traceability Matrix',
+  'Create exploratory test charters',
+  'Identify the top risks for testing',
+  'Write BDD Gherkin scenarios for the main user flow',
+  'Generate accessibility test cases (WCAG 2.1 AA)',
+  'Create a test execution summary report',
+  'Generate a Playwright Page Object Model',
+  'Convert these manual test cases to automation scripts',
+  'Suggest severity and priority for this defect',
+];
+
+function getAllSuggestions() {
+  const modeActions = (modeInfo[currentMode] || modeInfo.general).actions || [];
+  // Mode actions take priority, then common prompts that aren't duplicates
+  const seen = new Set(modeActions.map(a => a.toLowerCase()));
+  const extras = COMMON_PROMPTS.filter(p => !seen.has(p.toLowerCase()));
+  return [...modeActions, ...extras];
+}
+
+function updateSuggestions(query) {
+  const box = document.getElementById('suggestBox');
+  const q = query.trim().toLowerCase();
+  const all = getAllSuggestions();
+  let matches;
+  if (!q) {
+    matches = all.slice(0, 5);  // Show top 5 from current mode when empty
+  } else if (q.length < 2) {
+    return hideSuggestions();
+  } else {
+    matches = all.filter(s => {
+      const sl = s.toLowerCase();
+      // Match if any word in query is contained in suggestion
+      return q.split(/\s+/).every(word => sl.includes(word));
+    }).slice(0, 6);
+  }
+  if (matches.length === 0) return hideSuggestions();
+  box.innerHTML = matches.map((s, i) => {
+    const safe = s.replace(/'/g, '&apos;').replace(/"/g, '&quot;');
+    return `<div class="suggest-item${i === 0 ? ' active' : ''}" data-value="${safe}" onmousedown="event.preventDefault(); pickSuggestion('${s.replace(/'/g, "\\'")}')">
+      <span class="suggest-arrow">→</span><span>${s}</span><span class="suggest-kbd">↵</span>
+    </div>`;
+  }).join('');
+  box.classList.add('show');
+}
+
+function pickSuggestion(text) {
+  const input = document.getElementById('userInput');
+  input.value = text;
+  hideSuggestions();
+  autoResize(input);
+  input.focus();
+}
+
+function hideSuggestions() {
+  document.getElementById('suggestBox')?.classList.remove('show');
+}
+
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
 function sendStarter(msg) { document.getElementById('userInput').value = msg; sendMessage(); }
 
@@ -1605,9 +2098,14 @@ async function fetchTarget() {
   const url = document.getElementById('targetUrl').value.trim();
   const desc = document.getElementById('targetDesc').value.trim();
   if (!url) { setTargetStatus('error', 'Please enter a URL.'); return; }
+  // Normalize: accept inputs like "example.com", "www.example.com", "https://example.com", "http://example.com"
+  let normalized = url;
+  if (!/^https?:\/\//i.test(normalized)) {
+    normalized = 'https://' + normalized.replace(/^\/+/, '');
+  }
   let parsedUrl;
-  try { parsedUrl = new URL(url.startsWith('http') ? url : 'https://' + url); }
-  catch (e) { setTargetStatus('error', 'Invalid URL. Use format: https://example.com'); return; }
+  try { parsedUrl = new URL(normalized); }
+  catch (e) { setTargetStatus('error', 'Invalid URL. Try: example.com or www.example.com'); return; }
   const finalUrl = parsedUrl.toString();
   targetApp.url = finalUrl;
   targetApp.description = desc;
@@ -1723,6 +2221,21 @@ function makeResizable(handleId, sidebarId, side, storageKey) {
 }
 makeResizable('leftHandle', 'leftSidebar', 'left', 'qa-nexus-left-width');
 makeResizable('rightHandle', 'rightSidebar', 'right', 'qa-nexus-right-width');
+
+// ─── PANEL TOGGLES ─────────────────────────────────────
+function togglePanel(side) {
+  const sidebar = document.getElementById(side + 'Sidebar');
+  const handle = document.getElementById(side + 'Handle');
+  const toggle = document.getElementById(side + 'Toggle');
+  const willOpen = sidebar.classList.contains('collapsed');
+  sidebar.classList.toggle('collapsed');
+  handle.classList.toggle('collapsed');
+  toggle.classList.toggle('active', willOpen);
+  if (willOpen) {
+    // Reopened — reset to minimum width so user can expand from there
+    sidebar.style.width = '220px';
+  }
+}
 
 renderActions('general');
 </script>

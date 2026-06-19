@@ -1130,7 +1130,8 @@ INSTRUCTIONS:
 - If screenshots or PDFs are attached, examine them carefully and reference SPECIFIC visible UI elements (button labels, field names, navigation items, content) when generating deliverables.
 - For test cases: ALWAYS render a comprehensive markdown table with these EXACT columns in this order: TC ID | Title | Priority | Pre-conditions | Steps | Expected Result. Every row must have all six columns filled in — the Steps column should contain numbered steps as "1. ... 2. ... 3. ..." within the cell. Do NOT produce a summary-only table without these detail columns; the full table is the primary deliverable. When also generating automation code, place this comprehensive table BEFORE the code blocks.
 - For bug reports: markdown table with Field | Value rows for all IEEE 829 fields.
-- For test plans, RTMs, closure reports: numbered sections and markdown tables.
+- For test plans: produce ALL 13 IEEE 829 sections in full — Test Plan Identifier, Introduction & Objectives, Test Items, Features to be Tested, Features Not to be Tested, Test Approach, Item Pass/Fail Criteria, Suspension & Resumption, Test Deliverables, Testing Tasks & Schedule, Environmental Requirements, Responsibilities, Risks & Contingencies. Do NOT abbreviate or skip sections. Use numbered section headers (## Section 1 — ...) and markdown tables where appropriate.
+- For RTMs and closure reports: numbered sections and markdown tables.
 - Severity: Critical, High, Medium, Low. Priority: P1 Blocker, P2 High, P3 Medium, P4 Low.
 - Steps in cells: "1. ... 2. ... 3. ..."
 - Never output the literal word "undefined" or "null". Use <Name>, <Date>, <TBD>, or "_____".
@@ -1181,7 +1182,7 @@ async function callClaude(userMessage, attachments = []) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:32000, system:systemPrompt, messages:conversationHistory })
+    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:48000, system:systemPrompt, messages:conversationHistory })
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -1196,7 +1197,8 @@ async function callClaude(userMessage, attachments = []) {
 
 // ─── MARKDOWN RENDERER ─────────────────────────────────
 function renderMarkdown(text) {
-  const srcMatch = text.match(/\*?\*?Sources?(?:\s*used)?:?\*?\*?\s*([\s\S]+?)$/im);
+  // STRICT source line match: must be at start of a line, "Sources" as full word, with colon
+  const srcMatch = text.match(/^\s*\*?\*?Sources?\b(?:\s+used)?\s*:\*?\*?\s*([^\n]+)$/im);
   let sourcesHtml = '', mainText = text;
   if (srcMatch) {
     mainText = text.slice(0, srcMatch.index).trim();

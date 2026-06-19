@@ -416,11 +416,22 @@
   }
   .pdf-hint-popup .divider { border-top: 1px solid var(--border); margin: 0.55rem 0; }
 
-  .source-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; padding-top: 0.3rem; }
+  .source-chips {
+    display: flex; gap: 0.35rem; flex-wrap: wrap; padding-top: 0.5rem;
+    align-items: center;
+    opacity: 0.7;
+  }
+  .source-chips::before {
+    content: 'Sources:';
+    font-size: 0.68rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 500; margin-right: 0.15rem;
+  }
   .source-chip {
-    font-size: 0.74rem; background: var(--bg-elev-2);
-    border: 1px solid var(--border); color: var(--text-muted);
-    padding: 0.22rem 0.6rem; border-radius: 999px;
+    font-size: 0.68rem; background: transparent;
+    border: 1px solid var(--border); color: var(--text-dim);
+    padding: 0.12rem 0.5rem; border-radius: 999px;
+    font-weight: 400;
   }
 
   .typing-indicator {
@@ -1220,7 +1231,17 @@ function renderMarkdown(text) {
   // Reject if it looks like prose: contains table pipe `|`, ends mid-sentence, or is >300 chars
   if (srcMatch && srcMatch[1].length < 300 && !srcMatch[1].includes('|') && !/\b(the|a|an|is|are|was|were|locate|click|navigate|select)\b/i.test(srcMatch[1])) {
     mainText = text.slice(0, srcMatch.index).trim();
-    const srcs = srcMatch[1].trim().split(/[·•\-,\n]+/).map(s => s.replace(/\*/g,'').trim()).filter(s => s.length > 2 && s.length < 80);
+    const seen = new Set();
+    const srcs = srcMatch[1].trim()
+      .split(/[·•\-,\n]+/)
+      .map(s => s.replace(/[`*_~]/g, '').replace(/\s+/g, ' ').trim())  // strip backticks, asterisks, underscores, tildes
+      .filter(s => s.length > 2 && s.length < 80)
+      .filter(s => {  // dedupe case-insensitively
+        const key = s.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     sourcesHtml = srcs.map(s => `<span class="source-chip">${s}</span>`).join('');
   }
   const originalMarkdown = mainText;
@@ -1939,7 +1960,12 @@ async function sendMessage() {
     const { text: reply, chunks, wasTruncated } = await callClaude(text, attachments);
     hideTyping();
     const { html, sourcesHtml, rawMarkdown } = renderMarkdown(reply);
-    const fallback = chunks.map(c => `<span class="source-chip">${c.source}</span>`).join('');
+    const seenSrc = new Set();
+    const fallback = chunks
+      .map(c => c.source)
+      .filter(s => { const k = s.toLowerCase(); if (seenSrc.has(k)) return false; seenSrc.add(k); return true; })
+      .map(s => `<span class="source-chip">${s}</span>`)
+      .join('');
     const truncatedNotice = wasTruncated
       ? `<div id="truncNotice" style="margin-top:1rem;padding:0.9rem 1.1rem;background:color-mix(in srgb,var(--orange-400) 18%,transparent);border:2px solid var(--orange-400);border-radius:var(--r-md);font-size:0.92rem;color:var(--orange-400);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
           <span>⚠️ Response was cut off before finishing. Click Continue to resume from where it stopped.</span>

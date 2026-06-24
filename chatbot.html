@@ -778,7 +778,7 @@
 </nav>
 
 <!-- API KEY MODAL -->
-<div class="modal-overlay" id="apiModal">
+<div class="modal-overlay" id="apiModal" style="display:none;">
   <div class="modal">
     <h2 id="apiModalTitle">API Key — Anthropic</h2>
     <p id="apiModalDesc">Your key is used only in this browser session. It is saved to localStorage and never sent anywhere except the provider's API directly.</p>
@@ -852,6 +852,7 @@
         <div class="msg-content">
           <div class="msg-bubble">
             <p><strong>Welcome to QA Nexus.</strong> Your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
+            <p>⚙️ <strong>Before you start:</strong> select your <strong>Provider</strong> and <strong>Model</strong> in the top-right, then click <strong>🔑 Add key</strong> to enter your API key. Keys are saved in your browser and never leave your device.</p>
             <p>👈 <strong>Left panel:</strong> pick an STLC phase, including <strong>Test Automation</strong> for Playwright / Cypress / Selenium / BDD code generation.</p>
             <p>👉 <strong>Right panel:</strong> target a real application URL so I can produce site-specific deliverables.</p>
             <p>📎 <strong>Attach:</strong> screenshots, PDFs, or <strong>HTML files</strong> (drag/paste them in). Screenshots help me see the UI; HTML files give me real selectors for working automation code.</p>

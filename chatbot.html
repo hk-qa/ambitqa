@@ -144,16 +144,25 @@
     background: var(--bg-elev); border: 1px solid var(--border);
     border-radius: var(--r-sm); padding: 3px 8px; height: 34px;
   }
-  .provider-bar label { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+  .provider-bar label { font-size: 0.82rem; color: var(--text); font-weight: 500; white-space: nowrap; }
   .provider-bar select, .provider-bar input[list] {
     background: transparent; border: none; outline: none;
-    color: var(--text); font-size: 0.8rem; font-family: var(--font-body);
+    color: var(--text); font-size: 0.82rem; font-family: var(--font-body);
     cursor: pointer; padding: 0;
   }
   .provider-bar select { max-width: 82px; }
   .provider-bar input[list] { width: 148px; cursor: text; }
   .provider-bar input[list]::placeholder { color: var(--text-muted); }
   .provider-bar .bar-divider { width: 1px; height: 14px; background: var(--border-strong); margin: 0 3px; flex-shrink: 0; }
+  /* Custom provider/model text inputs — hidden until "Custom…" is chosen */
+  .custom-input {
+    display: none; border: none; outline: none; background: transparent;
+    color: var(--text); font-size: 0.82rem; font-family: var(--font-body);
+    border-bottom: 1px dashed var(--brand-400); padding: 0 2px;
+    width: 110px; transition: width 0.2s;
+  }
+  .custom-input::placeholder { color: var(--text-muted); }
+  .custom-input.visible { display: inline-block; }
   /* API Key button — prominent pill */
   .key-btn {
     display: inline-flex; align-items: center; gap: 5px;
@@ -659,6 +668,8 @@
     cursor: pointer; font-family: var(--font-b); transition: opacity 0.2s;
   }
   .modal-btn:hover { opacity: 0.9; }
+  .modal-actions { display: flex; gap: 0.6rem; }
+  .modal-actions .modal-btn { margin-bottom: 0; }
   .modal-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; text-align: center; }
   .modal-note a { color: var(--brand-400); }
 
@@ -740,17 +751,20 @@
         <option value="xai">xAI</option>
         <option value="openai">OpenAI</option>
         <option value="openrouter">OpenRouter</option>
+        <option value="custom">Custom…</option>
       </select>
+      <input class="custom-input" id="customProviderInput" placeholder="base URL" title="Enter the OpenAI-compatible base URL for your provider" autocomplete="off" spellcheck="false" />
       <div class="bar-divider"></div>
       <label for="modelSelect">Model</label>
-      <input list="modelList" id="modelSelect" placeholder="claude-sonnet-4-6" title="Type or select a model" autocomplete="off" spellcheck="false" />
-      <datalist id="modelList">
-        <option value="claude-sonnet-4-6">Sonnet 4.6 (default)</option>
+      <select id="modelSelect" onchange="onModelChange()" title="Select or type a model">
+        <option value="claude-sonnet-4-6">Sonnet 4.6</option>
         <option value="claude-opus-4-6">Opus 4.6</option>
         <option value="claude-opus-4-7">Opus 4.7</option>
         <option value="claude-opus-4-8">Opus 4.8</option>
         <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
-      </datalist>
+        <option value="custom">Custom…</option>
+      </select>
+      <input class="custom-input" id="customModelInput" placeholder="model name" title="Type any model identifier e.g. gpt-4o-mini, gemini-2.5-pro, llama-3.3-70b" autocomplete="off" spellcheck="false" />
     </div>
     <button class="key-btn unset" id="keyStatus" onclick="showKeyModal()" title="Click to set API key">🔑 Add key</button>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
@@ -769,7 +783,10 @@
     <h2 id="apiModalTitle">API Key — Anthropic</h2>
     <p id="apiModalDesc">Your key is used only in this browser session. It is saved to localStorage and never sent anywhere except the provider's API directly.</p>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
-    <button class="modal-btn" onclick="saveKey()">Save key →</button>
+    <div style="display:flex;gap:0.6rem;margin-bottom:0.75rem;">
+      <button class="form-modal-cancel" style="padding:0.75rem 1.2rem;" onclick="document.getElementById('apiModal').style.display='none'">Cancel</button>
+      <button class="modal-btn" style="margin-bottom:0;" onclick="saveKey()">Save key →</button>
+    </div>
     <p class="modal-note" id="apiModalNote">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
   </div>
 </div>
@@ -1054,6 +1071,41 @@ const PROVIDERS = {
   }
 };
 
+// ── Custom provider (OpenAI-compatible endpoint) ──────────────────────────
+PROVIDERS.custom = {
+  label: 'Custom',
+  placeholder: 'sk-...',
+  keyHint: "your provider's API console",
+  keyUrl: '#',
+  defaultModel: 'custom-model',
+  models: [],
+  buildRequest(model, system, messages, maxTokens) {
+    const baseUrl = document.getElementById('customProviderInput')?.value?.trim()
+      || 'https://api.openai.com'; // sane fallback
+    const url = baseUrl.replace(/\/$/, '') + '/v1/chat/completions';
+    return {
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${providerKeys.custom || ''}`
+      },
+      body: {
+        model,
+        messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)],
+        max_tokens: maxTokens
+      }
+    };
+  },
+  extract(data) {
+    const text = data.choices?.[0]?.message?.content || '';
+    const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
+    return { text, wasTruncated };
+  }
+};
+
+// Also add 'custom' key slot
+providerKeys.custom = localStorage.getItem('qanexus-key-custom') || '';
+
 // Convert Anthropic-style message content to plain string for OpenAI-compatible APIs
 function normalizeMsg(m) {
   const content = Array.isArray(m.content)
@@ -1063,25 +1115,67 @@ function normalizeMsg(m) {
 }
 
 function currentProvider() {
-  return document.getElementById('providerSelect')?.value || 'anthropic';
+  const sel = document.getElementById('providerSelect')?.value || 'anthropic';
+  if (sel === 'custom') {
+    return 'custom';
+  }
+  return sel;
 }
 
 function currentModel() {
-  const val = document.getElementById('modelSelect')?.value?.trim();
-  return val || PROVIDERS[currentProvider()]?.defaultModel || 'claude-sonnet-4-6';
+  const sel = document.getElementById('modelSelect')?.value || '';
+  if (sel === 'custom') {
+    return document.getElementById('customModelInput')?.value?.trim() || 'custom-model';
+  }
+  return sel || PROVIDERS[currentProvider()]?.defaultModel || 'claude-sonnet-4-6';
+}
+
+// Model dropdown presets per provider
+const PROVIDER_MODELS = {
+  anthropic:   ['claude-sonnet-4-6','claude-opus-4-6','claude-opus-4-7','claude-opus-4-8','claude-haiku-4-5-20251001'],
+  google:      ['gemini-2.0-flash','gemini-2.0-flash-lite','gemini-1.5-pro','gemini-1.5-flash'],
+  xai:         ['grok-3','grok-3-mini','grok-2','grok-2-vision'],
+  openai:      ['gpt-4o','gpt-4o-mini','gpt-4-turbo','o1','o3-mini'],
+  openrouter:  ['anthropic/claude-sonnet-4-6','google/gemini-2.0-flash','x-ai/grok-3','openai/gpt-4o','meta-llama/llama-3.3-70b-instruct'],
+  custom:      [],
+};
+
+function rebuildModelDropdown(provider) {
+  const sel = document.getElementById('modelSelect');
+  const models = PROVIDER_MODELS[provider] || [];
+  sel.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('') +
+    '<option value="custom">Custom…</option>';
+  sel.value = models[0] || 'custom';
+  document.getElementById('customModelInput').classList.remove('visible');
+}
+
+function onModelChange() {
+  const val = document.getElementById('modelSelect').value;
+  const customIn = document.getElementById('customModelInput');
+  if (val === 'custom') {
+    customIn.classList.add('visible');
+    customIn.focus();
+  } else {
+    customIn.classList.remove('visible');
+  }
 }
 
 function onProviderChange() {
-  const p = currentProvider();
-  const cfg = PROVIDERS[p];
-  if (!cfg) return;
-  // Update model datalist
-  const dl = document.getElementById('modelList');
-  dl.innerHTML = cfg.models.map(m => `<option value="${m}">${m}</option>`).join('');
-  // Set placeholder to default model
-  document.getElementById('modelSelect').placeholder = cfg.defaultModel;
-  document.getElementById('modelSelect').value = '';
-  // Update key status indicator
+  const p = document.getElementById('providerSelect').value;
+  const customProvIn = document.getElementById('customProviderInput');
+
+  if (p === 'custom') {
+    customProvIn.classList.add('visible');
+    customProvIn.focus();
+    // For custom provider, set model dropdown to custom too
+    const sel = document.getElementById('modelSelect');
+    sel.innerHTML = '<option value="custom">Custom…</option>';
+    sel.value = 'custom';
+    document.getElementById('customModelInput').classList.add('visible');
+  } else {
+    customProvIn.classList.remove('visible');
+    rebuildModelDropdown(p);
+  }
   updateKeyStatus();
 }
 
@@ -1100,12 +1194,15 @@ function updateKeyStatus() {
 
 function showKeyModal() {
   const p = currentProvider();
-  const cfg = PROVIDERS[p];
-  document.getElementById('apiModalTitle').textContent = `API Key — ${cfg.label}`;
-  document.getElementById('apiModalDesc').textContent = `Your ${cfg.label} key is saved in localStorage and used only to call ${cfg.label}'s API directly from your browser.`;
-  document.getElementById('apiKeyInput').placeholder = cfg.placeholder;
+  const cfg = PROVIDERS[p] || PROVIDERS.custom;
+  const label = cfg?.label || p;
+  document.getElementById('apiModalTitle').textContent = `API Key — ${label}`;
+  document.getElementById('apiModalDesc').textContent = `Your ${label} key is saved in localStorage and sent only to ${label}'s API endpoint directly from your browser.`;
+  document.getElementById('apiKeyInput').placeholder = cfg?.placeholder || 'your-api-key';
   document.getElementById('apiKeyInput').value = providerKeys[p] || '';
-  document.getElementById('apiModalNote').innerHTML = `Get a key at <a href="${cfg.keyUrl}" target="_blank">${cfg.keyHint}</a>`;
+  const hint = cfg?.keyHint || "your provider's console";
+  const url = cfg?.keyUrl || '#';
+  document.getElementById('apiModalNote').innerHTML = `Get a key at <a href="${url}" target="_blank">${hint}</a>`;
   document.getElementById('apiModal').style.display = 'flex';
   document.getElementById('apiKeyInput').focus();
 }
@@ -1514,12 +1611,12 @@ async function callClaude(userMessage, attachments = []) {
 
   // ── Provider-agnostic API call ──
   const p = currentProvider();
-  const cfg = PROVIDERS[p];
-  const key = providerKeys[p];
+  const cfg = PROVIDERS[p] || PROVIDERS.custom;
+  const key = providerKeys[p] || providerKeys.custom;
   if (!key) {
     showKeyModal();
     conversationHistory.pop(); // remove the message we just pushed
-    throw new Error(`No API key set for ${cfg.label}. Please add your key.`);
+    throw new Error(`No API key set for ${cfg?.label || p}. Please add your key.`);
   }
   const model = currentModel();
   const req = cfg.buildRequest(model, systemPrompt, conversationHistory, 8192);
@@ -2612,6 +2709,7 @@ function saveKey() {
   if (!val) { alert('Please enter an API key.'); return; }
   const p = currentProvider();
   providerKeys[p] = val;
+  providerKeys[p === 'custom' ? 'custom' : p] = val;
   localStorage.setItem(`qanexus-key-${p}`, val);
   document.getElementById('apiModal').style.display = 'none';
   updateKeyStatus();
@@ -2671,7 +2769,8 @@ function togglePanel(side) {
 }
 
 renderActions('general');
-updateKeyStatus(); // show correct key indicator on load
+rebuildModelDropdown('anthropic'); // populate model dropdown on load
+updateKeyStatus();
 </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QA Nexus Evaluator</title>
 <style>
-  /* ── Design tokens ───────────────────────────────────────── */
+  /* ── Design tokens — dark mode (default) ────────────────── */
   :root {
     --bg:        #0f1117;
     --surface:   #181c27;
@@ -13,8 +13,8 @@
     --border:    #2a3050;
     --border2:   #3a4468;
     --text:      #e8eaf0;
-    --text2:     #8b91a8;
-    --text3:     #5c6280;
+    --text2:     #a8aec4;
+    --text3:     #7b82a0;
     --accent:    #6c63ff;
     --accent2:   #8b83ff;
     --pass:      #22c55e;
@@ -25,6 +25,26 @@
     --fail-bg:   rgba(239,68,68,.10);
     --radius:    10px;
     --radius-sm: 6px;
+  }
+
+  /* ── Light mode ───────────────────────────────────────────── */
+  [data-theme="light"] {
+    --bg:        #f4f5f7;
+    --surface:   #ffffff;
+    --surface2:  #f0f1f5;
+    --border:    #dde0ea;
+    --border2:   #c4c9d8;
+    --text:      #111827;
+    --text2:     #374151;
+    --text3:     #4b5563;
+    --accent:    #5b53f0;
+    --accent2:   #7c75f5;
+    --pass:      #16a34a;
+    --warn:      #d97706;
+    --fail:      #dc2626;
+    --pass-bg:   rgba(22,163,74,.08);
+    --warn-bg:   rgba(217,119,6,.08);
+    --fail-bg:   rgba(220,38,38,.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -354,12 +374,12 @@
 
   .dim-notes {
     grid-column: 2 / -1;
-    font-size: 11px;
-    color: var(--text3);
+    font-size: 12px;
+    color: var(--text2);
     margin-top: -8px;
     margin-bottom: 6px;
     padding-left: 0;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   /* Issues list */
@@ -458,6 +478,12 @@
       </div>
     </div>
     <div class="header-right">
+      <button id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode" style="
+        background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+        width: 34px; height: 34px; cursor: pointer; font-size: 16px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--text2); transition: background 0.15s;
+      ">☀️</button>
       <div class="api-key-wrap">
         <label>API Key</label>
         <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
@@ -897,6 +923,27 @@ function copyImprovement() {
 function escHtml(s) {
   return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+// ── Theme toggle ──────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') !== 'light';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('qanexus-eval-theme', isDark ? 'light' : 'dark');
+}
+
+// Apply saved theme on load
+(function() {
+  const saved = localStorage.getItem('qanexus-eval-theme') ||
+    (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', saved);
+  // Button text set after DOM ready
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = saved === 'light' ? '🌙' : '☀️';
+  });
+})();
 
 // ── Pre-fill from QA Nexus chatbot (via sessionStorage) ───────────────────
 window.addEventListener('load', () => {

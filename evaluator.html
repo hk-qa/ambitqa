@@ -475,6 +475,7 @@
       <div>
         <div class="logo-text">QA Nexus Evaluator</div>
         <div class="logo-sub">AI Output Quality Scoring Engine</div>
+    <span id="evalVersionBadge" style="font-size:0.7rem;font-family:monospace;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;margin-left:4px;"></span>
       </div>
     </div>
     <div class="header-right">
@@ -558,6 +559,9 @@
 </div>
 
 <script>
+// ── Version ──────────────────────────────────────────────────────────────────
+const QA_NEXUS_VERSION = 'v1.1.0'; // bump this before each deploy
+
 // ── Rubrics (embedded) ─────────────────────────────────────────────────────
 const RUBRICS = {
   test_plan: {
@@ -944,6 +948,12 @@ function toggleTheme() {
     if (btn) btn.textContent = saved === 'light' ? '🌙' : '☀️';
   });
 })();
+
+// Set version badge
+document.addEventListener('DOMContentLoaded', () => {
+  const vb = document.getElementById('evalVersionBadge');
+  if (vb) vb.textContent = QA_NEXUS_VERSION;
+});
 
 // ── Pre-fill from QA Nexus chatbot (via sessionStorage) ───────────────────
 window.addEventListener('load', () => {

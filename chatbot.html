@@ -138,18 +138,25 @@
   .back-link:hover { color: var(--text); }
 
   /* MODEL SELECTOR */
-  .model-select-wrap {
+  .provider-bar {
     display: flex; align-items: center; gap: 6px;
     background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: var(--r-sm); padding: 4px 8px;
+    border-radius: var(--r-sm); padding: 4px 10px;
   }
-  .model-select-wrap label { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
-  .model-select-wrap select {
+  .provider-bar label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+  .provider-bar select, .provider-bar input[list] {
     background: transparent; border: none; outline: none;
     color: var(--text); font-size: 0.8rem; font-family: var(--font-body);
     cursor: pointer; padding: 0;
   }
-  .model-select-wrap select option { background: var(--bg-elev); }
+  .provider-bar select { max-width: 90px; }
+  .provider-bar input[list] { width: 170px; cursor: text; }
+  .provider-bar input[list]::placeholder { color: var(--text-muted); }
+  .provider-bar .bar-divider { width: 1px; height: 16px; background: var(--border-strong); margin: 0 2px; }
+  .provider-bar .key-status { font-size: 0.7rem; cursor: pointer; opacity: 0.7; }
+  .provider-bar .key-status:hover { opacity: 1; }
+  .provider-bar .key-status.set { color: var(--brand-400); }
+  .provider-bar .key-status.unset { color: var(--text-muted); }
 
   /* APP LAYOUT */
   .app { display: flex; flex: 1; overflow: hidden; }
@@ -713,13 +720,27 @@
     <button class="panel-toggle active" id="rightToggle" onclick="togglePanel('right')" title="Toggle right panel" aria-label="Toggle right panel">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
     </button>
-    <div class="model-select-wrap">
-      <label for="modelSelect">Model</label>
-      <select id="modelSelect" title="Select Claude model">
-        <option value="claude-sonnet-4-6" selected>Sonnet 4.6 (default)</option>
-        <option value="claude-opus-4-6">Opus 4.6 (most capable)</option>
-        <option value="claude-haiku-4-5-20251001">Haiku 4.5 (fastest)</option>
+    <div class="provider-bar">
+      <label for="providerSelect">Provider</label>
+      <select id="providerSelect" onchange="onProviderChange()" title="Select AI provider">
+        <option value="anthropic">Anthropic</option>
+        <option value="google">Google</option>
+        <option value="xai">xAI</option>
+        <option value="openai">OpenAI</option>
+        <option value="openrouter">OpenRouter</option>
       </select>
+      <div class="bar-divider"></div>
+      <label for="modelSelect">Model</label>
+      <input list="modelList" id="modelSelect" placeholder="claude-sonnet-4-6" title="Type or select a model" autocomplete="off" spellcheck="false" />
+      <datalist id="modelList">
+        <option value="claude-sonnet-4-6">Sonnet 4.6 (default)</option>
+        <option value="claude-opus-4-6">Opus 4.6</option>
+        <option value="claude-opus-4-7">Opus 4.7</option>
+        <option value="claude-opus-4-8">Opus 4.8</option>
+        <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
+      </datalist>
+      <div class="bar-divider"></div>
+      <span class="key-status unset" id="keyStatus" onclick="showKeyModal()" title="Click to set API key">🔑 key</span>
     </div>
     <a class="back-link" href="index.html">← Back to home</a>
   </div>
@@ -728,11 +749,11 @@
 <!-- API KEY MODAL -->
 <div class="modal-overlay" id="apiModal">
   <div class="modal">
-    <h2>Enter your Anthropic API key</h2>
-    <p>Your key is used only in this browser session to call the Anthropic API directly. It is never stored or sent anywhere else.</p>
+    <h2 id="apiModalTitle">API Key — Anthropic</h2>
+    <p id="apiModalDesc">Your key is used only in this browser session. It is saved to localStorage and never sent anywhere except the provider's API directly.</p>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
-    <button class="modal-btn" onclick="saveKey()">Start chatting →</button>
-    <p class="modal-note">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <button class="modal-btn" onclick="saveKey()">Save key →</button>
+    <p class="modal-note" id="apiModalNote">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
   </div>
 </div>
 
@@ -883,7 +904,195 @@ function toggleTheme() {
 updateThemeIcon();
 
 // ─── STATE ─────────────────────────────────────────────
-let apiKey = '';
+// Per-provider API keys (persisted in localStorage)
+const providerKeys = {
+  anthropic: localStorage.getItem('qanexus-key-anthropic') || '',
+  google:    localStorage.getItem('qanexus-key-google')    || '',
+  xai:       localStorage.getItem('qanexus-key-xai')       || '',
+  openai:    localStorage.getItem('qanexus-key-openai')    || '',
+  openrouter:localStorage.getItem('qanexus-key-openrouter')|| '',
+};
+
+// Provider config: endpoints, auth, request/response shape
+const PROVIDERS = {
+  anthropic: {
+    label: 'Anthropic',
+    placeholder: 'sk-ant-...',
+    keyHint: 'console.anthropic.com',
+    keyUrl: 'https://console.anthropic.com',
+    defaultModel: 'claude-sonnet-4-6',
+    models: ['claude-sonnet-4-6','claude-opus-4-6','claude-opus-4-7','claude-opus-4-8','claude-haiku-4-5-20251001'],
+    buildRequest(model, system, messages, maxTokens) {
+      return {
+        url: 'https://api.anthropic.com/v1/messages',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': providerKeys.anthropic,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: { model, system, messages, max_tokens: maxTokens }
+      };
+    },
+    extract(data) {
+      const text = data.content?.map(b => b.text || '').join('') || '';
+      const wasTruncated = data.stop_reason === 'max_tokens';
+      return { text, wasTruncated };
+    }
+  },
+  google: {
+    label: 'Google',
+    placeholder: 'AIza...',
+    keyHint: 'aistudio.google.com',
+    keyUrl: 'https://aistudio.google.com/app/apikey',
+    defaultModel: 'gemini-2.0-flash',
+    models: ['gemini-2.0-flash','gemini-2.0-flash-lite','gemini-1.5-pro','gemini-1.5-flash'],
+    buildRequest(model, system, messages, maxTokens) {
+      // Convert Anthropic-style messages to Gemini contents format
+      const contents = messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: Array.isArray(m.content)
+          ? m.content.map(c => {
+              if (c.type === 'text') return { text: c.text };
+              if (c.type === 'image') return { inline_data: { mime_type: c.source.media_type, data: c.source.data } };
+              return { text: '[unsupported content type]' };
+            })
+          : [{ text: m.content || '' }]
+      }));
+      return {
+        url: `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${providerKeys.google}`,
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          system_instruction: { parts: [{ text: system }] },
+          contents,
+          generationConfig: { maxOutputTokens: maxTokens }
+        }
+      };
+    },
+    extract(data) {
+      const text = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+      const wasTruncated = data.candidates?.[0]?.finishReason === 'MAX_TOKENS';
+      return { text, wasTruncated };
+    }
+  },
+  xai: {
+    label: 'xAI (Grok)',
+    placeholder: 'xai-...',
+    keyHint: 'console.x.ai',
+    keyUrl: 'https://console.x.ai',
+    defaultModel: 'grok-3',
+    models: ['grok-3','grok-3-mini','grok-2','grok-2-vision'],
+    buildRequest(model, system, messages, maxTokens) {
+      return {
+        url: 'https://api.x.ai/v1/chat/completions',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.xai}` },
+        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
+      };
+    },
+    extract(data) {
+      const text = data.choices?.[0]?.message?.content || '';
+      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
+      return { text, wasTruncated };
+    }
+  },
+  openai: {
+    label: 'OpenAI',
+    placeholder: 'sk-...',
+    keyHint: 'platform.openai.com',
+    keyUrl: 'https://platform.openai.com/api-keys',
+    defaultModel: 'gpt-4o',
+    models: ['gpt-4o','gpt-4o-mini','gpt-4-turbo','o1','o3-mini'],
+    buildRequest(model, system, messages, maxTokens) {
+      return {
+        url: 'https://api.openai.com/v1/chat/completions',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.openai}` },
+        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
+      };
+    },
+    extract(data) {
+      const text = data.choices?.[0]?.message?.content || '';
+      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
+      return { text, wasTruncated };
+    }
+  },
+  openrouter: {
+    label: 'OpenRouter',
+    placeholder: 'sk-or-...',
+    keyHint: 'openrouter.ai (routes to any model)',
+    keyUrl: 'https://openrouter.ai/keys',
+    defaultModel: 'anthropic/claude-sonnet-4-6',
+    models: ['anthropic/claude-sonnet-4-6','google/gemini-2.0-flash','x-ai/grok-3','openai/gpt-4o','meta-llama/llama-3.3-70b-instruct'],
+    buildRequest(model, system, messages, maxTokens) {
+      return {
+        url: 'https://openrouter.ai/api/v1/chat/completions',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.openrouter}`, 'HTTP-Referer': location.origin },
+        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
+      };
+    },
+    extract(data) {
+      const text = data.choices?.[0]?.message?.content || '';
+      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
+      return { text, wasTruncated };
+    }
+  }
+};
+
+// Convert Anthropic-style message content to plain string for OpenAI-compatible APIs
+function normalizeMsg(m) {
+  const content = Array.isArray(m.content)
+    ? m.content.filter(c => c.type === 'text').map(c => c.text).join('\n')
+    : (m.content || '');
+  return { role: m.role, content };
+}
+
+function currentProvider() {
+  return document.getElementById('providerSelect')?.value || 'anthropic';
+}
+
+function currentModel() {
+  const val = document.getElementById('modelSelect')?.value?.trim();
+  return val || PROVIDERS[currentProvider()]?.defaultModel || 'claude-sonnet-4-6';
+}
+
+function onProviderChange() {
+  const p = currentProvider();
+  const cfg = PROVIDERS[p];
+  if (!cfg) return;
+  // Update model datalist
+  const dl = document.getElementById('modelList');
+  dl.innerHTML = cfg.models.map(m => `<option value="${m}">${m}</option>`).join('');
+  // Set placeholder to default model
+  document.getElementById('modelSelect').placeholder = cfg.defaultModel;
+  document.getElementById('modelSelect').value = '';
+  // Update key status indicator
+  updateKeyStatus();
+}
+
+function updateKeyStatus() {
+  const p = currentProvider();
+  const el = document.getElementById('keyStatus');
+  if (!el) return;
+  if (providerKeys[p]) {
+    el.textContent = '🔑 key set';
+    el.className = 'key-status set';
+  } else {
+    el.textContent = '🔑 add key';
+    el.className = 'key-status unset';
+  }
+}
+
+function showKeyModal() {
+  const p = currentProvider();
+  const cfg = PROVIDERS[p];
+  document.getElementById('apiModalTitle').textContent = `API Key — ${cfg.label}`;
+  document.getElementById('apiModalDesc').textContent = `Your ${cfg.label} key is saved in localStorage and used only to call ${cfg.label}'s API directly from your browser.`;
+  document.getElementById('apiKeyInput').placeholder = cfg.placeholder;
+  document.getElementById('apiKeyInput').value = providerKeys[p] || '';
+  document.getElementById('apiModalNote').innerHTML = `Get a key at <a href="${cfg.keyUrl}" target="_blank">${cfg.keyHint}</a>`;
+  document.getElementById('apiModal').style.display = 'flex';
+  document.getElementById('apiKeyInput').focus();
+}
+
 let currentMode = 'general';
 let conversationHistory = [];
 let targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
@@ -1285,18 +1494,29 @@ async function callClaude(userMessage, attachments = []) {
   }
 
   conversationHistory.push({ role: 'user', content });
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+
+  // ── Provider-agnostic API call ──
+  const p = currentProvider();
+  const cfg = PROVIDERS[p];
+  const key = providerKeys[p];
+  if (!key) {
+    showKeyModal();
+    conversationHistory.pop(); // remove the message we just pushed
+    throw new Error(`No API key set for ${cfg.label}. Please add your key.`);
+  }
+  const model = currentModel();
+  const req = cfg.buildRequest(model, systemPrompt, conversationHistory, 8192);
+  const response = await fetch(req.url, {
     method: 'POST',
-    headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-    body: JSON.stringify({ model: document.getElementById('modelSelect')?.value || 'claude-sonnet-4-6', max_tokens:48000, system:systemPrompt, messages:conversationHistory })
+    headers: req.headers,
+    body: JSON.stringify(req.body)
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `API error ${response.status}`);
+    throw new Error(err.error?.message || err?.error?.errors?.[0]?.message || `API error ${response.status} from ${cfg.label}`);
   }
   const data = await response.json();
-  const text = data.content?.[0]?.text || '';
-  const wasTruncated = data.stop_reason === 'max_tokens';
+  const { text, wasTruncated } = cfg.extract(data);
   conversationHistory.push({ role: 'assistant', content: text });
   return { text, chunks, wasTruncated };
 }
@@ -2006,7 +2226,7 @@ async function sendMessage() {
   const input = document.getElementById('userInput');
   const btn = document.getElementById('sendBtn');
   const text = input.value.trim();
-  if ((!text && pendingAttachments.length === 0) || !apiKey) return;
+  if ((!text && pendingAttachments.length === 0)) return;
 
   // Snapshot attachments and clear pending
   const attachments = [...pendingAttachments];
@@ -2371,10 +2591,13 @@ function showToast(msg) {
 }
 
 function saveKey() {
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val.startsWith('sk-')) { alert('Please enter a valid Anthropic API key (starts with sk-)'); return; }
-  apiKey = val;
+  const val = document.getElementById('apiKeyInput').value.trim().replace(/[^\x20-\x7E]/g, '');
+  if (!val) { alert('Please enter an API key.'); return; }
+  const p = currentProvider();
+  providerKeys[p] = val;
+  localStorage.setItem(`qanexus-key-${p}`, val);
   document.getElementById('apiModal').style.display = 'none';
+  updateKeyStatus();
   document.getElementById('userInput').focus();
 }
 document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
@@ -2431,6 +2654,7 @@ function togglePanel(side) {
 }
 
 renderActions('general');
+updateKeyStatus(); // show correct key indicator on load
 </script>
 </body>
 </html>

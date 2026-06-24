@@ -738,12 +738,16 @@ Return ONLY a valid JSON object — no markdown fences, no preamble, no explanat
 
 // ── Main evaluation ────────────────────────────────────────────────────────
 async function runEvaluation() {
-  const apiKey = document.getElementById('apiKey').value.trim();
+  // Strip non-ASCII characters that cause "non ISO-8859-1 code point" fetch header error
+  const apiKey = document.getElementById('apiKey').value
+    .trim()
+    .replace(/[^\x20-\x7E]/g, '');
   const text   = document.getElementById('artifactText').value.trim();
   const typeEl = document.getElementById('artifactType');
   let   type   = typeEl.value;
 
-  if (!apiKey) { alert('Please enter your Anthropic API key.'); return; }
+  if (!apiKey) { alert('Please enter your Anthropic API key (sk-ant-…).'); return; }
+  if (!apiKey.startsWith('sk-')) { alert('API key looks wrong — it should start with sk-ant-…\n\nCheck for stray characters or spaces.'); return; }
   if (!text)   { alert('Please paste a QA artifact to evaluate.'); return; }
 
   if (type === 'auto') type = detectType(text);
@@ -896,9 +900,15 @@ function escHtml(s) {
 
 // ── Pre-fill from QA Nexus chatbot (via sessionStorage) ───────────────────
 window.addEventListener('load', () => {
+  // Restore API key from evaluator's own localStorage (persists across evaluations)
+  const savedKey = localStorage.getItem('qanexus-evaluator-key') || '';
+  if (savedKey) {
+    document.getElementById('apiKey').value = savedKey;
+  }
+
   const artifact = sessionStorage.getItem('qanexus_eval_artifact');
   if (artifact) {
-    sessionStorage.removeItem('qanexus_eval_artifact'); // consume it; don't persist
+    sessionStorage.removeItem('qanexus_eval_artifact'); // consume once; don't re-fill on refresh
     const ta = document.getElementById('artifactText');
     ta.value = artifact;
     ta.dispatchEvent(new Event('input')); // trigger red-flag scan
@@ -907,6 +917,13 @@ window.addEventListener('load', () => {
     const sel = document.getElementById('artifactType');
     sel.value = detected;
   }
+});
+
+// Persist key to localStorage when user enters/changes it
+document.getElementById('apiKey').addEventListener('change', function() {
+  const clean = this.value.trim().replace(/[^\x20-\x7E]/g, '');
+  this.value = clean;
+  if (clean) localStorage.setItem('qanexus-evaluator-key', clean);
 });
 
 // ── Keyboard shortcut: Ctrl+Enter ─────────────────────────────────────────

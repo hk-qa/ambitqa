@@ -1180,13 +1180,28 @@ function onModelChange() {
   localStorage.setItem(`qanexus-model-${p}`, val);
 }
 
-// Persist custom model string as user types
+// Persist custom model string as user types; Enter moves focus to chat
 document.addEventListener('DOMContentLoaded', () => {
   const customModelIn = document.getElementById('customModelInput');
   if (customModelIn) {
     customModelIn.addEventListener('input', function() {
       const p = document.getElementById('providerSelect').value;
       localStorage.setItem(`qanexus-custommodel-${p}`, this.value.trim());
+    });
+    customModelIn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('userInput')?.focus();
+      }
+    });
+  }
+  const customProvIn = document.getElementById('customProviderInput');
+  if (customProvIn) {
+    customProvIn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('userInput')?.focus();
+      }
     });
   }
 });

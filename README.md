@@ -1,3 +1,40 @@
+---
+
+## 🤝 Hire Me
+
+**Need QA work done faster, with documentation that passes any audit?**
+
+I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA artifacts in a fraction of the typical time — grounded in ISTQB Foundation Level, IEEE 829, and modern STLC practices. Available for short engagements and ongoing retainers.
+
+### What I can do for your team
+
+| Engagement | Typical Outcome | Investment |
+|---|---|---|
+| **IEEE 829 Compliance Refresh** | Audit your existing QA documentation, generate compliant test plans, RTMs, and exit criteria | Fixed-fee, ~2 weeks |
+| **Test Automation Framework Setup** | Scaffold Playwright, Cypress, or Selenium with Page Object Model and CI workflow, using your real HTML for working selectors | Fixed-fee, ~3-4 weeks |
+| **QA Process Maturity Assessment** | Score your current QA artifacts against rubric-based standards, deliver a prioritized improvement roadmap | Fixed-fee, ~1 week |
+| **Bug Triage & Severity Scoring** | Ongoing defect analysis with IEEE 829 bug reports and reproducibility validation | Monthly retainer |
+| **API / Security / Performance Test Design** | Generate full test suites and execution plans across REST, GraphQL, OWASP Top 10, k6/JMeter | Per-project |
+| **Custom QA Tooling** | Build internal QA tools tailored to your stack and workflow | Quoted on scope |
+
+### Why work with me
+
+- ✅ **Real QA practitioner**, not a generalist consultant — I've designed and shipped test strategies for production systems
+- ✅ **Tool-augmented delivery** — what would take a junior QA 2 weeks, I deliver in 3 days with higher quality
+- ✅ **Methodology-grounded output** — every artifact references ISTQB / IEEE 829 sources, audit-ready by default
+- ✅ **Transparent scoping** — fixed fees on defined deliverables, no surprises
+- ✅ **Code stays yours** — all artifacts and frameworks are delivered as your property
+
+### Get in touch
+
+- 💼 **LinkedIn:** [Your LinkedIn URL]
+- 📧 **Email:** [your email]
+- 📅 **Book a 20-minute intro call:** [Calendly / scheduling link if you have one]
+
+> _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
+
+---
+
 # QA Nexus 🎯
 
 > **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC).**

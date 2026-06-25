@@ -42,7 +42,7 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 - 💼 **LinkedIn:** https://www.linkedin.com/in/hkapur
 - 📧 **Email:** hk.qanexus@gmail.com
-- 📅 **Book a 20-minute intro call:** https://calendly.com/hk.qanexus
+- 📅 **Book a 30-minute intro call:** [https://calendly.com/hk.qanexus](https://calendly.com/hk-qanexus)
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
 

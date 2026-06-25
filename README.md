@@ -4,8 +4,13 @@
 
 Built as a capstone project for the [Codecademy Agentic AI Applications Bootcamp](https://www.codecademy.com) — Contest #1.
 
+![Version](https://img.shields.io/badge/version-v1.2.0-6c63ff)
+![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
+![Hosted on](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-222)
+
 🔗 **Live demo:** [hk-qa.github.io/qa-nexus/](https://hk-qa.github.io/qa-nexus/)
 🤖 **Chatbot:** [hk-qa.github.io/qa-nexus/chatbot.html](https://hk-qa.github.io/qa-nexus/chatbot.html)
+🔬 **Evaluator:** [hk-qa.github.io/qa-nexus/evaluator.html](https://hk-qa.github.io/qa-nexus/evaluator.html)
 
 ---
 
@@ -22,6 +27,9 @@ QA Nexus is a structured, retrieval-augmented chat agent that produces productio
 - **Exit criteria checklists**
 - **Lessons-learned documents**
 - **Automation framework code** — Playwright (TypeScript), Cypress (JavaScript), Selenium WebDriver (Python + pytest), and BDD/Cucumber + Gherkin
+- **API test cases** — REST, GraphQL, contract tests
+- **Security test cases** — OWASP Top 10 coverage
+- **Performance test plans and scripts** — k6, JMeter, load/stress/spike/soak
 - Plus risk-based strategies, accessibility checklists, exploratory test charters, and more
 
 ---
@@ -29,10 +37,24 @@ QA Nexus is a structured, retrieval-augmented chat agent that produces productio
 ## ✨ Key features
 
 ### 🧠 Real RAG, not just a wrapper
-- Curated knowledge base with 23 methodology chunks (ISTQB, IEEE 829, STLC, automation patterns)
+- Curated knowledge base with 38 methodology chunks (ISTQB, IEEE 829, STLC, automation, API, security, performance testing patterns)
 - Semantic keyword scoring + mode-aware retrieval boost
 - Top-K relevant chunks injected into every prompt
-- **Source citations on every response** — you can audit exactly which methodology was used
+- **Source citations on every response** — audit exactly which methodology was used
+
+### 🌐 Multi-provider LLM support
+Choose your AI provider directly in the nav bar — no code changes required:
+
+| Provider | Models included |
+|---|---|
+| **Anthropic** | Claude Sonnet 4.6, Opus 4.6/4.7/4.8, Haiku 4.5 |
+| **Google** | Gemini 2.0 Flash, 1.5 Pro, 1.5 Flash |
+| **xAI** | Grok 3, Grok 3 Mini, Grok 2 |
+| **OpenAI** | GPT-4o, GPT-4o Mini, o1, o3-mini |
+| **OpenRouter** | Any model via a single key |
+| **Custom** | Any OpenAI-compatible endpoint + model |
+
+Pick **Custom…** from either dropdown to type any model string — future-proof for new releases without code updates. Each provider's API key is stored separately in localStorage and never transmitted anywhere except that provider's API.
 
 ### 🎯 Target real applications
 - Set a target URL → agent fetches the page via CORS proxy
@@ -41,104 +63,138 @@ QA Nexus is a structured, retrieval-augmented chat agent that produces productio
 
 ### 📎 Multi-modal attachments
 Three attachment paths to give the agent maximum context:
-- **Screenshots** (PNG/JPG/WEBP/GIF) — Claude's vision capability sees the UI directly
-- **PDFs** — native PDF understanding
-- **HTML files** — DOM structure extracted and injected for **real, working selectors in automation code**
+- **Screenshots** (PNG/JPG/WEBP/GIF) — vision capability sees the UI directly
+- **PDFs** — native PDF understanding (Anthropic provider)
+- **HTML files** — DOM structure extracted and injected for real, working selectors in automation code
 
 Attach via 📎 button, drag-and-drop, or paste from clipboard.
 
-### 🤖 Test Automation mode
-A dedicated STLC phase that generates production-ready code:
-- Playwright POM + tests + `playwright.config.ts` + README
-- Cypress POM + spec files
-- Selenium WebDriver framework (Python + pytest)
-- BDD Gherkin features + Cucumber.js step definitions
-- GitHub Actions CI workflow
-- **Honest about selector sources** — comments tell you whether selectors came from real HTML or were inferred from screenshots
+### ⏹ Stop generation
+A red stop button appears next to the chat input while the AI is generating. Click it to cancel the in-flight request immediately — no page refresh needed.
+
+### 🔬 QA Artifact Evaluator
+A standalone scoring tool (`evaluator.html`) that evaluates any QA Nexus output against ISTQB/IEEE 829 rubrics:
+
+- **PASS / WARN / FAIL** verdict with weighted score (0–100)
+- **Per-dimension score bars** with explanatory notes
+- **Top issues** list
+- **Auto-generated improvement prompt** — paste it back into QA Nexus to fix the weaknesses
+- **Pre-scan red flag detection** — catches vague steps, hardcoded waits, placeholder selectors, unmeasurable criteria before the AI evaluates
+- **Light / dark mode** with system preference detection
+- Supports all 9 deliverable types: Test Plan, Test Cases, BDD/Gherkin, Bug Report, Automation Code, RTM, Execution Report, Exit Criteria, Lessons Learned
+
+### 🎭 11 STLC modes
+| Mode | Focus |
+|---|---|
+| Requirements Review | Testability analysis, RTM, acceptance criteria |
+| Test Planning | IEEE 829 test plans, risk analysis, entry/exit criteria |
+| Test Design | Test cases, BDD/Gherkin, boundary value analysis |
+| Test Implementation | Test data, environment setup, traceability |
+| Test Execution | Bug reports, execution reports, defect tracking |
+| Test Closure | Lessons learned, metrics, sign-off |
+| Test Automation | Playwright, Cypress, Selenium, BDD/Cucumber code |
+| **API Testing** | REST/GraphQL test cases, Postman collections, JWT/OAuth |
+| **Security Testing** | OWASP Top 10, XSS/injection/IDOR, Burp Suite/ZAP plans |
+| **Performance Testing** | k6 scripts, JMeter plans, SLA definitions |
+| General | Open-ended QA questions |
 
 ### 📤 Five export formats
-- **TXT** — clean plain text (markdown stripped, tables formatted as records)
-- **MD** — raw markdown (great for GitHub, Notion, Obsidian)
-- **HTML** — standalone styled document (one click away from PDF via browser print)
+- **TXT** — clean plain text
+- **MD** — raw markdown
+- **HTML** — standalone styled document
 - **Jira CSV** — direct-importable for test cases and bug reports
-- **Auto-form fill** — when the agent asks for structured input, a modal opens with proper input fields
+- **Auto-form fill** — structured input modal when the agent needs specific data
+- **🔬 Evaluate** — one-click evaluation of any response in the evaluator
 
 ### 🎨 Polished UI
 - Three-column resizable layout with drag handles
-- Both side panels can collapse for full-screen chat
-- Light & dark mode (defaults to system preference)
-- Indigo/violet brand palette
-- WCAG AAA-compliant text contrast
-- Mode-aware autosuggestions in the chat box (↑↓ navigation, Enter to pick)
-- Keyboard-friendly throughout
+- Both side panels collapse for full-screen chat
+- Light & dark mode (system preference detection)
+- Indigo/violet brand palette, WCAG AAA text contrast
+- Mode-aware autosuggestions (↑↓ navigation, Enter to pick)
+- Version badge in nav — always know what's live
 
 ---
 
 ## 🏗 Architecture
 
-**Pure browser-based** — no backend, no database, no server-side code.
-
-- Static HTML + vanilla JS + CSS
-- Hosted on GitHub Pages
-- Calls Anthropic's `claude-sonnet-4-6` directly via the Messages API
-- API key is entered in-browser and never stored or transmitted to any third party
-- Multi-modal request format (images, PDFs as binary; HTML as extracted text context)
-- Streaming-free synchronous request/response with `max_tokens: 16000` + truncation detection + continue button
+**Pure browser-based** — no backend, no database, no server-side code, no build step.
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  Browser (the entire app)                                     │
-│                                                                │
-│  ┌──────────────────┐   ┌─────────────────┐                  │
-│  │ Knowledge base   │   │ STLC mode       │                  │
-│  │ (23 chunks)      │   │ (8 phases)      │                  │
-│  └────────┬─────────┘   └────────┬────────┘                  │
-│           │                       │                            │
-│           ▼                       ▼                            │
-│  ┌─────────────────────────────────────────┐                  │
-│  │ Semantic retrieval (top-K by mode boost) │                  │
-│  └────────────────────┬─────────────────────┘                  │
-│                       │                                        │
-│                       ▼                                        │
-│  ┌─────────────────────────────────────────┐                  │
-│  │ Prompt builder + multi-modal content    │                  │
-│  │ (text + images + PDFs + HTML context)   │                  │
-│  └────────────────────┬─────────────────────┘                  │
-│                       │                                        │
-│                       ▼                                        │
-│              api.anthropic.com/v1/messages                    │
-│                  (claude-sonnet-4-6)                          │
-│                       │                                        │
-│                       ▼                                        │
-│  ┌─────────────────────────────────────────┐                  │
-│  │ Markdown renderer + export pipeline      │                  │
-│  │ (TXT · MD · HTML · Jira CSV)             │                  │
-│  └─────────────────────────────────────────┘                  │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  Browser (the entire app)                                         │
+│                                                                    │
+│  ┌──────────────────┐   ┌──────────────────┐                     │
+│  │ Knowledge base   │   │ STLC mode        │                     │
+│  │ (38 chunks)      │   │ (11 phases)      │                     │
+│  └────────┬─────────┘   └────────┬─────────┘                     │
+│           │                       │                               │
+│           ▼                       ▼                               │
+│  ┌──────────────────────────────────────────┐                    │
+│  │ Semantic retrieval (top-K + mode boost)   │                    │
+│  └─────────────────────┬────────────────────┘                    │
+│                         │                                         │
+│                         ▼                                         │
+│  ┌──────────────────────────────────────────┐                    │
+│  │ Prompt builder + multi-modal content     │                    │
+│  │ (text + images + PDFs + HTML context)    │                    │
+│  └─────────────────────┬────────────────────┘                    │
+│                         │                                         │
+│                         ▼                                         │
+│         Provider-agnostic API layer                               │
+│  ┌──────────┬──────────┬──────────┬──────────┬─────────┐        │
+│  │Anthropic │ Google   │  xAI     │ OpenAI   │ Custom  │        │
+│  └──────────┴──────────┴──────────┴──────────┴─────────┘        │
+│                         │                                         │
+│                         ▼                                         │
+│  ┌──────────────────────────────────────────┐                    │
+│  │ Markdown renderer + export pipeline       │                    │
+│  │ TXT · MD · HTML · Jira CSV · Evaluate    │                    │
+│  └──────────────────────────────────────────┘                    │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 🚀 How to use
 
+### Chatbot
 1. Visit the **[chatbot](https://hk-qa.github.io/qa-nexus/chatbot.html)**
-2. Paste your **Anthropic API key** (get one at [console.anthropic.com](https://console.anthropic.com)) — used only in this browser session
-3. **Pick an STLC phase** from the left panel
-4. **(Optional)** Set a target URL in the right panel for site-specific deliverables
-5. **(Optional)** Attach screenshots or HTML files for visual/structural context
-6. Use a **quick action** or type your prompt — start typing to see autosuggestions
-7. **Export** the result as TXT, MD, HTML, or Jira CSV
+2. Select your **Provider** and **Model** in the top-right nav
+3. Click **🔑 Add key** and enter your API key for the selected provider
+4. **Pick an STLC mode** from the left panel
+5. **(Optional)** Set a target URL in the right panel for site-specific deliverables
+6. **(Optional)** Attach screenshots, PDFs, or HTML files for context
+7. Use a **quick action** or type your prompt
+8. **Export** as TXT, MD, HTML, or Jira CSV — or click **🔬 Evaluate** to score the output
+
+### Evaluator
+1. Visit the **[evaluator](https://hk-qa.github.io/qa-nexus/evaluator.html)**
+2. Enter your **Anthropic API key**
+3. Select the **deliverable type** (or leave on Auto-detect)
+4. Paste any QA artifact — or click **🔬 Evaluate** from the chatbot to pre-load it
+5. Click **Evaluate Artifact** (or Ctrl+Enter)
+6. Review the PASS/WARN/FAIL verdict, dimension scores, and improvement prompt
+
+### API keys by provider
+| Provider | Get a key at |
+|---|---|
+| Anthropic | [console.anthropic.com](https://console.anthropic.com) |
+| Google | [aistudio.google.com](https://aistudio.google.com/app/apikey) |
+| xAI | [console.x.ai](https://console.x.ai) |
+| OpenAI | [platform.openai.com](https://platform.openai.com/api-keys) |
+| OpenRouter | [openrouter.ai/keys](https://openrouter.ai/keys) |
 
 ---
 
 ## 🔐 Privacy & security
 
-- Your API key is **only used in the browser session** — never sent to any server other than `api.anthropic.com`
+- API keys are **stored in your browser's localStorage only** — never sent to any server other than the selected provider's API endpoint
 - No analytics, no tracking, no cookies
-- All requests use the `anthropic-dangerous-direct-browser-access` header (an explicit opt-in to direct browser-to-API calls)
+- Anthropic calls use the `anthropic-dangerous-direct-browser-access` header (explicit opt-in for direct browser-to-API)
 - Code is fully open-source — audit it yourself
 
-**Recommendation:** Set a per-key spending cap at [console.anthropic.com](https://console.anthropic.com) → Billing for any keys you use in browser-based tools.
+**Recommendation:** Set a per-key spending cap at your provider's billing console for any keys used in browser-based tools.
 
 ---
 
@@ -146,22 +202,25 @@ A dedicated STLC phase that generates production-ready code:
 
 | Source | Topics |
 |---|---|
-| **ISTQB Foundation Level** | Test design techniques (EP, BVA, decision tables, state transition), severity/priority guide |
+| **ISTQB Foundation Level** | Test design techniques (EP, BVA, decision tables, state transition), severity/priority |
 | **IEEE 829** | Test plan, test case, defect report, RTM templates |
-| **STLC** | All 5 phases (Requirements Review → Test Closure) |
-| **BDD** | Gherkin syntax, scenario writing |
+| **STLC** | All phases (Requirements Review → Test Closure) |
+| **BDD / Gherkin** | Scenario writing, Given/When/Then patterns |
 | **Agile QA** | Shift-left testing, Definition of Done |
-| **Automation** | Playwright, Cypress, Selenium WebDriver, BDD/Cucumber, Page Object Model, project structure |
+| **Automation** | Playwright, Cypress, Selenium, BDD/Cucumber, Page Object Model |
+| **API Testing** | REST fundamentals, GraphQL, Postman/Newman, contract testing, JWT/OAuth |
+| **Security Testing** | OWASP Top 10, injection/XSS, IDOR, session security, DAST/SAST tools |
+| **Performance Testing** | Load/stress/spike/soak types, k6, JMeter, SLA metrics, APM |
 
 ---
 
 ## 🛠 Tech stack
 
-- **AI:** Anthropic Claude Sonnet 4.6 (multi-modal: text + vision + PDF)
-- **Frontend:** Vanilla HTML / CSS / JavaScript (no framework, no build step)
-- **Fonts:** Outfit (display), Space Grotesk (section headers), Inter (body)
+- **AI:** Multi-provider (Anthropic Claude, Google Gemini, xAI Grok, OpenAI GPT, OpenRouter, Custom)
+- **Frontend:** Vanilla HTML / CSS / JavaScript — no framework, no build step, zero npm dependencies
+- **Fonts:** Outfit (display), Space Grotesk (headers), Inter (body)
 - **Hosting:** GitHub Pages
-- **No backend, no database, no dependencies**
+- **No backend · No database · No server · No build pipeline**
 
 ---
 
@@ -172,20 +231,36 @@ Built as a capstone project for the **[Codecademy Agentic AI Applications Bootca
 Demonstrates:
 - ✅ Retrieval-Augmented Generation (RAG) with semantic scoring
 - ✅ Multi-modal input (text, image, PDF, HTML)
+- ✅ Multi-provider LLM abstraction layer
 - ✅ Transparent source attribution
 - ✅ Domain-specific tooling (QA methodology)
+- ✅ AI output quality evaluation (rubric-based scoring)
 - ✅ Real-world deliverable generation (not just chat)
-- ✅ Polished UX (theme toggle, resizable panels, autosuggest, exports)
-- ✅ Honest AI design (clearly labels inferred vs. real selectors in automation code)
+- ✅ Polished UX (theme toggle, resizable panels, autosuggest, exports, stop button)
+- ✅ Honest AI design (labels inferred vs. confirmed selectors in automation code)
 
 ---
 
 ## 🐞 Known limitations
 
+- **PDF attachments** — native PDF blocks only work with Anthropic provider; other providers receive text context only
 - **CORS-blocked sites** — page fetch falls back to URL + description mode (workaround: attach HTML file or screenshot)
-- **Token limits** — very large outputs (~16K tokens) may be truncated; a Continue button resumes the response
-- **No conversation persistence** — refreshing the page clears history (intentional for privacy)
-- **Browser API key** — anyone with access to your browser session can see the key entered in that session (not stored, but visible in JS memory)
+- **Evaluator token limit** — artifacts over ~24,000 characters are trimmed; evaluate in parts for very large documents
+- **No conversation persistence** — refreshing clears history (intentional for privacy)
+- **Custom provider** — must expose an OpenAI-compatible `/v1/chat/completions` endpoint
+
+---
+
+## 🗂 Repository structure
+
+```
+qa-nexus/
+├── index.html          # Landing page
+├── chatbot.html        # Main QA assistant chatbot
+├── evaluator.html      # QA artifact evaluator
+├── LICENSE             # All Rights Reserved
+└── README.md           # This file
+```
 
 ---
 
@@ -198,7 +273,7 @@ This code is published for **portfolio demonstration and educational reference**
 **You may:**
 - ✅ View, read, and study the source code
 - ✅ Reference patterns or approaches in your own original work
-- ✅ Use the live demo with your own Anthropic API key
+- ✅ Use the live demo with your own API key
 - ✅ Share links to this repository and the live site
 
 **You may NOT:**
@@ -207,7 +282,7 @@ This code is published for **portfolio demonstration and educational reference**
 - ❌ Use this code in any commercial product or paid offering
 - ❌ Remove attribution or claim authorship
 
-For commercial licensing inquiries or to request permission for other uses, please contact via LinkedIn (linked below).
+For licensing inquiries, contact via LinkedIn (linked below).
 
 > The methodology knowledge base references (ISTQB Foundation Level concepts, IEEE 829 templates, STLC definitions) are based on publicly available industry standards and are not claimed as original works.
 
@@ -217,10 +292,10 @@ For commercial licensing inquiries or to request permission for other uses, plea
 
 - **[Codecademy](https://www.codecademy.com)** for the Agentic AI Applications Bootcamp
 - **[Anthropic](https://www.anthropic.com)** for Claude and the multi-modal Messages API
-- The ISTQB and IEEE communities for the methodology foundations this is built on
+- The ISTQB and IEEE communities for the methodology foundations this tool is built on
 
 ---
 
 ## 📱 Connect
 
-Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/) · #CodecademyAgenticAIBootcamp
+Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/in/hkapur) · #CodecademyAgenticAIBootcamp

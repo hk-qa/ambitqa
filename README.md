@@ -1,5 +1,18 @@
----
+# QA Nexus 🎯
 
+> **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC).**
+
+Built as a capstone project for the [Codecademy Agentic AI Applications Bootcamp](https://www.codecademy.com) — Contest #1.
+
+![Version](https://img.shields.io/badge/version-v1.2.0-6c63ff)
+![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
+![Hosted on](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-222)
+
+🔗 **Live demo:** [hk-qa.github.io/qa-nexus/](https://hk-qa.github.io/qa-nexus/)
+🤖 **Chatbot:** [hk-qa.github.io/qa-nexus/chatbot.html](https://hk-qa.github.io/qa-nexus/chatbot.html)
+🔬 **Evaluator:** [hk-qa.github.io/qa-nexus/evaluator.html](https://hk-qa.github.io/qa-nexus/evaluator.html)
+
+---
 ## 🤝 Hire Me
 
 **Need QA work done faster, with documentation that passes any audit?**
@@ -27,27 +40,11 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ### Get in touch
 
-- 💼 **LinkedIn:** [Your LinkedIn URL]
-- 📧 **Email:** [your email]
+- 💼 **LinkedIn:** https://www.linkedin.com/in/hkapur
+- 📧 **Email:** hk.qanexus@gmail.com
 - 📅 **Book a 20-minute intro call:** [Calendly / scheduling link if you have one]
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
-
----
-
-# QA Nexus 🎯
-
-> **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC).**
-
-Built as a capstone project for the [Codecademy Agentic AI Applications Bootcamp](https://www.codecademy.com) — Contest #1.
-
-![Version](https://img.shields.io/badge/version-v1.2.0-6c63ff)
-![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
-![Hosted on](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-222)
-
-🔗 **Live demo:** [hk-qa.github.io/qa-nexus/](https://hk-qa.github.io/qa-nexus/)
-🤖 **Chatbot:** [hk-qa.github.io/qa-nexus/chatbot.html](https://hk-qa.github.io/qa-nexus/chatbot.html)
-🔬 **Evaluator:** [hk-qa.github.io/qa-nexus/evaluator.html](https://hk-qa.github.io/qa-nexus/evaluator.html)
 
 ---
 

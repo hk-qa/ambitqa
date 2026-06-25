@@ -525,6 +525,14 @@
   }
   .send-btn:hover { opacity: 0.9; }
   .send-btn:disabled { background: var(--text-dim); cursor: not-allowed; }
+  .stop-btn {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    background: #f43f5e; border: none; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    color: #fff; transition: background 0.15s, transform 0.1s;
+  }
+  .stop-btn:hover { background: #e11d48; transform: scale(1.05); }
+  .stop-btn.visible { display: flex; }
   .send-btn svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .input-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center; }
 
@@ -750,7 +758,7 @@
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
     </button>
     <span class="nav-badge">ISTQB · IEEE 829</span>
-    <span class="nav-badge version-badge" id="versionBadge" title="QA Nexus version">v1.1.0</span>
+    <span class="nav-badge version-badge" id="versionBadge" title="QA Nexus version">v1.2.0</span>
   </div>
 
   <!-- CENTER: logo -->
@@ -895,6 +903,9 @@
         <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
+        <button class="stop-btn" id="stopBtn" onclick="stopGeneration()" aria-label="Stop generation" title="Stop generation">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        </button>
       </div>
       <div class="input-hint">Shift+Enter for new line · Enter to send · ↑↓ to pick suggestion · 📎 attach screenshots, PDFs, or HTML files</div>
     </div>
@@ -957,7 +968,7 @@ function toggleTheme() {
 updateThemeIcon();
 
 // ─── VERSION ─────────────────────────────────────────────
-const QA_NEXUS_VERSION = 'v1.1.0'; // bump this before each deploy
+const QA_NEXUS_VERSION = 'v1.2.0'; // bump this before each deploy
 
 // ─── STATE ─────────────────────────────────────────────
 // Per-provider API keys (persisted in localStorage)
@@ -1334,6 +1345,7 @@ function showKeyModal() {
 
 let currentMode = 'general';
 let conversationHistory = [];
+let activeAbortController = null; // tracks in-flight fetch so we can cancel it
 let targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
 let pendingAttachments = [];
 
@@ -1745,10 +1757,12 @@ async function callClaude(userMessage, attachments = []) {
   }
   const model = currentModel();
   const req = cfg.buildRequest(model, systemPrompt, conversationHistory, 8192);
+  activeAbortController = new AbortController();
   const response = await fetch(req.url, {
     method: 'POST',
     headers: req.headers,
-    body: JSON.stringify(req.body)
+    body: JSON.stringify(req.body),
+    signal: activeAbortController.signal
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -2423,6 +2437,26 @@ function buildExportToolbar(rawMd) {
   </div>`;
 }
 
+function stopGeneration() {
+  if (activeAbortController) {
+    activeAbortController.abort();
+    activeAbortController = null;
+  }
+}
+
+function setGenerating(isGenerating) {
+  const sendBtn = document.getElementById('sendBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  if (isGenerating) {
+    sendBtn.style.display = 'none';
+    stopBtn.classList.add('visible');
+  } else {
+    sendBtn.style.display = '';
+    sendBtn.disabled = false;
+    stopBtn.classList.remove('visible');
+  }
+}
+
 function openEvaluator(rawMd) {
   // Pass artifact via sessionStorage — avoids URL length limits on large artifacts
   sessionStorage.setItem('qanexus_eval_artifact', rawMd);
@@ -2501,6 +2535,7 @@ async function sendMessage() {
   appendMessage('user', userHtml);
 
   btn.disabled = true;
+  setGenerating(true);
   showTyping();
   try {
     const { text: reply, chunks, wasTruncated } = await callClaude(text, attachments);
@@ -2528,9 +2563,15 @@ async function sendMessage() {
     }
   } catch (err) {
     hideTyping();
+    if (err.name === 'AbortError') {
+      appendMessage('agent', '<p style="color:var(--text-muted);font-style:italic">⏹ Generation stopped.</p>');
+      return;
+    }
     appendMessage('agent', `<p style="color:var(--rose-400)">Error: ${err.message}. Please check your API key and try again.</p>`);
   }
   btn.disabled = false;
+  setGenerating(false);
+  activeAbortController = null;
   input.focus();
 }
 

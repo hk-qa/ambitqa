@@ -39,9 +39,9 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ### Get in touch
 
-- 💼 **LinkedIn:** [Your LinkedIn URL]
-- 📧 **Email:** [your email]
-- 📅 **Book a 20-minute intro call:** [Calendly link]
+- 💼 [LinkedIn](https://www.linkedin.com/in/hkapur)
+- 📧 [Email](hk.qanexus@gmail.com)
+- 📅 **Book a 20-minute intro call:** [Calendly](https://calendly.com/hk-qanexus)
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
 
@@ -330,4 +330,4 @@ For commercial licensing inquiries, please contact via LinkedIn (linked above).
 
 ## 📱 Connect
 
-Built by **Hitesh Khaneja** — find me on [LinkedIn](https://www.linkedin.com/) · #CodecademyAgenticAIBootcamp
+Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/in/hkapur) · #CodecademyAgenticAIBootcamp

@@ -1,18 +1,17 @@
 # QA Nexus 🎯
 
-> **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC).**
+> **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC) — plus a companion artifact evaluator that scores any QA deliverable against weighted rubrics.**
 
-Built as a capstone project for the [Codecademy Agentic AI Applications Bootcamp](https://www.codecademy.com) — Contest #1.
+🏆 **Winner — Codecademy Agentic AI Applications Bootcamp Contest #1** (2026)
 
-![Version](https://img.shields.io/badge/version-v1.2.0-6c63ff)
-![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
-![Hosted on](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-222)
-
-🔗 **Live demo:** [hk-qa.github.io/qa-nexus/](https://hk-qa.github.io/qa-nexus/)
+🔗 **Live demo:** [hk-qa.github.io/qa-nexus](https://hk-qa.github.io/qa-nexus/)
 🤖 **Chatbot:** [hk-qa.github.io/qa-nexus/chatbot.html](https://hk-qa.github.io/qa-nexus/chatbot.html)
 🔬 **Evaluator:** [hk-qa.github.io/qa-nexus/evaluator.html](https://hk-qa.github.io/qa-nexus/evaluator.html)
 
+Currently at **v1.2.0** — see [Changelog](#-changelog).
+
 ---
+
 ## 🤝 Hire Me
 
 **Need QA work done faster, with documentation that passes any audit?**
@@ -32,7 +31,7 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ### Why work with me
 
-- ✅ **Real QA practitioner**, not a generalist consultant — I've designed and shipped test strategies for production systems
+- ✅ **Real QA practitioner**, not a generalist consultant
 - ✅ **Tool-augmented delivery** — what would take a junior QA 2 weeks, I deliver in 3 days with higher quality
 - ✅ **Methodology-grounded output** — every artifact references ISTQB / IEEE 829 sources, audit-ready by default
 - ✅ **Transparent scoping** — fixed fees on defined deliverables, no surprises
@@ -40,9 +39,9 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ### Get in touch
 
-- 💼 **LinkedIn:** https://www.linkedin.com/in/hkapur
-- 📧 **Email:** hk.qanexus@gmail.com
-- 📅 **Book a 30-minute intro call:** [https://calendly.com/hk.qanexus](https://calendly.com/hk-qanexus)
+- 💼 **LinkedIn:** [Your LinkedIn URL]
+- 📧 **Email:** [your email]
+- 📅 **Book a 20-minute intro call:** [Calendly link]
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
 
@@ -51,6 +50,8 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 ## 🌟 What it does
 
 QA Nexus is a structured, retrieval-augmented chat agent that produces production-grade QA deliverables in seconds — not generic AI chat output. Every response is grounded in a curated methodology knowledge base and cites the exact sources used.
+
+A separate **evaluator** scores any QA artifact (whether produced by QA Nexus or copy-pasted from anywhere) against weighted rubrics, returning a **PASS / WARN / FAIL** verdict with dimension scores, top issues, and an auto-generated improvement prompt.
 
 ### 14+ deliverable types
 - **Test plans** (IEEE 829 format)
@@ -61,34 +62,51 @@ QA Nexus is a structured, retrieval-augmented chat agent that produces productio
 - **Exit criteria checklists**
 - **Lessons-learned documents**
 - **Automation framework code** — Playwright (TypeScript), Cypress (JavaScript), Selenium WebDriver (Python + pytest), and BDD/Cucumber + Gherkin
-- **API test cases** — REST, GraphQL, contract tests
-- **Security test cases** — OWASP Top 10 coverage
-- **Performance test plans and scripts** — k6, JMeter, load/stress/spike/soak
-- Plus risk-based strategies, accessibility checklists, exploratory test charters, and more
+- Plus risk-based strategies, accessibility checklists, exploratory test charters, API contracts, security test suites, performance test scenarios, and more
 
 ---
 
 ## ✨ Key features
 
 ### 🧠 Real RAG, not just a wrapper
-- Curated knowledge base with 38 methodology chunks (ISTQB, IEEE 829, STLC, automation, API, security, performance testing patterns)
+- Curated knowledge base with methodology chunks (ISTQB, IEEE 829, STLC, automation patterns, OWASP, k6/JMeter, REST/GraphQL)
 - Semantic keyword scoring + mode-aware retrieval boost
 - Top-K relevant chunks injected into every prompt
-- **Source citations on every response** — audit exactly which methodology was used
+- **Source citations on every response** — auditable, not hallucinated
 
-### 🌐 Multi-provider LLM support
-Choose your AI provider directly in the nav bar — no code changes required:
+### 🔬 Companion evaluator
+A standalone artifact scoring engine (`evaluator.html`) that:
+- Evaluates any QA artifact against 9 weighted rubrics (test plan, test cases, BDD, bug report, automation code, RTM, execution report, exit criteria, lessons learned)
+- Returns **PASS / WARN / FAIL** verdict with dimension-level bar charts
+- Lists the top issues found
+- Generates an improvement prompt you can paste back into the chatbot
+- Pre-scans for red flags before scoring
+- Integrates with the chatbot via the 🔬 Evaluate button on every response
 
-| Provider | Models included |
-|---|---|
-| **Anthropic** | Claude Sonnet 4.6, Opus 4.6/4.7/4.8, Haiku 4.5 |
-| **Google** | Gemini 2.0 Flash, 1.5 Pro, 1.5 Flash |
-| **xAI** | Grok 3, Grok 3 Mini, Grok 2 |
-| **OpenAI** | GPT-4o, GPT-4o Mini, o1, o3-mini |
-| **OpenRouter** | Any model via a single key |
-| **Custom** | Any OpenAI-compatible endpoint + model |
+### 🔌 Multi-provider support
+Works with multiple LLM providers — switch on the fly:
+- **Anthropic** (Claude Sonnet 4.6 and other models)
+- **OpenAI** (GPT-4, GPT-4o, GPT-4 Turbo)
+- **Google** (Gemini Pro / Flash)
+- **xAI** (Grok)
+- **OpenRouter** (any model on their platform)
+- **Custom endpoint** — bring your own OpenAI-compatible API
 
-Pick **Custom…** from either dropdown to type any model string — future-proof for new releases without code updates. Each provider's API key is stored separately in localStorage and never transmitted anywhere except that provider's API.
+Per-provider API keys stored separately in localStorage. Custom model field for any provider.
+
+### 🧭 11 STLC modes
+Each mode has phase-specific quick actions and RAG retrieval boost:
+- All Phases
+- Requirements Review
+- Test Planning
+- Test Design
+- Test Execution
+- Defect Management
+- Test Closure
+- Test Automation (Playwright / Cypress / Selenium / BDD)
+- **API Testing** (REST, GraphQL, Postman, JWT/OAuth)
+- **Security Testing** (OWASP Top 10, XSS/injection/IDOR, Burp/ZAP)
+- **Performance Testing** (k6, JMeter, load/stress/spike/soak)
 
 ### 🎯 Target real applications
 - Set a target URL → agent fetches the page via CORS proxy
@@ -98,94 +116,89 @@ Pick **Custom…** from either dropdown to type any model string — future-proo
 ### 📎 Multi-modal attachments
 Three attachment paths to give the agent maximum context:
 - **Screenshots** (PNG/JPG/WEBP/GIF) — vision capability sees the UI directly
-- **PDFs** — native PDF understanding (Anthropic provider)
-- **HTML files** — DOM structure extracted and injected for real, working selectors in automation code
+- **PDFs** — native PDF understanding
+- **HTML files** — DOM structure extracted and injected for **real, working selectors in automation code**
 
 Attach via 📎 button, drag-and-drop, or paste from clipboard.
 
-### ⏹ Stop generation
-A red stop button appears next to the chat input while the AI is generating. Click it to cancel the in-flight request immediately — no page refresh needed.
-
-### 🔬 QA Artifact Evaluator
-A standalone scoring tool (`evaluator.html`) that evaluates any QA Nexus output against ISTQB/IEEE 829 rubrics:
-
-- **PASS / WARN / FAIL** verdict with weighted score (0–100)
-- **Per-dimension score bars** with explanatory notes
-- **Top issues** list
-- **Auto-generated improvement prompt** — paste it back into QA Nexus to fix the weaknesses
-- **Pre-scan red flag detection** — catches vague steps, hardcoded waits, placeholder selectors, unmeasurable criteria before the AI evaluates
-- **Light / dark mode** with system preference detection
-- Supports all 9 deliverable types: Test Plan, Test Cases, BDD/Gherkin, Bug Report, Automation Code, RTM, Execution Report, Exit Criteria, Lessons Learned
-
-### 🎭 11 STLC modes
-| Mode | Focus |
-|---|---|
-| Requirements Review | Testability analysis, RTM, acceptance criteria |
-| Test Planning | IEEE 829 test plans, risk analysis, entry/exit criteria |
-| Test Design | Test cases, BDD/Gherkin, boundary value analysis |
-| Test Implementation | Test data, environment setup, traceability |
-| Test Execution | Bug reports, execution reports, defect tracking |
-| Test Closure | Lessons learned, metrics, sign-off |
-| Test Automation | Playwright, Cypress, Selenium, BDD/Cucumber code |
-| **API Testing** | REST/GraphQL test cases, Postman collections, JWT/OAuth |
-| **Security Testing** | OWASP Top 10, XSS/injection/IDOR, Burp Suite/ZAP plans |
-| **Performance Testing** | k6 scripts, JMeter plans, SLA definitions |
-| General | Open-ended QA questions |
+### 🤖 Test Automation mode
+A dedicated STLC phase that generates production-ready code:
+- Playwright POM + tests + `playwright.config.ts` + README
+- Cypress POM + spec files
+- Selenium WebDriver framework (Python + pytest)
+- BDD Gherkin features + Cucumber.js step definitions
+- GitHub Actions CI workflow
+- **Honest about selector sources** — comments tell you whether selectors came from real HTML or were inferred from screenshots
 
 ### 📤 Five export formats
-- **TXT** — clean plain text
-- **MD** — raw markdown
-- **HTML** — standalone styled document
+- **TXT** — clean plain text (markdown stripped, tables formatted as records)
+- **MD** — raw markdown (great for GitHub, Notion, Obsidian)
+- **HTML** — standalone styled document (one click away from PDF via browser print)
 - **Jira CSV** — direct-importable for test cases and bug reports
-- **Auto-form fill** — structured input modal when the agent needs specific data
-- **🔬 Evaluate** — one-click evaluation of any response in the evaluator
+- **Auto-form fill** — when the agent asks for structured input, a modal opens with proper input fields
+
+### ⏸ Stop generation
+Cancel in-flight responses via the Stop button (AbortController). Useful when an output is going in the wrong direction.
 
 ### 🎨 Polished UI
 - Three-column resizable layout with drag handles
-- Both side panels collapse for full-screen chat
-- Light & dark mode (system preference detection)
-- Indigo/violet brand palette, WCAG AAA text contrast
-- Mode-aware autosuggestions (↑↓ navigation, Enter to pick)
-- Version badge in nav — always know what's live
+- Both side panels can collapse for full-screen chat
+- Light & dark mode (defaults to system preference)
+- Indigo/violet brand palette
+- WCAG AAA-compliant text contrast
+- Mode-aware autosuggestions in the chat box (↑↓ navigation, Enter to pick)
+- Version badge driven by a single constant for clean release management
+- Keyboard-friendly throughout
 
 ---
 
 ## 🏗 Architecture
 
-**Pure browser-based** — no backend, no database, no server-side code, no build step.
+**Pure browser-based** — no backend, no database, no server-side code.
+
+- Static HTML + vanilla JS + CSS (~2,000 lines)
+- Hosted on GitHub Pages
+- Calls Anthropic / OpenAI / Google / xAI / OpenRouter APIs directly via Messages API
+- API keys entered in-browser and never stored or transmitted to any third party
+- Multi-modal request format (images, PDFs as binary; HTML as extracted text context)
+- 48K token output ceiling with truncation detection + continue button
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  Browser (the entire app)                                         │
-│                                                                    │
-│  ┌──────────────────┐   ┌──────────────────┐                     │
-│  │ Knowledge base   │   │ STLC mode        │                     │
-│  │ (38 chunks)      │   │ (11 phases)      │                     │
-│  └────────┬─────────┘   └────────┬─────────┘                     │
-│           │                       │                               │
-│           ▼                       ▼                               │
-│  ┌──────────────────────────────────────────┐                    │
-│  │ Semantic retrieval (top-K + mode boost)   │                    │
-│  └─────────────────────┬────────────────────┘                    │
-│                         │                                         │
-│                         ▼                                         │
-│  ┌──────────────────────────────────────────┐                    │
-│  │ Prompt builder + multi-modal content     │                    │
-│  │ (text + images + PDFs + HTML context)    │                    │
-│  └─────────────────────┬────────────────────┘                    │
-│                         │                                         │
-│                         ▼                                         │
-│         Provider-agnostic API layer                               │
-│  ┌──────────┬──────────┬──────────┬──────────┬─────────┐        │
-│  │Anthropic │ Google   │  xAI     │ OpenAI   │ Custom  │        │
-│  └──────────┴──────────┴──────────┴──────────┴─────────┘        │
-│                         │                                         │
-│                         ▼                                         │
-│  ┌──────────────────────────────────────────┐                    │
-│  │ Markdown renderer + export pipeline       │                    │
-│  │ TXT · MD · HTML · Jira CSV · Evaluate    │                    │
-│  └──────────────────────────────────────────┘                    │
-└──────────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------+
+|  Browser (the entire app)                                    |
+|                                                              |
+|  +------------------+    +-----------------+                 |
+|  | Knowledge base   |    | STLC mode       |                 |
+|  | (curated chunks) |    | (11 modes)      |                 |
+|  +--------+---------+    +--------+--------+                 |
+|           |                       |                          |
+|           v                       v                          |
+|  +-----------------------------------------+                 |
+|  | Semantic retrieval (top-K by mode boost)|                 |
+|  +--------------------+--------------------+                 |
+|                       |                                      |
+|                       v                                      |
+|  +-----------------------------------------+                 |
+|  | Prompt builder + multi-modal content    |                 |
+|  | (text + images + PDFs + HTML context)   |                 |
+|  +--------------------+--------------------+                 |
+|                       |                                      |
+|                       v                                      |
+|         api.anthropic.com / api.openai.com / etc.            |
+|              (selected provider + model)                     |
+|                       |                                      |
+|                       v                                      |
+|  +-----------------------------------------+                 |
+|  | Markdown renderer + export pipeline     |                 |
+|  | (TXT . MD . HTML . Jira CSV)            |                 |
+|  +--------------------+--------------------+                 |
+|                       |                                      |
+|                       v                                      |
+|  +-----------------------------------------+                 |
+|  | Evaluator (rubric-based scoring)        |                 |
+|  | PASS / WARN / FAIL + improvement prompt |                 |
+|  +-----------------------------------------+                 |
++--------------------------------------------------------------+
 ```
 
 ---
@@ -193,42 +206,34 @@ A standalone scoring tool (`evaluator.html`) that evaluates any QA Nexus output 
 ## 🚀 How to use
 
 ### Chatbot
+
 1. Visit the **[chatbot](https://hk-qa.github.io/qa-nexus/chatbot.html)**
-2. Select your **Provider** and **Model** in the top-right nav
-3. Click **🔑 Add key** and enter your API key for the selected provider
+2. Pick a **provider** (Anthropic, OpenAI, Google, xAI, OpenRouter, or Custom)
+3. Paste your **API key** for that provider (used only in this browser session)
 4. **Pick an STLC mode** from the left panel
 5. **(Optional)** Set a target URL in the right panel for site-specific deliverables
-6. **(Optional)** Attach screenshots, PDFs, or HTML files for context
-7. Use a **quick action** or type your prompt
-8. **Export** as TXT, MD, HTML, or Jira CSV — or click **🔬 Evaluate** to score the output
+6. **(Optional)** Attach screenshots or HTML files for visual/structural context
+7. Use a **quick action** or type your prompt — start typing to see autosuggestions
+8. **Export** the result as TXT, MD, HTML, or Jira CSV
+9. Click **🔬 Evaluate** on any response to score it
 
 ### Evaluator
-1. Visit the **[evaluator](https://hk-qa.github.io/qa-nexus/evaluator.html)**
-2. Enter your **Anthropic API key**
-3. Select the **deliverable type** (or leave on Auto-detect)
-4. Paste any QA artifact — or click **🔬 Evaluate** from the chatbot to pre-load it
-5. Click **Evaluate Artifact** (or Ctrl+Enter)
-6. Review the PASS/WARN/FAIL verdict, dimension scores, and improvement prompt
 
-### API keys by provider
-| Provider | Get a key at |
-|---|---|
-| Anthropic | [console.anthropic.com](https://console.anthropic.com) |
-| Google | [aistudio.google.com](https://aistudio.google.com/app/apikey) |
-| xAI | [console.x.ai](https://console.x.ai) |
-| OpenAI | [platform.openai.com](https://platform.openai.com/api-keys) |
-| OpenRouter | [openrouter.ai/keys](https://openrouter.ai/keys) |
+1. Visit the **[evaluator](https://hk-qa.github.io/qa-nexus/evaluator.html)** (or click the 🔬 button in chatbot)
+2. Paste any QA artifact (test plan, test cases, bug report, etc.)
+3. Select the artifact type
+4. Get instant verdict, scores, issues, and improvement prompt
 
 ---
 
 ## 🔐 Privacy & security
 
-- API keys are **stored in your browser's localStorage only** — never sent to any server other than the selected provider's API endpoint
+- Your API key is **only used in the browser session** — never sent to any server other than your selected provider's API
 - No analytics, no tracking, no cookies
-- Anthropic calls use the `anthropic-dangerous-direct-browser-access` header (explicit opt-in for direct browser-to-API)
 - Code is fully open-source — audit it yourself
+- All requests use explicit browser-access opt-ins required by each provider
 
-**Recommendation:** Set a per-key spending cap at your provider's billing console for any keys used in browser-based tools.
+**Recommendation:** Set per-key spending caps in your provider's console for any keys used in browser-based tools.
 
 ---
 
@@ -236,71 +241,61 @@ A standalone scoring tool (`evaluator.html`) that evaluates any QA Nexus output 
 
 | Source | Topics |
 |---|---|
-| **ISTQB Foundation Level** | Test design techniques (EP, BVA, decision tables, state transition), severity/priority |
+| **ISTQB Foundation Level** | Test design techniques (EP, BVA, decision tables, state transition), severity/priority guide |
 | **IEEE 829** | Test plan, test case, defect report, RTM templates |
-| **STLC** | All phases (Requirements Review → Test Closure) |
-| **BDD / Gherkin** | Scenario writing, Given/When/Then patterns |
+| **STLC** | All 5 phases (Requirements Review → Test Closure) |
+| **BDD** | Gherkin syntax, scenario writing |
 | **Agile QA** | Shift-left testing, Definition of Done |
-| **Automation** | Playwright, Cypress, Selenium, BDD/Cucumber, Page Object Model |
-| **API Testing** | REST fundamentals, GraphQL, Postman/Newman, contract testing, JWT/OAuth |
-| **Security Testing** | OWASP Top 10, injection/XSS, IDOR, session security, DAST/SAST tools |
-| **Performance Testing** | Load/stress/spike/soak types, k6, JMeter, SLA metrics, APM |
+| **Automation** | Playwright, Cypress, Selenium WebDriver, BDD/Cucumber, Page Object Model |
+| **API Testing** | REST, GraphQL, Postman, JWT, OAuth |
+| **Security Testing** | OWASP Top 10, XSS, injection, IDOR, Burp Suite, ZAP |
+| **Performance Testing** | k6, JMeter, load/stress/spike/soak patterns |
 
 ---
 
 ## 🛠 Tech stack
 
-- **AI:** Multi-provider (Anthropic Claude, Google Gemini, xAI Grok, OpenAI GPT, OpenRouter, Custom)
-- **Frontend:** Vanilla HTML / CSS / JavaScript — no framework, no build step, zero npm dependencies
-- **Fonts:** Outfit (display), Space Grotesk (headers), Inter (body)
+- **AI:** Anthropic, OpenAI, Google, xAI, OpenRouter (any model, switchable)
+- **Frontend:** Vanilla HTML / CSS / JavaScript (no framework, no build step)
 - **Hosting:** GitHub Pages
-- **No backend · No database · No server · No build pipeline**
+- **No backend, no database, no dependencies**
 
 ---
 
-## 🎓 Capstone context
+## 📋 Changelog
 
-Built as a capstone project for the **[Codecademy Agentic AI Applications Bootcamp](https://www.codecademy.com)** — Contest #1.
+### v1.2.0 (current)
+- Stop generation button (AbortController)
+- Version badge driven by `QA_NEXUS_VERSION` constant
+- Custom model field with persistence
+- Custom provider flow with URL validation gating
+- Multiple UX fixes for evaluator and chatbot
 
-Demonstrates:
-- ✅ Retrieval-Augmented Generation (RAG) with semantic scoring
-- ✅ Multi-modal input (text, image, PDF, HTML)
-- ✅ Multi-provider LLM abstraction layer
-- ✅ Transparent source attribution
-- ✅ Domain-specific tooling (QA methodology)
-- ✅ AI output quality evaluation (rubric-based scoring)
-- ✅ Real-world deliverable generation (not just chat)
-- ✅ Polished UX (theme toggle, resizable panels, autosuggest, exports, stop button)
-- ✅ Honest AI design (labels inferred vs. confirmed selectors in automation code)
+### v1.1.0
+- Multi-provider support (Anthropic, OpenAI, Google, xAI, OpenRouter, Custom)
+- Three new STLC modes: API Testing, Security Testing, Performance Testing
+- Companion evaluator with 9 weighted rubrics
+- Evaluate button (🔬) on every response toolbar
+- Nav restructured
+
+### v1.0.0
+- Initial release as Codecademy bootcamp capstone
+- 8 STLC modes, RAG knowledge base, multi-modal input, 5 export formats
 
 ---
 
 ## 🐞 Known limitations
 
-- **PDF attachments** — native PDF blocks only work with Anthropic provider; other providers receive text context only
 - **CORS-blocked sites** — page fetch falls back to URL + description mode (workaround: attach HTML file or screenshot)
-- **Evaluator token limit** — artifacts over ~24,000 characters are trimmed; evaluate in parts for very large documents
-- **No conversation persistence** — refreshing clears history (intentional for privacy)
-- **Custom provider** — must expose an OpenAI-compatible `/v1/chat/completions` endpoint
-
----
-
-## 🗂 Repository structure
-
-```
-qa-nexus/
-├── index.html          # Landing page
-├── chatbot.html        # Main QA assistant chatbot
-├── evaluator.html      # QA artifact evaluator
-├── LICENSE             # All Rights Reserved
-└── README.md           # This file
-```
+- **Token limits** — very large outputs (~48K tokens) may be truncated; a Continue button resumes the response
+- **No conversation persistence** — refreshing the page clears history (intentional for privacy)
+- **Browser API key** — anyone with access to your browser session can see the key entered in that session (not stored persistently, but visible in JS memory during use)
 
 ---
 
 ## 📄 License
 
-**Copyright © 2026 Hitesh Kapur. All rights reserved.**
+**Copyright © 2026 Hitesh Khaneja. All rights reserved.**
 
 This code is published for **portfolio demonstration and educational reference**.
 
@@ -316,20 +311,23 @@ This code is published for **portfolio demonstration and educational reference**
 - ❌ Use this code in any commercial product or paid offering
 - ❌ Remove attribution or claim authorship
 
-For licensing inquiries, contact via LinkedIn (linked below).
+See [LICENSE](./LICENSE) for full terms.
 
-> The methodology knowledge base references (ISTQB Foundation Level concepts, IEEE 829 templates, STLC definitions) are based on publicly available industry standards and are not claimed as original works.
+For commercial licensing inquiries, please contact via LinkedIn (linked above).
+
+> The methodology knowledge base references (ISTQB Foundation Level concepts, IEEE 829 templates, STLC definitions, OWASP Top 10, k6/JMeter patterns) are based on publicly available industry standards and are not claimed as original works.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **[Codecademy](https://www.codecademy.com)** for the Agentic AI Applications Bootcamp
+- **[Codecademy](https://www.codecademy.com)** for the Agentic AI Applications Bootcamp — and for awarding QA Nexus the Contest #1 winner spot
 - **[Anthropic](https://www.anthropic.com)** for Claude and the multi-modal Messages API
-- The ISTQB and IEEE communities for the methodology foundations this tool is built on
+- **OpenAI, Google, xAI** for their respective LLM APIs
+- The ISTQB, IEEE, and OWASP communities for the methodology foundations this is built on
 
 ---
 
 ## 📱 Connect
 
-Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/in/hkapur) · #CodecademyAgenticAIBootcamp
+Built by **Hitesh Khaneja** — find me on [LinkedIn](https://www.linkedin.com/) · #CodecademyAgenticAIBootcamp

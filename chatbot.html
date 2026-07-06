@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>QA Nexus — RAG Chatbot</title>
+<title>AmbitQA — RAG-Powered QA Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
 <script>
 // Apply theme BEFORE render to avoid flash
 (function() {
-  const stored = localStorage.getItem('qa-nexus-theme');
+  const stored = localStorage.getItem('ambitqa-theme');
   const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
 })();
@@ -90,32 +90,24 @@
 
   /* NAV */
   nav {
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center;
-    padding: 0 1rem; height: 56px; flex-shrink: 0;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 0 1.25rem; height: 64px; flex-shrink: 0;
     background: var(--nav-bg); backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
   }
-  .nav-left { display: flex; align-items: center; gap: 0.5rem; justify-self: start; }
+  .nav-left { display: flex; align-items: center; justify-self: start; }
   .logo {
-    font-family: var(--font-d); font-weight: 700; font-size: 1.75rem;
+    font-family: var(--font-d); font-weight: 700; font-size: 1.5rem;
     color: var(--text); text-decoration: none; letter-spacing: -0.02em;
-    justify-self: center; text-align: center;
+    justify-self: center; padding: 0 1rem;
   }
   .logo span { background: linear-gradient(135deg, var(--brand-500), var(--violet-500)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .nav-right { display: flex; align-items: center; gap: 0.5rem; justify-self: end; }
+  .nav-right { display: flex; align-items: center; gap: 0.6rem; justify-self: end; }
   .nav-badge {
-    font-size: 0.72rem; color: var(--brand-400);
+    font-size: 0.78rem; color: var(--brand-400);
     background: color-mix(in srgb, var(--brand-500) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--brand-500) 25%, transparent);
-    padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600;
-    white-space: nowrap;
-  }
-  .version-badge {
-    color: var(--text2); font-weight: 500;
-    background: color-mix(in srgb, var(--border) 40%, transparent);
-    border-color: var(--border2);
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.02em;
+    padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600;
   }
   .theme-toggle {
     width: 36px; height: 36px; border-radius: var(--r-sm);
@@ -144,54 +136,6 @@
   .sidebar.collapsed, .resize-handle.collapsed { display: none !important; }
   .back-link { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; }
   .back-link:hover { color: var(--text); }
-
-  /* PROVIDER BAR */
-  .provider-bar {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: var(--r-sm); padding: 4px 10px; height: 36px;
-  }
-  .provider-bar label { font-size: 0.85rem; color: var(--text); font-weight: 500; white-space: nowrap; }
-  .provider-bar select {
-    background: transparent; border: none; outline: none;
-    color: var(--text); font-size: 0.85rem; font-family: var(--font-body);
-    cursor: pointer; padding: 0;
-    /* let the select grow to fit its longest option */
-    min-width: 0; max-width: none; width: auto;
-  }
-  /* Provider select: wide enough for "OpenRouter" */
-  #providerSelect { width: 115px; }
-  /* Model select: wide enough for longest OpenRouter model string */
-  #modelSelect { width: 230px; }
-  .provider-bar input[list] { width: 148px; cursor: text; font-size: 0.85rem; }
-  .provider-bar input[list]::placeholder { color: var(--text-muted); }
-  .provider-bar .bar-divider { width: 1px; height: 14px; background: var(--border-strong); margin: 0 3px; flex-shrink: 0; }
-  /* Custom provider/model text inputs — hidden until "Custom…" is chosen */
-  .custom-input {
-    display: none; border: none; outline: none; background: transparent;
-    color: var(--text); font-size: 0.82rem; font-family: var(--font-body);
-    border-bottom: 1px dashed var(--brand-400); padding: 0 2px;
-    width: 110px; transition: width 0.2s;
-  }
-  .custom-input::placeholder { color: var(--text-muted); }
-  .custom-input.visible { display: inline-block; }
-  /* API Key button — prominent pill */
-  .key-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px; border-radius: 999px; border: none; cursor: pointer;
-    font-size: 0.78rem; font-weight: 600; font-family: var(--font-body);
-    white-space: nowrap; transition: opacity 0.15s, transform 0.1s;
-  }
-  .key-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-  .key-btn.unset {
-    background: linear-gradient(135deg, var(--brand-500), var(--violet-500));
-    color: #fff;
-  }
-  .key-btn.set {
-    background: color-mix(in srgb, var(--brand-500) 15%, transparent);
-    color: var(--brand-400);
-    border: 1px solid color-mix(in srgb, var(--brand-500) 35%, transparent);
-  }
 
   /* APP LAYOUT */
   .app { display: flex; flex: 1; overflow: hidden; }
@@ -430,8 +374,6 @@
     color: var(--brand-400);
   }
   .export-btn.jira:hover { background: color-mix(in srgb, var(--brand-500) 10%, transparent); border-color: color-mix(in srgb, var(--brand-500) 40%, transparent); color: var(--brand-400); }
-  .export-btn.eval { border-color: color-mix(in srgb, var(--violet-500) 40%, transparent); color: var(--violet-400); }
-  .export-btn.eval:hover { background: color-mix(in srgb, var(--violet-500) 15%, transparent); border-color: color-mix(in srgb, var(--violet-500) 60%, transparent); color: var(--violet-400); }
   .export-btn svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; }
 
   /* PDF HINT */
@@ -525,14 +467,6 @@
   }
   .send-btn:hover { opacity: 0.9; }
   .send-btn:disabled { background: var(--text-dim); cursor: not-allowed; }
-  .stop-btn {
-    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-    background: #f43f5e; border: none; cursor: pointer;
-    display: none; align-items: center; justify-content: center;
-    color: #fff; transition: background 0.15s, transform 0.1s;
-  }
-  .stop-btn:hover { background: #e11d48; transform: scale(1.05); }
-  .stop-btn.visible { display: flex; }
   .send-btn svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .input-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center; }
 
@@ -690,8 +624,6 @@
     cursor: pointer; font-family: var(--font-b); transition: opacity 0.2s;
   }
   .modal-btn:hover { opacity: 0.9; }
-  .modal-actions { display: flex; gap: 0.6rem; }
-  .modal-actions .modal-btn { margin-bottom: 0; }
   .modal-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; text-align: center; }
   .modal-note a { color: var(--brand-400); }
 
@@ -752,47 +684,14 @@
 
 <!-- NAV -->
 <nav>
-  <!-- LEFT: left panel toggle + ISTQB badge -->
   <div class="nav-left">
     <button class="panel-toggle active" id="leftToggle" onclick="togglePanel('left')" title="Toggle left panel" aria-label="Toggle left panel">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
     </button>
-    <span class="nav-badge">ISTQB · IEEE 829</span>
-    <span class="nav-badge version-badge" id="versionBadge" title="QA Nexus version">v1.2.0</span>
   </div>
-
-  <!-- CENTER: logo -->
-  <a class="logo" href="index.html">QA<span>Nexus</span></a>
-
-  <!-- RIGHT: provider bar · theme · API key · right panel toggle -->
+  <a class="logo" href="index.html">Ambit<span>QA</span></a>
   <div class="nav-right">
-    <div class="provider-bar">
-      <label for="providerSelect">Provider</label>
-      <select id="providerSelect" onchange="onProviderChange()" title="Select AI provider">
-        <option value="anthropic">Anthropic</option>
-        <option value="google">Google</option>
-        <option value="xai">xAI</option>
-        <option value="openai">OpenAI</option>
-        <option value="openrouter">OpenRouter</option>
-        <option value="custom">Custom…</option>
-      </select>
-      <!-- Custom provider URL — shown only when Custom… is selected -->
-      <input class="custom-input" id="customProviderInput"
-        placeholder="https://api.example.com"
-        title="Enter the OpenAI-compatible base URL, then press Enter to confirm"
-        autocomplete="off" spellcheck="false" />
-      <div class="bar-divider"></div>
-      <label for="modelSelect">Model</label>
-      <select id="modelSelect" onchange="onModelChange()" title="Select a model">
-        <!-- Populated by rebuildModelDropdown() on load -->
-      </select>
-      <!-- Custom model name — shown only when Custom… is selected in model dropdown -->
-      <input class="custom-input" id="customModelInput"
-        placeholder="e.g. claude-opus-4-7"
-        title="Type any model identifier then press Enter"
-        autocomplete="off" spellcheck="false" />
-    </div>
-    <button class="key-btn unset" id="keyStatus" onclick="showKeyModal()" title="Click to set API key">🔑 Add key</button>
+    <span class="nav-badge">ISTQB · IEEE 829 grounded</span>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
       <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -800,20 +699,18 @@
     <button class="panel-toggle active" id="rightToggle" onclick="togglePanel('right')" title="Toggle right panel" aria-label="Toggle right panel">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
     </button>
+    <a class="back-link" href="index.html">← Back to home</a>
   </div>
 </nav>
 
 <!-- API KEY MODAL -->
-<div class="modal-overlay" id="apiModal" style="display:none;">
+<div class="modal-overlay" id="apiModal">
   <div class="modal">
-    <h2 id="apiModalTitle">API Key — Anthropic</h2>
-    <p id="apiModalDesc">Your key is used only in this browser session. It is saved to localStorage and never sent anywhere except the provider's API directly.</p>
+    <h2>Enter your Anthropic API key</h2>
+    <p>Your key is used only in this browser session to call the Anthropic API directly. It is never stored or sent anywhere else.</p>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
-    <div style="display:flex;gap:0.6rem;margin-bottom:0.75rem;">
-      <button class="form-modal-cancel" style="padding:0.75rem 1.2rem;" onclick="document.getElementById('apiModal').style.display='none'">Cancel</button>
-      <button class="modal-btn" style="margin-bottom:0;" onclick="saveKey()">Save key →</button>
-    </div>
-    <p class="modal-note" id="apiModalNote">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <button class="modal-btn" onclick="saveKey()">Start chatting →</button>
+    <p class="modal-note">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
   </div>
 </div>
 
@@ -846,9 +743,6 @@
       <button class="mode-btn" onclick="setMode(this,'defects')">Defect Management<span class="mode-phase">Bug reports · Triage</span></button>
       <button class="mode-btn" onclick="setMode(this,'closure')">Test Closure<span class="mode-phase">Summary · Lessons</span></button>
       <button class="mode-btn" onclick="setMode(this,'automation')">Test Automation<span class="mode-phase">Playwright · Cypress · BDD</span></button>
-      <button class="mode-btn" onclick="setMode(this,'api')">API Testing<span class="mode-phase">REST · GraphQL · Postman</span></button>
-      <button class="mode-btn" onclick="setMode(this,'security')">Security Testing<span class="mode-phase">OWASP · Pen test · SAST</span></button>
-      <button class="mode-btn" onclick="setMode(this,'performance')">Performance Testing<span class="mode-phase">Load · Stress · k6 · JMeter</span></button>
     </div>
 
     <div class="sidebar-section">
@@ -877,8 +771,7 @@
         <div class="msg-avatar agent">QA</div>
         <div class="msg-content">
           <div class="msg-bubble">
-            <p><strong>Welcome to QA Nexus.</strong> Your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
-            <p>⚙️ <strong>Before you start:</strong> select your <strong>Provider</strong> and <strong>Model</strong> in the top-right, then click <strong>🔑 Add key</strong> to enter your API key. Keys are saved in your browser and never leave your device.</p>
+            <p><strong>Welcome to AmbitQA.</strong> Your RAG-powered QA assistant, grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
             <p>👈 <strong>Left panel:</strong> pick an STLC phase, including <strong>Test Automation</strong> for Playwright / Cypress / Selenium / BDD code generation.</p>
             <p>👉 <strong>Right panel:</strong> target a real application URL so I can produce site-specific deliverables.</p>
             <p>📎 <strong>Attach:</strong> screenshots, PDFs, or <strong>HTML files</strong> (drag/paste them in). Screenshots help me see the UI; HTML files give me real selectors for working automation code.</p>
@@ -902,9 +795,6 @@
         </div>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-        <button class="stop-btn" id="stopBtn" onclick="stopGeneration()" aria-label="Stop generation" title="Stop generation">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
         </button>
       </div>
       <div class="input-hint">Shift+Enter for new line · Enter to send · ↑↓ to pick suggestion · 📎 attach screenshots, PDFs, or HTML files</div>
@@ -945,7 +835,7 @@
 
     <div class="sidebar-section">
       <div class="sidebar-label">About</div>
-      <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.55;">QA Nexus retrieves from a curated methodology knowledge base before answering. Every deliverable references the exact sources used.</p>
+      <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.55;">AmbitQA retrieves from a curated methodology knowledge base before answering. Every deliverable references the exact sources used.</p>
       <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0.6rem;">Built for the Codecademy Agentic AI Bootcamp.</p>
     </div>
   </aside>
@@ -962,390 +852,15 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('qa-nexus-theme', next);
+  localStorage.setItem('ambitqa-theme', next);
   updateThemeIcon();
 }
 updateThemeIcon();
 
-// ─── VERSION ─────────────────────────────────────────────
-const QA_NEXUS_VERSION = 'v1.2.0'; // bump this before each deploy
-
 // ─── STATE ─────────────────────────────────────────────
-// Per-provider API keys (persisted in localStorage)
-const providerKeys = {
-  anthropic: localStorage.getItem('qanexus-key-anthropic') || '',
-  google:    localStorage.getItem('qanexus-key-google')    || '',
-  xai:       localStorage.getItem('qanexus-key-xai')       || '',
-  openai:    localStorage.getItem('qanexus-key-openai')    || '',
-  openrouter:localStorage.getItem('qanexus-key-openrouter')|| '',
-};
-
-// Provider config: endpoints, auth, request/response shape
-const PROVIDERS = {
-  anthropic: {
-    label: 'Anthropic',
-    placeholder: 'sk-ant-...',
-    keyHint: 'console.anthropic.com',
-    keyUrl: 'https://console.anthropic.com',
-    defaultModel: 'claude-sonnet-4-6',
-    models: ['claude-sonnet-4-6','claude-opus-4-6','claude-opus-4-7','claude-opus-4-8','claude-haiku-4-5-20251001'],
-    buildRequest(model, system, messages, maxTokens) {
-      return {
-        url: 'https://api.anthropic.com/v1/messages',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': providerKeys.anthropic,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: { model, system, messages, max_tokens: maxTokens }
-      };
-    },
-    extract(data) {
-      const text = data.content?.map(b => b.text || '').join('') || '';
-      const wasTruncated = data.stop_reason === 'max_tokens';
-      return { text, wasTruncated };
-    }
-  },
-  google: {
-    label: 'Google',
-    placeholder: 'AIza...',
-    keyHint: 'aistudio.google.com',
-    keyUrl: 'https://aistudio.google.com/app/apikey',
-    defaultModel: 'gemini-2.0-flash',
-    models: ['gemini-2.0-flash','gemini-2.0-flash-lite','gemini-1.5-pro','gemini-1.5-flash'],
-    buildRequest(model, system, messages, maxTokens) {
-      // Convert Anthropic-style messages to Gemini contents format
-      const contents = messages.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: Array.isArray(m.content)
-          ? m.content.map(c => {
-              if (c.type === 'text') return { text: c.text };
-              if (c.type === 'image') return { inline_data: { mime_type: c.source.media_type, data: c.source.data } };
-              return { text: '[unsupported content type]' };
-            })
-          : [{ text: m.content || '' }]
-      }));
-      return {
-        url: `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${providerKeys.google}`,
-        headers: { 'Content-Type': 'application/json' },
-        body: {
-          system_instruction: { parts: [{ text: system }] },
-          contents,
-          generationConfig: { maxOutputTokens: maxTokens }
-        }
-      };
-    },
-    extract(data) {
-      const text = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
-      const wasTruncated = data.candidates?.[0]?.finishReason === 'MAX_TOKENS';
-      return { text, wasTruncated };
-    }
-  },
-  xai: {
-    label: 'xAI (Grok)',
-    placeholder: 'xai-...',
-    keyHint: 'console.x.ai',
-    keyUrl: 'https://console.x.ai',
-    defaultModel: 'grok-3',
-    models: ['grok-3','grok-3-mini','grok-2','grok-2-vision'],
-    buildRequest(model, system, messages, maxTokens) {
-      return {
-        url: 'https://api.x.ai/v1/chat/completions',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.xai}` },
-        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
-      };
-    },
-    extract(data) {
-      const text = data.choices?.[0]?.message?.content || '';
-      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
-      return { text, wasTruncated };
-    }
-  },
-  openai: {
-    label: 'OpenAI',
-    placeholder: 'sk-...',
-    keyHint: 'platform.openai.com',
-    keyUrl: 'https://platform.openai.com/api-keys',
-    defaultModel: 'gpt-4o',
-    models: ['gpt-4o','gpt-4o-mini','gpt-4-turbo','o1','o3-mini'],
-    buildRequest(model, system, messages, maxTokens) {
-      return {
-        url: 'https://api.openai.com/v1/chat/completions',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.openai}` },
-        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
-      };
-    },
-    extract(data) {
-      const text = data.choices?.[0]?.message?.content || '';
-      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
-      return { text, wasTruncated };
-    }
-  },
-  openrouter: {
-    label: 'OpenRouter',
-    placeholder: 'sk-or-...',
-    keyHint: 'openrouter.ai (routes to any model)',
-    keyUrl: 'https://openrouter.ai/keys',
-    defaultModel: 'anthropic/claude-sonnet-4-6',
-    models: ['anthropic/claude-sonnet-4-6','google/gemini-2.0-flash','x-ai/grok-3','openai/gpt-4o','meta-llama/llama-3.3-70b-instruct'],
-    buildRequest(model, system, messages, maxTokens) {
-      return {
-        url: 'https://openrouter.ai/api/v1/chat/completions',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${providerKeys.openrouter}`, 'HTTP-Referer': location.origin },
-        body: { model, messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)], max_tokens: maxTokens }
-      };
-    },
-    extract(data) {
-      const text = data.choices?.[0]?.message?.content || '';
-      const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
-      return { text, wasTruncated };
-    }
-  }
-};
-
-// ── Custom provider (OpenAI-compatible endpoint) ──────────────────────────
-PROVIDERS.custom = {
-  label: 'Custom',
-  placeholder: 'sk-...',
-  keyHint: "your provider's API console",
-  keyUrl: '#',
-  defaultModel: 'custom-model',
-  models: [],
-  buildRequest(model, system, messages, maxTokens) {
-    const baseUrl = (document.getElementById('customProviderInput')?.value?.trim()
-      || localStorage.getItem('qanexus-customprovider-url')
-      || 'https://api.openai.com').replace(/\/$/, '');
-    const url = baseUrl.replace(/\/$/, '') + '/v1/chat/completions';
-    return {
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${providerKeys.custom || ''}`
-      },
-      body: {
-        model,
-        messages: [{ role: 'system', content: system }, ...messages.map(normalizeMsg)],
-        max_tokens: maxTokens
-      }
-    };
-  },
-  extract(data) {
-    const text = data.choices?.[0]?.message?.content || '';
-    const wasTruncated = data.choices?.[0]?.finish_reason === 'length';
-    return { text, wasTruncated };
-  }
-};
-
-// Also add 'custom' key slot
-providerKeys.custom = localStorage.getItem('qanexus-key-custom') || '';
-
-// Convert Anthropic-style message content to plain string for OpenAI-compatible APIs
-function normalizeMsg(m) {
-  const content = Array.isArray(m.content)
-    ? m.content.filter(c => c.type === 'text').map(c => c.text).join('\n')
-    : (m.content || '');
-  return { role: m.role, content };
-}
-
-function currentProvider() {
-  const sel = document.getElementById('providerSelect')?.value || 'anthropic';
-  if (sel === 'custom') {
-    return 'custom';
-  }
-  return sel;
-}
-
-function currentModel() {
-  const sel = document.getElementById('modelSelect')?.value || '';
-  if (sel === 'custom') {
-    // Read the actual typed value from the text field
-    const typed = document.getElementById('customModelInput')?.value?.trim();
-    if (typed) return typed;
-    // Fallback: check localStorage for the current provider
-    const p = currentProvider();
-    return localStorage.getItem(`qanexus-custommodel-${p}`) || 'custom-model';
-  }
-  return sel || PROVIDERS[currentProvider()]?.defaultModel || 'claude-sonnet-4-6';
-}
-
-// Model dropdown presets per provider
-const PROVIDER_MODELS = {
-  anthropic:   ['claude-sonnet-4-6','claude-opus-4-6','claude-opus-4-7','claude-opus-4-8','claude-haiku-4-5-20251001'],
-  google:      ['gemini-2.0-flash','gemini-2.0-flash-lite','gemini-1.5-pro','gemini-1.5-flash'],
-  xai:         ['grok-3','grok-3-mini','grok-2','grok-2-vision'],
-  openai:      ['gpt-4o','gpt-4o-mini','gpt-4-turbo','o1','o3-mini'],
-  openrouter:  ['anthropic/claude-sonnet-4-6','google/gemini-2.0-flash','x-ai/grok-3','openai/gpt-4o','meta-llama/llama-3.3-70b-instruct'],
-  custom:      [],
-};
-
-// ── Model dropdown: rebuild options for given provider ───────────────────
-function rebuildModelDropdown(provider) {
-  const sel = document.getElementById('modelSelect');
-  const customModelIn = document.getElementById('customModelInput');
-  const models = PROVIDER_MODELS[provider] || [];
-
-  sel.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('') +
-    '<option value="custom">Custom…</option>';
-
-  // Restore previously chosen model for this provider
-  const saved = localStorage.getItem(`qanexus-model-${provider}`);
-  const validSaved = saved && (models.includes(saved) || saved === 'custom');
-  sel.value = validSaved ? saved : (models[0] || 'custom');
-
-  // If restored value is custom, populate and show text field
-  if (sel.value === 'custom') {
-    const savedCustom = localStorage.getItem(`qanexus-custommodel-${provider}`) || '';
-    customModelIn.value = savedCustom;
-    customModelIn.classList.add('visible');
-    if (!savedCustom) customModelIn.focus();
-  } else {
-    customModelIn.value = '';
-    customModelIn.classList.remove('visible');
-  }
-}
-
-// ── Model dropdown change ─────────────────────────────────────────────────
-function onModelChange() {
-  const sel = document.getElementById('modelSelect');
-  const customModelIn = document.getElementById('customModelInput');
-  const p = document.getElementById('providerSelect').value;
-
-  if (sel.value === 'custom') {
-    // Populate with any previously saved value for this provider
-    const savedCustom = localStorage.getItem(`qanexus-custommodel-${p}`) || '';
-    customModelIn.value = savedCustom;
-    customModelIn.classList.add('visible');
-    customModelIn.focus();
-    customModelIn.select(); // select all so user can overtype easily
-  } else {
-    customModelIn.value = '';
-    customModelIn.classList.remove('visible');
-  }
-  localStorage.setItem(`qanexus-model-${p}`, sel.value);
-}
-
-// ── Provider dropdown change ──────────────────────────────────────────────
-function onProviderChange() {
-  const p = document.getElementById('providerSelect').value;
-  const customProvIn = document.getElementById('customProviderInput');
-  const customModelIn = document.getElementById('customModelInput');
-
-  if (p === 'custom') {
-    // Step 1: show base URL field and focus it — model is locked until URL confirmed
-    customProvIn.value = localStorage.getItem('qanexus-customprovider-url') || '';
-    customProvIn.classList.add('visible');
-    customProvIn.focus();
-    customProvIn.select();
-    // Lock model dropdown to custom until URL is set
-    const sel = document.getElementById('modelSelect');
-    sel.innerHTML = '<option value="custom">Custom…</option>';
-    sel.value = 'custom';
-    const savedCustomModel = localStorage.getItem('qanexus-custommodel-custom') || '';
-    customModelIn.value = savedCustomModel;
-    customModelIn.classList.add('visible');
-    // Disable model input until provider URL is confirmed
-    customModelIn.disabled = true;
-    customModelIn.placeholder = 'enter provider URL first ↑';
-    showToast('Enter your provider base URL above, then press Enter');
-  } else {
-    customProvIn.value = '';
-    customProvIn.classList.remove('visible');
-    customModelIn.disabled = false;
-    customModelIn.placeholder = 'e.g. claude-opus-4-7';
-    rebuildModelDropdown(p);
-  }
-  localStorage.setItem('qanexus-last-provider', p);
-  updateKeyStatus();
-}
-
-// ── Wire up custom input events after DOM ready ───────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-
-  // Custom provider URL field
-  const customProvIn = document.getElementById('customProviderInput');
-  if (customProvIn) {
-    customProvIn.addEventListener('input', function() {
-      localStorage.setItem('qanexus-customprovider-url', this.value.trim());
-    });
-    customProvIn.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const url = this.value.trim();
-        if (!url) { showToast('Please enter a base URL first'); return; }
-        // Unlock model field
-        const customModelIn = document.getElementById('customModelInput');
-        customModelIn.disabled = false;
-        customModelIn.placeholder = 'e.g. llama-3.3-70b';
-        customModelIn.focus();
-        customModelIn.select();
-        showToast('Provider URL set — now type the model name');
-      }
-    });
-  }
-
-  // Custom model name field
-  const customModelIn = document.getElementById('customModelInput');
-  if (customModelIn) {
-    customModelIn.addEventListener('input', function() {
-      const p = document.getElementById('providerSelect').value;
-      localStorage.setItem(`qanexus-custommodel-${p}`, this.value.trim());
-    });
-    customModelIn.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const modelVal = this.value.trim();
-        if (!modelVal) { showToast('Please enter a model name'); return; }
-        // Update the dropdown display to show what was typed
-        const sel = document.getElementById('modelSelect');
-        // Replace or update the custom option label to show the value
-        const customOpt = sel.querySelector('option[value="custom"]');
-        if (customOpt) customOpt.textContent = modelVal;
-        const ui = document.getElementById('userInput');
-        if (ui) {
-          ui.focus();
-          if (ui.value.trim()) {
-            sendMessage();
-          } else {
-            showToast(`Model set to "${modelVal}" — type your prompt and press Enter`);
-          }
-        }
-      }
-    });
-  }
-});
-
-function updateKeyStatus() {
-  const p = currentProvider();
-  const el = document.getElementById('keyStatus');
-  if (!el) return;
-  if (providerKeys[p]) {
-    el.textContent = '✓ Key set';
-    el.className = 'key-btn set';
-  } else {
-    el.textContent = '🔑 Add key';
-    el.className = 'key-btn unset';
-  }
-}
-
-function showKeyModal() {
-  const p = currentProvider();
-  const cfg = PROVIDERS[p] || PROVIDERS.custom;
-  const label = cfg?.label || p;
-  document.getElementById('apiModalTitle').textContent = `API Key — ${label}`;
-  document.getElementById('apiModalDesc').textContent = `Your ${label} key is saved in localStorage and sent only to ${label}'s API endpoint directly from your browser.`;
-  document.getElementById('apiKeyInput').placeholder = cfg?.placeholder || 'your-api-key';
-  document.getElementById('apiKeyInput').value = providerKeys[p] || '';
-  const hint = cfg?.keyHint || "your provider's console";
-  const url = cfg?.keyUrl || '#';
-  document.getElementById('apiModalNote').innerHTML = `Get a key at <a href="${url}" target="_blank">${hint}</a>`;
-  document.getElementById('apiModal').style.display = 'flex';
-  document.getElementById('apiKeyInput').focus();
-}
-
+let apiKey = '';
 let currentMode = 'general';
 let conversationHistory = [];
-let activeAbortController = null; // tracks in-flight fetch so we can cancel it
 let targetApp = { url: '', description: '', pageContent: '', fetchStatus: 'none' };
 let pendingAttachments = [];
 
@@ -1502,24 +1017,6 @@ const KB = [
   { id:'auto-bdd', source:'Automation · BDD/Cucumber + Gherkin', tags:['cucumber','bdd','gherkin','step definitions','feature','scenario','automation','playwright cucumber'], text:'BDD with Cucumber + Gherkin: .feature files describe scenarios in business-readable Given/When/Then. Step definitions implement each step. Playwright + Cucumber.js: @cucumber/cucumber package + custom World class wrapping page. Folder: features/*.feature, features/step_definitions/*.steps.ts, support/world.ts, cucumber.js config. Tag scenarios for selective runs (@smoke, @regression). Use Background block to reduce repetition. Each step keyword (Given/When/Then) maps to a function.' },
   { id:'auto-pom', source:'Automation · Page Object Model', tags:['pom','page object','design pattern','automation','locators','encapsulation','maintainability'], text:'Page Object Model (POM): design pattern that encapsulates each page UI in a class, exposing methods for user actions and properties for locators. Benefits: maintainability (UI change → one class change), readability (tests describe intent not implementation), reusability. Pattern: class LoginPage { constructor(page) { this.page = page; this.emailInput = page.getByLabel("Email"); ... } async login(email, pwd) { ... } }. Tests stay business-readable; UI details hidden in page classes.' },
   { id:'auto-folder', source:'Automation · Project Structure & Setup', tags:['folder structure','setup','readme','config','package json','dependencies'], text:'Standard automation project structure: /tests (test specs), /pages (POM classes), /fixtures (test data), /utils (helpers), /reports (output), config file at root (playwright.config.ts / cypress.config.js / pytest.ini), package.json or requirements.txt for dependencies, README.md with install + run commands, .gitignore for node_modules/reports. CI integration via GitHub Actions / GitLab CI / Jenkins. Reports: HTML reporter, JUnit XML for CI.' },
-  // ── API TESTING
-  { id:'api-1', source:'API Testing · REST Fundamentals', tags:['api','rest','http','endpoint','request','response','status code','get','post','put','delete','patch'], text:'REST API Testing fundamentals: validate HTTP methods (GET, POST, PUT, PATCH, DELETE), status codes (200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 500 Internal Server Error), response body structure (JSON schema validation), headers (Content-Type, Authorization, Accept), and response time SLAs. Test categories: functional (correct data returned), contract (schema matches spec), negative (error handling), authentication (token expiry, invalid credentials), rate limiting, and idempotency.' },
-  { id:'api-2', source:'API Testing · Test Case Design', tags:['api','test case','endpoint','request body','response','assertion','schema','contract','postman','rest assured'], text:'API test case structure: Endpoint, HTTP Method, Headers, Request Body, Expected Status Code, Expected Response Schema, Expected Response Body (key fields), Response Time threshold. Test types per endpoint: Happy path (valid payload), Missing required field (400+error), Invalid data type (400/422), Unauthorized (401), Forbidden (403), Not found (404), Duplicate resource (409). For each POST/PUT: validate created/updated resource by doing a GET immediately after.' },
-  { id:'api-3', source:'API Testing · Tools & Automation', tags:['postman','newman','rest assured','supertest','pytest','requests','api automation','collection','environment','mock'], text:'API testing tools: Postman (manual + automated collections with Newman CLI), REST Assured (Java), Supertest (Node.js), pytest + requests (Python). Postman: use environments for base URLs and tokens, write pm.test() assertions in Tests tab, chain requests with pm.environment.set(), run collections via Newman in CI. Python pattern: response = requests.post(url, json=payload, headers=headers); assert response.status_code == 201. Contract testing: Pact for consumer-driven contracts.' },
-  { id:'api-4', source:'API Testing · GraphQL', tags:['graphql','query','mutation','subscription','schema','introspection','variables','apollo'], text:'GraphQL API testing: test queries (data fetching), mutations (data modification), subscriptions (real-time). Key areas: schema introspection validity, required fields in queries, variable injection, error handling (partial data + errors array), authorization per field/type, query depth limits (DoS prevention), N+1 query detection. Tools: Postman, Insomnia, Apollo Studio. Test invalid queries return errors array not HTTP 500. Test missing variables return structured error not crash.' },
-  { id:'api-5', source:'API Testing · Authentication & Tokens', tags:['api','auth','oauth','jwt','bearer','token','api key','basic auth','authentication','authorization'], text:'API authentication test cases: expired token returns 401, tampered JWT signature returns 401, missing Authorization header returns 401, insufficient scope returns 403, token from different user returns 403. Validate JWT: reject alg:none, verify exp claim, verify iss claim. Test refresh token rotation and revocation. OAuth 2.0 flows: client credentials (M2M), authorization code (user-facing). Test rate limiting on auth endpoints.' },
-  // ── SECURITY TESTING
-  { id:'sec-1', source:'Security Testing · OWASP Top 10', tags:['owasp','security','vulnerability','injection','xss','csrf','auth','top 10','broken access'], text:'OWASP Top 10 (2021): A01 Broken Access Control (IDOR, privilege escalation), A02 Cryptographic Failures (weak TLS, plaintext secrets), A03 Injection (SQL, NoSQL, OS command, LDAP), A04 Insecure Design (missing threat modeling), A05 Security Misconfiguration (default credentials, verbose errors, open storage), A06 Vulnerable Components, A07 Auth Failures (brute force, session fixation), A08 Integrity Failures (insecure deserialization), A09 Logging Failures, A10 SSRF. Each category maps to specific manual and automated test cases.' },
-  { id:'sec-2', source:'Security Testing · Injection & XSS', tags:['sql injection','xss','cross site scripting','injection','input validation','sanitization','encode','escape'], text:'Injection test cases: SQL Injection: input single quote, OR 1=1--, UNION SELECT NULL into all user-input fields; verify app returns error not data leak. XSS: input [script]alert(1)[/script] and [img src=x onerror=alert(1)]; verify output is HTML-encoded, not executed. Command Injection: input ; ls and && whoami; verify blocked. Test all user-controlled inputs: form fields, URL parameters, headers, JSON body. Expected: input sanitized or rejected with 400, never reflected or executed. Tools: Burp Suite, OWASP ZAP.' },
-  { id:'sec-3', source:'Security Testing · Auth & Session Security', tags:['authentication','session','brute force','account lockout','session fixation','csrf','cookie','secure','httponly'], text:'Authentication security test cases: Brute force: attempt 100 logins with wrong password, verify lockout triggers. Session fixation: use pre-auth session token post-login, verify new session ID issued. Session expiry: wait past timeout, verify session invalidated server-side. CSRF: submit form from different origin without CSRF token, verify rejected. Cookie security: verify Secure, HttpOnly, SameSite=Strict flags. Logout: verify token invalidated server-side. Password policy: test minimum length, complexity, breached password rejection.' },
-  { id:'sec-4', source:'Security Testing · Access Control & IDOR', tags:['idor','access control','authorization','privilege','escalation','broken access','rbac','horizontal','vertical'], text:'Access control test cases: IDOR: as User A, access /api/users/{User_B_id}, verify 403 not User B data. Vertical escalation: as regular user, call admin API endpoints, verify 403. Horizontal escalation: access another user records using their ID. Missing auth: call authenticated endpoints without token, verify 401. Mass assignment: send extra fields in POST body (isAdmin:true), verify ignored. Role-based: verify each role (viewer/editor/admin) can only access permitted endpoints.' },
-  { id:'sec-5', source:'Security Testing · Tools & Methodology', tags:['burp suite','owasp zap','sast','dast','penetration test','security scan','nmap','nikto','security testing tools'], text:'Security testing tools: DAST: OWASP ZAP (automated scan + manual intercept, free), Burp Suite (intercept proxy, scanner, intruder for brute force, repeater for manual testing). SAST: SonarQube, Semgrep. Dependency scanning: OWASP Dependency-Check, Snyk, npm audit. Pen test phases: Reconnaissance, Scanning (Nmap, Nikto), Exploitation, Reporting. Severity: CVSS scoring: Critical 9.0+, High 7.0-8.9, Medium 4.0-6.9, Low 0.1-3.9. Security test plan includes: threat model, attack surface map, scope, tools, OWASP category coverage.' },
-  // ── PERFORMANCE TESTING
-  { id:'perf-1', source:'Performance Testing · Test Types', tags:['performance','load test','stress test','spike test','soak test','endurance','volume','scalability','throughput','latency'], text:'Performance test types: Load Test: simulate expected concurrent users for sustained period, verify response time SLA met. Stress Test: ramp users beyond capacity to find breaking point, verify graceful degradation. Spike Test: sudden burst of users (10x normal in 30 seconds), verify system recovers. Soak/Endurance Test: normal load for hours, detect memory leaks and resource exhaustion. Volume Test: large data sets, verify DB query performance. Key metrics: P50/P90/P95/P99 response time, throughput (req/sec), error rate (target <1%), CPU/memory utilisation.' },
-  { id:'perf-2', source:'Performance Testing · k6 Scripts', tags:['k6','performance','load test','script','javascript','vus','virtual users','thresholds','checks','scenarios'], text:'k6 load test script (JavaScript): import http from "k6/http"; import { check, sleep } from "k6"; export const options = { vus: 100, duration: "2m", thresholds: { http_req_duration: ["p(95)<500"], http_req_failed: ["rate<0.01"] } }; export default function() { const res = http.get("https://api.example.com/endpoint"); check(res, { "status 200": r => r.status === 200, "fast enough": r => r.timings.duration < 500 }); sleep(1); }. Scenarios: ramping-vus (ramp up/down), constant-arrival-rate (fixed RPS). Run: k6 run script.js. Output: k6 --out html for HTML report.' },
-  { id:'perf-3', source:'Performance Testing · JMeter', tags:['jmeter','performance','load test','thread group','sampler','listener','assertion','csv','test plan'], text:'Apache JMeter test plan: Thread Group (users, ramp-up, loop count) -> HTTP Request Sampler (server, path, method, body) -> HTTP Header Manager -> Response Assertion (status code, body) -> Listeners (Summary Report, Aggregate Report). Best practices: use CSV Data Set Config for parameterisation, Regular Expression Extractor for dynamic tokens, run in CLI mode: jmeter -n -t testplan.jmx -l results.jtl, disable View Results Tree in load runs (perf drain). Analyse: response time graph, throughput over time, error rate.' },
-  { id:'perf-4', source:'Performance Testing · Metrics & SLAs', tags:['sla','slo','response time','p95','p99','throughput','error rate','apdex','ttfb','metrics','performance criteria'], text:'Performance metrics: P95 response time < 2s for web pages, P95 < 500ms for API calls. Throughput: requests per second system sustains under target load. Error rate: target < 1% normal load, < 5% stress. Apdex: (Satisfied + Tolerating/2) / Total; target > 0.85. TTFB < 200ms. Exit criteria: all SLA thresholds met, error rate < 1%, no memory leaks in soak, CPU < 80% at peak. Report must include: baseline metrics, performance under load, performance under stress, degradation profile.' },
-  { id:'perf-5', source:'Performance Testing · Plan & Reporting', tags:['performance test plan','performance report','bottleneck','profiling','apm','new relic','datadog','performance analysis'], text:'Performance test plan sections: Objectives and SLAs, Scope (endpoints and user journeys to test), Scenarios (load/stress/spike/soak), Test data requirements, Environment spec (must match prod sizing), Tools (k6/JMeter/Gatling), Monitoring plan (APM: New Relic/Datadog/Dynatrace). Performance report: Executive Summary (pass/fail vs SLA), Metrics table (P50/P90/P95/P99 per endpoint), Bottleneck analysis, Infrastructure metrics (CPU/memory/DB connections/GC), Recommendations (indexing/caching/connection pooling/CDN). Attach graphs: response time over time, throughput, error rate.' },
 ];
 
 // ─── MODE CONFIG ────────────────────────────────────────
@@ -1585,36 +1082,6 @@ const modeInfo = {
     'Convert these manual test cases into Playwright automation scripts',
     'Generate a sample GitHub Actions CI workflow for running the automation tests',
     'I will paste page HTML next — generate Playwright POM with exact selectors from that HTML',
-  ]},
-  api: { label: 'API Testing', desc: '— REST · GraphQL · Contract', actionsLabel: 'API testing actions', actions: [
-    'Generate a full set of REST API test cases for the target application (positive, negative, auth, edge)',
-    'Create Postman collection JSON for the target application API endpoints',
-    'Generate Python pytest + requests API test scripts for the target application',
-    'Write API test cases covering all HTTP status codes (200, 201, 400, 401, 403, 404, 409, 500)',
-    'Generate GraphQL query and mutation test cases for the target application',
-    'Create API authentication test cases: expired JWT, missing token, insufficient scope',
-    'Generate a contract test plan using Pact for the target application API',
-    'Write an API test plan with scope, tools, test types, and environment requirements',
-  ]},
-  security: { label: 'Security Testing', desc: '— OWASP · Pen test · Auth', actionsLabel: 'Security testing actions', actions: [
-    'Generate OWASP Top 10 security test cases for the target application',
-    'Create SQL injection test cases for all input fields on the target page',
-    'Generate XSS (Cross-Site Scripting) test cases for the target application',
-    'Create IDOR and broken access control test cases for the target application',
-    'Generate authentication and session security test cases (brute force, CSRF, session fixation)',
-    'Write an OWASP ZAP scan plan for the target application',
-    'Create a security test plan with threat model, scope, OWASP categories, and severity ratings',
-    'Generate security test cases for API authentication (JWT, OAuth 2.0, API keys)',
-  ]},
-  performance: { label: 'Performance Testing', desc: '— Load · Stress · k6 · JMeter', actionsLabel: 'Performance testing actions', actions: [
-    'Generate a k6 load test script for the target application with thresholds and checks',
-    'Create a JMeter test plan description for the target application (Thread Group, samplers, assertions)',
-    'Write a performance test plan with load, stress, spike, and soak scenarios and SLA thresholds',
-    'Generate performance test cases with P95/P99 response time and error rate SLAs',
-    'Create a performance test report template with metrics table and bottleneck analysis',
-    'Write a spike test scenario for a flash sale event on the target application',
-    'Generate a soak test plan to detect memory leaks in the target application',
-    'Define performance exit criteria: P95 response time, error rate, CPU, and Apdex thresholds',
   ]}
 };
 
@@ -1630,9 +1097,6 @@ function retrieve(query, mode, topK = 4) {
     defects:['defect','bug','severity','priority','report'],
     closure:['closure','close','lessons','exit','criteria','sign'],
     automation:['playwright','cypress','selenium','automation','pom','page object','bdd','gherkin','cucumber','script','code'],
-    api:['api','rest','endpoint','http','postman','graphql','request','response','status code','authentication','token'],
-    security:['security','owasp','injection','xss','sql injection','auth','session','idor','access control','vulnerability','burp'],
-    performance:['performance','load test','stress test','k6','jmeter','throughput','latency','p95','p99','sla','spike','soak'],
     general:[]
   };
   const scored = KB.map(chunk => {
@@ -1661,10 +1125,7 @@ function buildSystemPrompt(chunks, mode, htmlAttachments = []) {
     execution: 'You are focused on Test Execution: running tests, logging results, run summaries.',
     defects: 'You are focused on Defect Management: IEEE 829 bug reports, severity/priority triage.',
     closure: 'You are focused on Test Closure: summary reports, exit criteria, lessons learned.',
-    automation: 'You are focused on Test Automation: generating production-ready Page Object Model code, test scripts, and project structures in Playwright (TypeScript preferred), Cypress (JavaScript), Selenium WebDriver (Python + pytest), and BDD/Cucumber+Gherkin. Always produce complete, runnable code with proper imports, modern locator strategies (getByRole, getByLabel, data-testid), POM separation, and a brief setup README. Use fenced code blocks with the correct language tag (```typescript, ```javascript, ```python, ```gherkin, ```yaml). IMPORTANT: when generating selectors, be honest about your source. If you only have a SCREENSHOT (no HTML), use role/label/text-based locators inferred from visible UI elements, and explicitly note at the top: "// NOTE: selectors inferred from visual UI. Verify against actual DOM (right-click → Inspect) before running." If you have ACTUAL HTML (from CORS fetch or user-pasted), use exact attribute selectors (id, name, data-testid) from the HTML and note: "// Selectors extracted from page HTML — should run as-is." If you have NEITHER, use generic placeholders like <TODO: locate via inspector> and flag this clearly. Never fabricate specific selectors that have no basis in either screenshot or HTML.',
-    api: 'You are focused on API Testing. Generate structured API test cases with these columns: TC ID | Endpoint | HTTP Method | Request Headers | Request Body | Expected Status Code | Expected Response (key fields) | Response Time SLA. Cover: happy path, missing required fields (400), invalid data types (422), unauthorized (401), forbidden (403), not found (404), duplicate resource (409), and server error scenarios. For GraphQL: test queries, mutations, error arrays, and depth limits. For authentication: test expired tokens, tampered JWTs, missing headers, and scope violations. Generate Postman collection JSON or Python requests + pytest scripts when asked. Always specify exact status codes and response field assertions, never vague "verify response is correct".',
-    security: 'You are focused on Security Testing grounded in OWASP Top 10 (2021). Generate security test cases with: TC ID | OWASP Category | Attack Vector | Test Input/Action | Expected Result (secure behaviour) | Severity (Critical/High/Medium/Low using CVSS). Cover: SQL Injection (all input fields), XSS (reflected and stored), IDOR (horizontal and vertical access control), authentication flaws (brute force, session fixation, CSRF), security misconfiguration (verbose errors, default creds), and sensitive data exposure. For each finding: describe the attack scenario, the exact test step, and the expected secure response. Reference OWASP category codes (A01-A10). Generate OWASP ZAP or Burp Suite test plans when asked. Never provide actual exploit code — describe test inputs and expected secure behaviour only.',
-    performance: 'You are focused on Performance Testing. Generate: (1) performance test plans with load/stress/spike/soak scenarios and measurable SLA thresholds (P95 response time, error rate, throughput); (2) k6 JavaScript scripts with options, thresholds, checks, and sleep; (3) JMeter test plan descriptions with Thread Group settings, samplers, assertions, and listeners; (4) performance test reports with P50/P90/P95/P99 metrics tables, bottleneck analysis, and go/no-go recommendation. Always specify numeric SLAs (e.g. P95 < 500ms, error rate < 1%, CPU < 80%). For k6: include ramping scenarios and threshold definitions. For JMeter: include CSV parameterisation and CLI run commands. Identify likely bottlenecks (DB queries, connection pools, GC, network) based on the described system.'
+    automation: 'You are focused on Test Automation: generating production-ready Page Object Model code, test scripts, and project structures in Playwright (TypeScript preferred), Cypress (JavaScript), Selenium WebDriver (Python + pytest), and BDD/Cucumber+Gherkin. Always produce complete, runnable code with proper imports, modern locator strategies (getByRole, getByLabel, data-testid), POM separation, and a brief setup README. Use fenced code blocks with the correct language tag (```typescript, ```javascript, ```python, ```gherkin, ```yaml). IMPORTANT: when generating selectors, be honest about your source. If you only have a SCREENSHOT (no HTML), use role/label/text-based locators inferred from visible UI elements, and explicitly note at the top: "// NOTE: selectors inferred from visual UI. Verify against actual DOM (right-click → Inspect) before running." If you have ACTUAL HTML (from CORS fetch or user-pasted), use exact attribute selectors (id, name, data-testid) from the HTML and note: "// Selectors extracted from page HTML — should run as-is." If you have NEITHER, use generic placeholders like <TODO: locate via inspector> and flag this clearly. Never fabricate specific selectors that have no basis in either screenshot or HTML.'
   };
   const context = chunks.map(c => `[${c.source}]\n${c.text}`).join('\n\n---\n\n');
   let targetContext = '';
@@ -1685,7 +1146,7 @@ function buildSystemPrompt(chunks, mode, htmlAttachments = []) {
     });
     htmlContext += `\n\nIMPORTANT: The HTML above is from REAL files the user attached. When generating automation code (Playwright/Cypress/Selenium), use the EXACT selectors visible in this HTML (id, name, data-testid, class attributes, button text). Note in comments that "Selectors extracted from user-attached HTML file — should run as-is".`;
   }
-  return `You are QA Nexus, a senior QA lead assistant grounded in ISTQB FL, IEEE 829, and STLC methodology. ${focus[mode] || focus.general}
+  return `You are AmbitQA, a senior QA lead assistant grounded in ISTQB FL, IEEE 829, and STLC methodology. ${focus[mode] || focus.general}
 
 RETRIEVED KNOWLEDGE BASE CONTEXT:
 ${context}${targetContext}${htmlContext}
@@ -1745,31 +1206,18 @@ async function callClaude(userMessage, attachments = []) {
   }
 
   conversationHistory.push({ role: 'user', content });
-
-  // ── Provider-agnostic API call ──
-  const p = currentProvider();
-  const cfg = PROVIDERS[p] || PROVIDERS.custom;
-  const key = providerKeys[p] || providerKeys.custom;
-  if (!key) {
-    showKeyModal();
-    conversationHistory.pop(); // remove the message we just pushed
-    throw new Error(`No API key set for ${cfg?.label || p}. Please add your key.`);
-  }
-  const model = currentModel();
-  const req = cfg.buildRequest(model, systemPrompt, conversationHistory, 8192);
-  activeAbortController = new AbortController();
-  const response = await fetch(req.url, {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: req.headers,
-    body: JSON.stringify(req.body),
-    signal: activeAbortController.signal
+    headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:48000, system:systemPrompt, messages:conversationHistory })
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || err?.error?.errors?.[0]?.message || `API error ${response.status} from ${cfg.label}`);
+    throw new Error(err.error?.message || `API error ${response.status}`);
   }
   const data = await response.json();
-  const { text, wasTruncated } = cfg.extract(data);
+  const text = data.content?.[0]?.text || '';
+  const wasTruncated = data.stop_reason === 'max_tokens';
   conversationHistory.push({ role: 'assistant', content: text });
   return { text, chunks, wasTruncated };
 }
@@ -1991,7 +1439,7 @@ function buildFilename(rawMd, contentType, ext) {
   const parts = [];
   if (typeLabel && !topic.includes(typeLabel.replace('-',''))) parts.push(typeLabel);
   if (topic) parts.push(topic);
-  if (parts.length === 0) parts.push('qa-nexus-export');
+  if (parts.length === 0) parts.push('ambitqa-export');
   parts.push(ts);
   return parts.join('-') + '.' + ext;
 }
@@ -2138,7 +1586,7 @@ function generateRtf(md) {
   rtf += '\\f0\\fs22\\cf3\n';
 
   // Document header
-  rtf += '\\pard\\b\\fs36\\cf2 QA Nexus \\u8212? Export\\b0\\fs22\\cf3\\par\n';
+  rtf += '\\pard\\b\\fs36\\cf2 AmbitQA \\u8212? Export\\b0\\fs22\\cf3\\par\n';
   rtf += `\\fs20\\cf4 Generated ${new Date().toLocaleDateString()} \\u183? ISTQB \\u183? IEEE 829 grounded\\par\n`;
   rtf += '\\pard\\par\n';
 
@@ -2208,12 +1656,12 @@ function exportContent(rawMd, format, contentType) {
   }
   if (format === 'txt') {
     const cleanText = markdownToPlainText(rawMd);
-    const header = `QA NEXUS — EXPORT\nGenerated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded\n${'═'.repeat(60)}\n\n`;
+    const header = `AMBITQA — EXPORT\nGenerated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded\n${'═'.repeat(60)}\n\n`;
     downloadFile(header + cleanText, buildFilename(rawMd, contentType, 'txt'), 'text/plain');
     showToast('Downloaded as TXT'); return;
   }
   if (format === 'md') {
-    const header = `<!-- QA Nexus Export · Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded -->\n\n`;
+    const header = `<!-- AmbitQA Export · Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded -->\n\n`;
     downloadFile(header + rawMd, buildFilename(rawMd, contentType, 'md'), 'text/markdown');
     showToast('Downloaded as Markdown'); return;
   }
@@ -2225,7 +1673,7 @@ function exportContent(rawMd, format, contentType) {
   }
   if (format === 'html') {
     const { html } = renderMarkdown(rawMd);
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Nexus Export</title><style>body{font-family:Inter,Helvetica,Arial,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#0F0E1F;line-height:1.65;background:#FFFFFF;}h1,h2,h3{font-family:'Space Grotesk',Helvetica,sans-serif;color:#312E81;line-height:1.3;}h1{font-size:1.8rem;margin:1.5rem 0 1rem;border-bottom:2px solid #312E81;padding-bottom:0.5rem;}h2{font-size:1.35rem;margin:1.8rem 0 0.75rem;border-bottom:1px solid #C7D2FE;padding-bottom:0.3rem;}h3{font-size:1.1rem;margin:1.2rem 0 0.5rem;}hr{border:0;border-top:1px solid #C7D2FE;margin:1.5rem 0;}p{margin:0.6rem 0;color:#0F0E1F;}strong{color:#0F0E1F;font-weight:700;}blockquote{margin:0.8rem 0;padding:0.4rem 1rem;border-left:3px solid #312E81;color:#4A4566;font-style:italic;}blockquote p{margin:0;color:#4A4566;}table{width:100%;border-collapse:collapse;margin:1rem 0;background:#FFFFFF;}th,td{border:1px solid #C7D2FE;padding:0.55rem 0.75rem;text-align:left;font-size:0.9rem;vertical-align:top;background:#FFFFFF;}th{font-weight:700;color:#312E81;border-bottom:2px solid #312E81;}td{color:#0F0E1F;}code{font-family:Menlo,monospace;font-size:0.88em;color:#312E81;}pre.code-block{background:#FFFFFF;border:1px solid #C7D2FE;border-left:3px solid #312E81;border-radius:3px;padding:0.75rem 1rem;margin:0.75rem 0;font-family:Menlo,monospace;font-size:0.85rem;line-height:1.55;color:#0F0E1F;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}pre.code-block code{color:#0F0E1F;}ul,ol{padding-left:1.5rem;color:#0F0E1F;}li{margin-bottom:0.3rem;}.header{border-bottom:2px solid #312E81;padding-bottom:1rem;margin-bottom:2rem;}.header h1{border:none;padding:0;margin:0;}</style></head><body><div class="header"><h1>QA Nexus — Export</h1><p style="color:#4A4566;margin:0.3rem 0 0;">Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded</p></div>${html}</body></html>`;
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AmbitQA Export</title><style>body{font-family:Inter,Helvetica,Arial,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#0F0E1F;line-height:1.65;background:#FFFFFF;}h1,h2,h3{font-family:'Space Grotesk',Helvetica,sans-serif;color:#312E81;line-height:1.3;}h1{font-size:1.8rem;margin:1.5rem 0 1rem;border-bottom:2px solid #312E81;padding-bottom:0.5rem;}h2{font-size:1.35rem;margin:1.8rem 0 0.75rem;border-bottom:1px solid #C7D2FE;padding-bottom:0.3rem;}h3{font-size:1.1rem;margin:1.2rem 0 0.5rem;}hr{border:0;border-top:1px solid #C7D2FE;margin:1.5rem 0;}p{margin:0.6rem 0;color:#0F0E1F;}strong{color:#0F0E1F;font-weight:700;}blockquote{margin:0.8rem 0;padding:0.4rem 1rem;border-left:3px solid #312E81;color:#4A4566;font-style:italic;}blockquote p{margin:0;color:#4A4566;}table{width:100%;border-collapse:collapse;margin:1rem 0;background:#FFFFFF;}th,td{border:1px solid #C7D2FE;padding:0.55rem 0.75rem;text-align:left;font-size:0.9rem;vertical-align:top;background:#FFFFFF;}th{font-weight:700;color:#312E81;border-bottom:2px solid #312E81;}td{color:#0F0E1F;}code{font-family:Menlo,monospace;font-size:0.88em;color:#312E81;}pre.code-block{background:#FFFFFF;border:1px solid #C7D2FE;border-left:3px solid #312E81;border-radius:3px;padding:0.75rem 1rem;margin:0.75rem 0;font-family:Menlo,monospace;font-size:0.85rem;line-height:1.55;color:#0F0E1F;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}pre.code-block code{color:#0F0E1F;}ul,ol{padding-left:1.5rem;color:#0F0E1F;}li{margin-bottom:0.3rem;}.header{border-bottom:2px solid #312E81;padding-bottom:1rem;margin-bottom:2rem;}.header h1{border:none;padding:0;margin:0;}</style></head><body><div class="header"><h1>AmbitQA — Export</h1><p style="color:#4A4566;margin:0.3rem 0 0;">Generated ${new Date().toLocaleDateString()} · ISTQB · IEEE 829 grounded</p></div>${html}</body></html>`;
     downloadFile(fullHtml, buildFilename(rawMd, contentType, 'html'), 'text/html');
     showToast('Downloaded as HTML'); return;
   }
@@ -2267,10 +1715,10 @@ function exportContent(rawMd, format, contentType) {
           }
           // If no section found, use the title with priority as minimal description
           if (!desc) {
-            desc = `*Test:* ${title}\n*Priority:* ${priority}\n\n_Note: detailed steps were not provided in tabular form. See the full QA Nexus response for context._`;
+            desc = `*Test:* ${title}\n*Priority:* ${priority}\n\n_Note: detailed steps were not provided in tabular form. See the full AmbitQA response for context._`;
           }
         }
-        csvRows.push(['Test', `${id}: ${title}`, desc.trim(), priority, 'QA-Nexus,Test-Case']);
+        csvRows.push(['Test', `${id}: ${title}`, desc.trim(), priority, 'AmbitQA,Test-Case']);
       }
     } else if (contentType === 'bugreport') {
       csvRows = [['Issue Type','Summary','Description','Priority','Labels','Environment']];
@@ -2289,7 +1737,7 @@ function exportContent(rawMd, format, contentType) {
       if (fields['actual result'] || fields['actual']) desc += `*Actual Result:*\n${fields['actual result'] || fields['actual']}\n\n`;
       if (fields['module'] || fields['component']) desc += `*Module:* ${fields['module'] || fields['component']}\n`;
       if (fields['severity']) desc += `*Severity:* ${fields['severity']}\n`;
-      csvRows.push(['Bug', title, desc.trim(), priority, 'QA-Nexus,Defect', env]);
+      csvRows.push(['Bug', title, desc.trim(), priority, 'AmbitQA,Defect', env]);
     } else {
       showToast('Jira export works for test cases or bug reports'); return;
     }
@@ -2411,8 +1859,7 @@ function buildExportToolbar(rawMd) {
     copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
     dl: '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     jira: '<svg viewBox="0 0 24 24"><polygon points="3 12 12 3 21 12 12 21 3 12"/></svg>',
-    form: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-    eval: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>'
+    form: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
   };
   return `<div class="export-toolbar">
     ${formFields ? `<button class="export-btn form-fill" onclick="openFormModal(window['_md_${id}'])">${icons.form} Fill form (${formFields.length} fields)</button>` : ''}
@@ -2420,7 +1867,6 @@ function buildExportToolbar(rawMd) {
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'md',window['_ct_${id}'])">${icons.dl} MD</button>
     <button class="export-btn" onclick="exportContent(window['_md_${id}'],'html',window['_ct_${id}'])">${icons.dl} HTML</button>
     ${jiraEligible ? `<button class="export-btn jira" onclick="exportContent(window['_md_${id}'],'jira',window['_ct_${id}'])">${icons.jira} Jira CSV</button>` : ''}
-    <button class="export-btn eval" onclick="openEvaluator(window['_md_${id}'])" title="Score this artifact against ISTQB/IEEE 829 rubrics">${icons.eval} Evaluate</button>
     <span class="pdf-hint" onclick="this.classList.toggle('show')">
       <span class="pdf-hint-btn">ℹ︎ Format help</span>
       <span class="pdf-hint-popup">
@@ -2435,32 +1881,6 @@ function buildExportToolbar(rawMd) {
       </span>
     </span>
   </div>`;
-}
-
-function stopGeneration() {
-  if (activeAbortController) {
-    activeAbortController.abort();
-    activeAbortController = null;
-  }
-}
-
-function setGenerating(isGenerating) {
-  const sendBtn = document.getElementById('sendBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  if (isGenerating) {
-    sendBtn.style.display = 'none';
-    stopBtn.classList.add('visible');
-  } else {
-    sendBtn.style.display = '';
-    sendBtn.disabled = false;
-    stopBtn.classList.remove('visible');
-  }
-}
-
-function openEvaluator(rawMd) {
-  // Pass artifact via sessionStorage — avoids URL length limits on large artifacts
-  sessionStorage.setItem('qanexus_eval_artifact', rawMd);
-  window.open('evaluator.html', '_blank');
 }
 
 function appendMessage(role, html, sourcesHtml = '', rawMarkdown = '') {
@@ -2507,7 +1927,7 @@ async function sendMessage() {
   const input = document.getElementById('userInput');
   const btn = document.getElementById('sendBtn');
   const text = input.value.trim();
-  if ((!text && pendingAttachments.length === 0)) return;
+  if ((!text && pendingAttachments.length === 0) || !apiKey) return;
 
   // Snapshot attachments and clear pending
   const attachments = [...pendingAttachments];
@@ -2535,7 +1955,6 @@ async function sendMessage() {
   appendMessage('user', userHtml);
 
   btn.disabled = true;
-  setGenerating(true);
   showTyping();
   try {
     const { text: reply, chunks, wasTruncated } = await callClaude(text, attachments);
@@ -2563,15 +1982,9 @@ async function sendMessage() {
     }
   } catch (err) {
     hideTyping();
-    if (err.name === 'AbortError') {
-      appendMessage('agent', '<p style="color:var(--text-muted);font-style:italic">⏹ Generation stopped.</p>');
-      return;
-    }
     appendMessage('agent', `<p style="color:var(--rose-400)">Error: ${err.message}. Please check your API key and try again.</p>`);
   }
   btn.disabled = false;
-  setGenerating(false);
-  activeAbortController = null;
   input.focus();
 }
 
@@ -2879,14 +2292,10 @@ function showToast(msg) {
 }
 
 function saveKey() {
-  const val = document.getElementById('apiKeyInput').value.trim().replace(/[^\x20-\x7E]/g, '');
-  if (!val) { alert('Please enter an API key.'); return; }
-  const p = currentProvider();
-  providerKeys[p] = val;
-  providerKeys[p === 'custom' ? 'custom' : p] = val;
-  localStorage.setItem(`qanexus-key-${p}`, val);
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val.startsWith('sk-')) { alert('Please enter a valid Anthropic API key (starts with sk-)'); return; }
+  apiKey = val;
   document.getElementById('apiModal').style.display = 'none';
-  updateKeyStatus();
   document.getElementById('userInput').focus();
 }
 document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
@@ -2924,8 +2333,8 @@ function makeResizable(handleId, sidebarId, side, storageKey) {
     document.addEventListener('mouseup', onUp);
   });
 }
-makeResizable('leftHandle', 'leftSidebar', 'left', 'qa-nexus-left-width');
-makeResizable('rightHandle', 'rightSidebar', 'right', 'qa-nexus-right-width');
+makeResizable('leftHandle', 'leftSidebar', 'left', 'ambitqa-left-width');
+makeResizable('rightHandle', 'rightSidebar', 'right', 'ambitqa-right-width');
 
 // ─── PANEL TOGGLES ─────────────────────────────────────
 function togglePanel(side) {
@@ -2942,18 +2351,6 @@ function togglePanel(side) {
   }
 }
 
-// Set version badge
-document.getElementById('versionBadge').textContent = QA_NEXUS_VERSION;
-
-// Init: populate model dropdown for default provider
-(function initProviderBar() {
-  const p = localStorage.getItem('qanexus-last-provider') || 'anthropic';
-  // Restore provider select
-  const provSel = document.getElementById('providerSelect');
-  if (provSel && PROVIDER_MODELS[p] !== undefined) provSel.value = p;
-  rebuildModelDropdown(p === 'custom' ? 'anthropic' : p);
-  updateKeyStatus();
-})();
 renderActions('general');
 </script>
 </body>

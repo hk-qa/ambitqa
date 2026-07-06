@@ -1,12 +1,12 @@
-# QA Nexus 🎯
+# AmbitQA 🎯
 
 > **A RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and the Software Testing Life Cycle (STLC) — plus a companion artifact evaluator that scores any QA deliverable against weighted rubrics.**
 
 🏆 **Winner — Codecademy Agentic AI Applications Bootcamp Contest #1** (2026)
 
-🔗 **Live demo:** [hk-qa.github.io/qa-nexus](https://hk-qa.github.io/qa-nexus/)
-🤖 **Chatbot:** [hk-qa.github.io/qa-nexus/chatbot.html](https://hk-qa.github.io/qa-nexus/chatbot.html)
-🔬 **Evaluator:** [hk-qa.github.io/qa-nexus/evaluator.html](https://hk-qa.github.io/qa-nexus/evaluator.html)
+🔗 **Live demo:** [ambitqa.com](https://ambitqa.com/)
+🤖 **Chatbot:** [ambitqa.com/chatbot.html](https://ambitqa.com/chatbot.html)
+🔬 **Evaluator:** [ambitqa.com/evaluator.html](https://ambitqa.com/evaluator.html)
 
 Currently at **v1.2.0** — see [Changelog](#-changelog).
 
@@ -16,7 +16,7 @@ Currently at **v1.2.0** — see [Changelog](#-changelog).
 
 **Need QA work done faster, with documentation that passes any audit?**
 
-I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA artifacts in a fraction of the typical time — grounded in ISTQB Foundation Level, IEEE 829, and modern STLC practices. Available for short engagements and ongoing retainers.
+I use **AmbitQA** as my personal force-multiplier to deliver senior-grade QA artifacts in a fraction of the typical time — grounded in ISTQB Foundation Level, IEEE 829, and modern STLC practices. Available for short engagements and ongoing retainers.
 
 ### What I can do for your team
 
@@ -39,9 +39,9 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ### Get in touch
 
-- 💼 [LinkedIn](https://www.linkedin.com/in/hkapur)
-- 📧 [Email](hk.qanexus@gmail.com)
-- 📅 **Book a 20-minute intro call:** [Calendly](https://calendly.com/hk-qanexus)
+- 💼 **LinkedIn:** [linkedin.com/in/hkapur](https://linkedin.com/in/hkapur)
+- 📧 **Email:** hitesh@ambitqa.com
+- 📅 **Book a 20-minute intro call:** [Calendly link]
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
 
@@ -49,9 +49,9 @@ I use **QA Nexus** as my personal force-multiplier to deliver senior-grade QA ar
 
 ## 🌟 What it does
 
-QA Nexus is a structured, retrieval-augmented chat agent that produces production-grade QA deliverables in seconds — not generic AI chat output. Every response is grounded in a curated methodology knowledge base and cites the exact sources used.
+AmbitQA is a structured, retrieval-augmented chat agent that produces production-grade QA deliverables in seconds — not generic AI chat output. Every response is grounded in a curated methodology knowledge base and cites the exact sources used.
 
-A separate **evaluator** scores any QA artifact (whether produced by QA Nexus or copy-pasted from anywhere) against weighted rubrics, returning a **PASS / WARN / FAIL** verdict with dimension scores, top issues, and an auto-generated improvement prompt.
+A separate **evaluator** scores any QA artifact (whether produced by AmbitQA or copy-pasted from anywhere) against weighted rubrics, returning a **PASS / WARN / FAIL** verdict with dimension scores, top issues, and an auto-generated improvement prompt.
 
 ### 14+ deliverable types
 - **Test plans** (IEEE 829 format)
@@ -207,7 +207,7 @@ Cancel in-flight responses via the Stop button (AbortController). Useful when an
 
 ### Chatbot
 
-1. Visit the **[chatbot](https://hk-qa.github.io/qa-nexus/chatbot.html)**
+1. Visit the **[chatbot](https://ambitqa.com/chatbot.html)**
 2. Pick a **provider** (Anthropic, OpenAI, Google, xAI, OpenRouter, or Custom)
 3. Paste your **API key** for that provider (used only in this browser session)
 4. **Pick an STLC mode** from the left panel
@@ -219,7 +219,7 @@ Cancel in-flight responses via the Stop button (AbortController). Useful when an
 
 ### Evaluator
 
-1. Visit the **[evaluator](https://hk-qa.github.io/qa-nexus/evaluator.html)** (or click the 🔬 button in chatbot)
+1. Visit the **[evaluator](https://ambitqa.com/evaluator.html)** (or click the 🔬 button in chatbot)
 2. Paste any QA artifact (test plan, test cases, bug report, etc.)
 3. Select the artifact type
 4. Get instant verdict, scores, issues, and improvement prompt
@@ -321,7 +321,7 @@ For commercial licensing inquiries, please contact via LinkedIn (linked above).
 
 ## 🙏 Acknowledgments
 
-- **[Codecademy](https://www.codecademy.com)** for the Agentic AI Applications Bootcamp — and for awarding QA Nexus the Contest #1 winner spot
+- **[Codecademy](https://www.codecademy.com)** for the Agentic AI Applications Bootcamp — and for awarding AmbitQA the Contest #1 winner spot
 - **[Anthropic](https://www.anthropic.com)** for Claude and the multi-modal Messages API
 - **OpenAI, Google, xAI** for their respective LLM APIs
 - The ISTQB, IEEE, and OWASP communities for the methodology foundations this is built on
@@ -330,4 +330,4 @@ For commercial licensing inquiries, please contact via LinkedIn (linked above).
 
 ## 📱 Connect
 
-Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/in/hkapur) · #CodecademyAgenticAIBootcamp
+Built by **Hitesh Kapur** — find me on [LinkedIn](https://www.linkedin.com/) · #CodecademyAgenticAIBootcamp

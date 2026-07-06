@@ -1,10 +1,10 @@
-QA Nexus — Proprietary Portfolio License
+AmbitQA — Proprietary Portfolio License
 =========================================
 
-Copyright © 2026 Hitesh Kapur. All Rights Reserved.
+Copyright © 2026 HK. All Rights Reserved.
 
 This software and associated documentation files (the "Software"),
-including the QA Nexus chatbot application, landing page, README,
+including the AmbitQA chatbot application, landing page, README,
 knowledge base content, and all other materials in this repository,
 are the intellectual property of the copyright holder.
 
@@ -40,7 +40,7 @@ may NOT:
      license file.
   6. Claim authorship or origination of this Software or its
      constituent components.
-  7. Use the QA Nexus name, branding, or visual identity in any
+  7. Use the AmbitQA name, branding, or visual identity in any
      derivative or related work.
 
 KNOWLEDGE BASE CONTENT
@@ -67,7 +67,7 @@ DEALINGS IN THE SOFTWARE.
 
 USER-SUPPLIED API KEYS
 ----------------------
-The QA Nexus application requires users to supply their own
+The AmbitQA application requires users to supply their own
 Anthropic API key. The copyright holder has no access to,
 responsibility for, or liability regarding any API keys entered
 by users into their own browser sessions. Users are solely

@@ -2,16 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="version" content="v1.2.0" />
-<!-- QA Nexus v1.2.0 — bump meta tag + footer on each release -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>QA Nexus — RAG-Powered QA Assistant</title>
+<title>AmbitQA — RAG-Powered QA Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script>
 (function() {
-  const stored = localStorage.getItem('qa-nexus-theme');
+  const stored = localStorage.getItem('ambitqa-theme');
   const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
 })();
@@ -229,7 +227,7 @@
 <body>
 
 <nav>
-  <a class="nav-logo" href="#">QA<span>Nexus</span></a>
+  <a class="nav-logo" href="#">Ambit<span>QA</span></a>
   <ul class="nav-links">
     <li><a href="#mockup">Preview</a></li>
     <li><a href="#features">Features</a></li>
@@ -273,7 +271,7 @@
     <div class="chat-topbar">
       <div class="chat-avatar">QA</div>
       <div class="chat-agent-info">
-        <div class="chat-agent-name">QA Nexus Agent</div>
+        <div class="chat-agent-name">AmbitQA Agent</div>
         <div class="chat-agent-status">● Online · ISTQB grounded</div>
       </div>
       <div style="font-size:0.78rem; color:var(--text-muted);">Defect Mode</div>
@@ -478,8 +476,7 @@
 </section>
 
 <footer>
-  <div style="text-align:center;font-size:0.75rem;opacity:0.45;padding:0.5rem 0;">QA Nexus v1.2.0</div>
-  <div class="footer-logo">QA<span>Nexus</span></div>
+  <div class="footer-logo">Ambit<span>QA</span></div>
   <p>A RAG-powered capstone project · built for the <a href="https://www.codecademy.com" target="_blank" rel="noopener">Codecademy</a> Agentic AI Applications Bootcamp</p>
   <p style="margin-top:0.4rem;"><a href="https://www.linkedin.com/company/codecademy" target="_blank" rel="noopener">#CodecademyAgenticAIBootcamp</a></p>
 </footer>
@@ -494,7 +491,7 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('qa-nexus-theme', next);
+  localStorage.setItem('ambitqa-theme', next);
   updateThemeIcon();
 }
 updateThemeIcon();

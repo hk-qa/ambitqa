@@ -109,6 +109,20 @@
     border: 1px solid color-mix(in srgb, var(--brand-500) 25%, transparent);
     padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600;
   }
+  .version-badge {
+    font-size: 0.72rem; color: var(--text-dim);
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 600;
+    font-family: 'Menlo', monospace;
+  }
+  .nav-select {
+    font-size: 0.8rem; color: var(--text);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 0.3rem 0.6rem;
+    cursor: pointer; max-width: 150px;
+  }
+  .nav-select:hover { border-color: var(--border-strong); }
   .theme-toggle {
     width: 36px; height: 36px; border-radius: var(--r-sm);
     background: transparent; border: 1px solid var(--border);
@@ -692,6 +706,20 @@
   <a class="logo" href="index.html">Ambit<span>QA</span></a>
   <div class="nav-right">
     <span class="nav-badge">ISTQB · IEEE 829 grounded</span>
+    <span class="version-badge">v1.3.0</span>
+    <select id="providerSelect" class="nav-select" onchange="onProviderChange()" title="Select AI provider">
+      <option value="anthropic">Anthropic</option>
+      <option value="openai">OpenAI</option>
+      <option value="google">Google</option>
+      <option value="xai">xAI</option>
+      <option value="openrouter">OpenRouter</option>
+      <option value="custom">Custom</option>
+    </select>
+    <select id="modelSelect" class="nav-select" title="Select model">
+      <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+      <option value="claude-opus-4-5">Claude Opus 4.5</option>
+      <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+    </select>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
       <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -706,11 +734,29 @@
 <!-- API KEY MODAL -->
 <div class="modal-overlay" id="apiModal">
   <div class="modal">
-    <h2>Enter your Anthropic API key</h2>
-    <p>Your key is used only in this browser session to call the Anthropic API directly. It is never stored or sent anywhere else.</p>
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" />
+    <h2>Welcome to AmbitQA</h2>
+    <p>Your RAG-powered QA assistant grounded in ISTQB Foundation Level, IEEE 829, and STLC methodology.</p>
+    <div style="margin:1rem 0;display:flex;flex-direction:column;gap:0.6rem;">
+      <label style="font-size:0.85rem;font-weight:600;color:var(--text-muted);">AI Provider</label>
+      <select id="modalProviderSelect" onchange="onModalProviderChange()" style="font-size:0.9rem;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--bg-input);color:var(--text);cursor:pointer;">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT-4)</option>
+        <option value="google">Google (Gemini)</option>
+        <option value="xai">xAI (Grok)</option>
+        <option value="openrouter">OpenRouter</option>
+        <option value="custom">Custom endpoint</option>
+      </select>
+      <label style="font-size:0.85rem;font-weight:600;color:var(--text-muted);">Model</label>
+      <select id="modalModelSelect" style="font-size:0.9rem;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--bg-input);color:var(--text);cursor:pointer;">
+        <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+        <option value="claude-opus-4-5">Claude Opus 4.5</option>
+        <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+      </select>
+      <label style="font-size:0.85rem;font-weight:600;color:var(--text-muted);" id="apiKeyLabel">Anthropic API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" style="font-size:0.9rem;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--bg-input);color:var(--text);" />
+    </div>
     <button class="modal-btn" onclick="saveKey()">Start chatting →</button>
-    <p class="modal-note">Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <p class="modal-note">Your key is used only in this browser session — never stored or sent anywhere else. Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
   </div>
 </div>
 
@@ -2291,14 +2337,87 @@ function showToast(msg) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
+const PROVIDER_MODELS = {
+  anthropic: ['claude-sonnet-4-6','claude-opus-4-5','claude-haiku-4-5'],
+  openai: ['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-4'],
+  google: ['gemini-1.5-pro','gemini-1.5-flash','gemini-pro'],
+  xai: ['grok-beta','grok-vision-beta'],
+  openrouter: ['openai/gpt-4o','anthropic/claude-sonnet-4-6','google/gemini-pro'],
+  custom: ['custom-model']
+};
+const PROVIDER_PLACEHOLDERS = {
+  anthropic: 'sk-ant-...',
+  openai: 'sk-...',
+  google: 'AIza...',
+  xai: 'xai-...',
+  openrouter: 'sk-or-...',
+  custom: 'Your API key...'
+};
+const PROVIDER_CONSOLES = {
+  anthropic: 'console.anthropic.com',
+  openai: 'platform.openai.com',
+  google: 'aistudio.google.com',
+  xai: 'console.x.ai',
+  openrouter: 'openrouter.ai/keys',
+  custom: 'your provider console'
+};
+
+function populateModelSelect(selectId, provider) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  const models = PROVIDER_MODELS[provider] || [];
+  sel.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+function onModalProviderChange() {
+  const p = document.getElementById('modalProviderSelect').value;
+  populateModelSelect('modalModelSelect', p);
+  const input = document.getElementById('apiKeyInput');
+  if (input) input.placeholder = PROVIDER_PLACEHOLDERS[p] || 'API key...';
+  const label = document.getElementById('apiKeyLabel');
+  if (label) label.textContent = (p.charAt(0).toUpperCase() + p.slice(1)) + ' API Key';
+  // Sync nav selects
+  const navProvider = document.getElementById('providerSelect');
+  if (navProvider) navProvider.value = p;
+  populateModelSelect('modelSelect', p);
+}
+
+function onProviderChange() {
+  const p = document.getElementById('providerSelect').value;
+  populateModelSelect('modelSelect', p);
+  // Sync modal selects
+  const modalProvider = document.getElementById('modalProviderSelect');
+  if (modalProvider) modalProvider.value = p;
+  populateModelSelect('modalModelSelect', p);
+}
+
 function saveKey() {
   const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val.startsWith('sk-')) { alert('Please enter a valid Anthropic API key (starts with sk-)'); return; }
+  if (!val) { alert('Please enter an API key.'); return; }
   apiKey = val;
+  // Sync provider/model from modal to nav
+  const provider = document.getElementById('modalProviderSelect')?.value || 'anthropic';
+  const model = document.getElementById('modalModelSelect')?.value || 'claude-sonnet-4-6';
+  const navProvider = document.getElementById('providerSelect');
+  const navModel = document.getElementById('modelSelect');
+  if (navProvider) { navProvider.value = provider; }
+  if (navModel) { populateModelSelect('modelSelect', provider); navModel.value = model; }
+  localStorage.setItem('ambitqa-provider', provider);
+  localStorage.setItem('ambitqa-model', model);
   document.getElementById('apiModal').style.display = 'none';
   document.getElementById('userInput').focus();
 }
 document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+
+// Restore saved provider/model on load
+(function restoreProviderModel() {
+  const savedProvider = localStorage.getItem('ambitqa-provider') || 'anthropic';
+  const savedModel = localStorage.getItem('ambitqa-model') || 'claude-sonnet-4-6';
+  const navProvider = document.getElementById('providerSelect');
+  const modalProvider = document.getElementById('modalProviderSelect');
+  if (navProvider) { navProvider.value = savedProvider; populateModelSelect('modelSelect', savedProvider); document.getElementById('modelSelect').value = savedModel; }
+  if (modalProvider) { modalProvider.value = savedProvider; populateModelSelect('modalModelSelect', savedProvider); document.getElementById('modalModelSelect').value = savedModel; }
+})();
 
 // ─── RESIZABLE SIDEBARS ────────────────────────────────
 function makeResizable(handleId, sidebarId, side, storageKey) {

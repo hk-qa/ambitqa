@@ -41,7 +41,7 @@ I use **AmbitQA** as my personal force-multiplier to deliver senior-grade QA art
 
 - 💼 **LinkedIn:** [linkedin.com/in/hkapur](https://linkedin.com/in/hkapur)
 - 📧 **Email:** hitesh@ambitqa.com
-- 📅 **Book a 20-minute intro call:** [Calendly link]
+- 📅 **Book a 20-minute intro call:** [Calendly link](https://calendly.com/hiteshkapur/30min)
 
 > _Currently accepting up to 2 new engagements per month. Best fit: startups and mid-size teams needing senior QA capacity without a full-time hire._
 

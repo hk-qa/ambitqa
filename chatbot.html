@@ -801,7 +801,7 @@
   </div>
   <div class="logo-wrap">
     <a class="logo" href="index.html">Ambit<span>QA</span></a>
-    <span class="logo-version">v1.3.7</span>
+    <span class="logo-version">v1.3.8</span>
   </div>
   <div class="nav-right">
     <select id="providerSelect" class="nav-select" onchange="onProviderChange()" title="Select AI provider">
@@ -2588,6 +2588,10 @@ async function fetchTarget() {
   fetchBtnText.textContent = 'Fetching…';
   setTargetStatus('loading', '⏳ Attempting to fetch page content via CORS proxy…');
   const proxies = [
+    // Primary: dedicated Cloudflare Worker (see DEPLOY_INSTRUCTIONS.md).
+    // Dedicated Cloudflare Worker — replaces flaky free public proxies.
+    `https://ambitqa-cors-proxy.hkapur-qa.workers.dev/?url=${encodeURIComponent(finalUrl)}`,
+    // Fallbacks: free public proxies, kept in case the Worker has an issue.
     `https://api.allorigins.win/raw?url=${encodeURIComponent(finalUrl)}`,
     `https://corsproxy.io/?${encodeURIComponent(finalUrl)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(finalUrl)}`,
